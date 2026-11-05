@@ -1,0 +1,21 @@
+{
+  "name": "si-iphone-duo-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Outillage front (compilation Tailwind + copie des librairies JS) — uniquement pour reconstruire les assets, inutile pour lancer l'app.",
+  "scripts": {
+    "build:css": "tailwindcss -c tailwind.config.js -i ./input.css -o ../app/static/css/app.css --minify",
+    "watch:css": "tailwindcss -c tailwind.config.js -i ./input.css -o ../app/static/css/app.css --watch",
+    "vendor": "node copier_vendor.js",
+    "build": "npm run vendor && npm run build:css"
+  },
+  "devDependencies": {
+    "@fontsource-variable/inter": "^5.2.5",
+    "@tailwindcss/forms": "0.5.10",
+    "alpinejs": "3.14.9",
+    "chart.js": "4.4.9",
+    "html2canvas": "1.4.1",
+    "jszip": "3.10.1",
+    "tailwindcss": "3.4.17"
+  }
+}

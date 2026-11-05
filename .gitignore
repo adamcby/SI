@@ -1,0 +1,15 @@
+# Environnements & caches
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+frontend/node_modules/
+.DS_Store
+
+# Base SQLite générée au premier lancement (pré-remplie automatiquement)
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+serveur.log
