@@ -244,6 +244,13 @@ _flux("FI-13", "Prototype", "dir_marketing", "production", "Demande d'appareils 
       note="Flux révélé par le BPMN P2 (tâche « Fournit les appareils de test ») et absent de la Fig. 2 : "
            "complément identifié pendant le prototypage.")
 
+# Compléments issus du tableau des interactions (§ 3.4) — absents des figures, explicités par le prototype
+_flux("FI-14", "§ 3.4", "ingenierie", "dir_marketing", "Caractéristiques produit (arguments de vente)")
+_flux("FI-15", "§ 3.4", "dir_marketing", "ingenierie", "Attentes des clients")
+_flux("FI-16", "§ 3.4", "dir_marketing", "juridique", "Messages publicitaires et contrats à valider")
+_flux("FI-17", "§ 3.4", "juridique", "dir_marketing", "Validation, réserves (publicité, RGPD)")
+_flux("FI-18", "§ 3.4", "applecare", "dir_marketing", "Retours clients (questions, satisfaction, retours)")
+
 # Fig. 3 — circulation de l'information au sein de la direction marketing
 _flux("FM-01", "Fig. 3", "dir_marketing", "finance", "Demande de budget")
 _flux("FM-02", "Fig. 3", "finance", "dir_marketing", "Budget accordé")
@@ -682,12 +689,13 @@ _ecran("E37", "production", "appareils-test", "Production — appareils de test"
        ["Le produit n'étant pas en vente, la production fournit des appareils de pré-série."])
 # Autres internes
 _ecran("E38", "ingenierie", "produit", "Ingénierie — fiche produit et arguments", "Caractéristiques -> arguments de vente ; attentes clients",
-       ["S2"], [], ["FM-11"], ["Fiche produit"], ["Interaction ingénierie / marketing (§ 3.4)."])
+       ["S2"], [], ["FI-14", "FI-15"], ["Fiche produit, remontées clients"], ["Interaction ingénierie / marketing (§ 3.4)."])
 _ecran("E39", "juridique", "conformite", "Juridique — conformité RGPD, DMA et publicité",
        "Validation des messages et contrats, registre des traitements, échanges avec la CNIL", ["S1", "S2", "S3"],
-       [], ["FE-11A", "FE-11R"], ["Registre RGPD, validations"], ["Pression réglementaire européenne (SWOT, menaces)."])
+       [], ["FE-11A", "FE-11R", "FI-16", "FI-17"], ["Registre RGPD, validations"],
+       ["Pression réglementaire européenne (SWOT, menaces).", "Le juridique valide messages et contrats avant diffusion."])
 _ecran("E40", "applecare", "service", "AppleCare — service client", "Questions, satisfaction, retours, souscriptions AppleCare",
-       ["S2"], [], ["FE-01R"], ["Demandes SAV"], ["Indicateurs après la sortie : satisfaction, retours, AppleCare."])
+       ["S2"], [], ["FE-01R", "FI-18"], ["Demandes SAV"], ["Indicateurs après la sortie : satisfaction, retours, AppleCare."])
 # Externes
 _ecran("E41", "influenceur", "portail", "Portail influenceurs et médias",
        "BPMN P2 : T05 testent et publient leur avis (multi-instance)", ["S3", "S5"],
