@@ -126,15 +126,15 @@
             displayColors: true, boxWidth: 10, boxHeight: 3, usePointStyle: false,
             callbacks: { label: (ctx) => ' ' + (ctx.dataset.label ? ctx.dataset.label + ' : ' : '') + (options.formatVal || SI.fmt.n)(ctx.parsed[options.horizontal ? 'x' : 'y']) } },
         },
-        scales: {
-          x: { stacked: empile, grid: { display: !!options.horizontal, color: SI.encre.grille, drawTicks: false },
-            border: { color: SI.encre.axe }, ticks: { color: SI.encre.douce, font: { size: 11 }, maxRotation: 0, autoSkipPadding: 14,
-              callback: options.horizontal ? ((v) => (options.formatAxe || SI.fmt.compact)(v)) : undefined } },
-          y: { stacked: empile, beginAtZero: options.zero !== false, grid: { display: !options.horizontal, color: SI.encre.grille, drawTicks: false },
-            border: { display: false }, ticks: { color: SI.encre.douce, font: { size: 11 }, padding: 8,
-              callback: options.horizontal ? undefined : ((v) => (options.formatAxe || SI.fmt.compact)(v)) },
-            suggestedMax: options.max },
-        },
+        scales: (() => {
+          const fmtAxe = options.formatAxe || SI.fmt.compact;
+          const valeur = { stacked: empile, beginAtZero: options.zero !== false, suggestedMax: options.max,
+            grid: { color: SI.encre.grille, drawTicks: false }, border: { display: false },
+            ticks: { color: SI.encre.douce, font: { size: 11 }, padding: 8, callback: (v) => fmtAxe(v) } };
+          const categorie = { stacked: empile, grid: { display: false }, border: { color: SI.encre.axe },
+            ticks: { color: SI.encre.douce, font: { size: 11 }, maxRotation: 0, autoSkipPadding: 14 } };
+          return options.horizontal ? { x: valeur, y: categorie } : { x: categorie, y: valeur };
+        })(),
       },
     };
     if (type === 'doughnut') { delete cfg.options.scales; cfg.options.cutout = '68%'; }
