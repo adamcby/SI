@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block contenu %}
+<div x-data="ecommerce()" x-init="init()" class="space-y-5">
+  <section class="grid grid-cols-5 gap-3" {{ m.insp('FM-13', 'Trafic, paniers et précommandes transmis à l’équipe data (FM-13)') }}>
+    <div class="kpi-tuile"><div class="kpi-libelle">Statut des précommandes</div><div class="mt-1 text-[20px] font-semibold" :class="cat.ouvert ? 'text-ok-ink' : 'text-warn-ink'" x-text="cat.ouvert ? 'Ouvertes' : 'Fermées'"></div><div class="mt-1 text-[11.5px] text-ink-3">date reçue de la direction (FM-06)</div></div>
+    <div class="kpi-tuile"><div class="kpi-libelle">Précommandes (France)</div><div class="kpi-valeur" x-text="p ? SI.fmt.n(p.total) : '—'"></div></div>
+    <div class="kpi-tuile"><div class="kpi-libelle">Visites cumulées</div><div class="kpi-valeur" x-text="SI.fmt.compact(k.visites)"></div></div>
+    <div class="kpi-tuile"><div class="kpi-libelle">Conversion visite → précommande</div><div class="kpi-valeur" x-text="p ? SI.fmt.pct(p.conversion, 2) : '—'"></div></div>
+    <div class="kpi-tuile"><div class="kpi-libelle">Configurations en délai allongé</div><div class="kpi-valeur" x-text="nbAllonges() + ' / 16'"></div></div>
+  </section>
+  <div class="grid grid-cols-[1.2fr_1fr] gap-5">
+    <section class="carte-p" {{ m.insp('P1-T02 FI-05 FE-01A', 'T02 — prix et délai affichés sur le site pour chaque configuration (automatisé)') }}>
+      {{ m.entete_section('Prix et délais affichés sur apple.com (tâche P1-T02)', 'Calculés automatiquement par le SI à partir des lots ERP ; mis à jour dès que la production allonge un délai (FI-05).', 'P1-T02 FI-05') }}
+      <table class="tableau">
+        <thead><tr><th>Configuration</th><th class="text-right">Prix TTC</th><th>Délai affiché</th></tr></thead>
+        <tbody><template x-for="(v, cle) in (cat.delais || {})" :key="cle">
+          <tr><td class="font-medium" x-text="libConf(cle)"></td><td class="tabnum text-right" x-text="SI.fmt.eur(cat.prix[cle.split('|')[0]])"></td>
+            <td><span class="badge" :class="v.en_stock ? 'badge-ok' : 'badge-warn'" x-text="v.libelle"></span></td></tr>
+        </template></tbody>
+      </table>
+    </section>
+    <div class="space-y-5">
+      <section class="carte-p" {{ m.insp('FE-01R P1-T03', 'Précommandes arrivant en direct sur le site') }}>
+        {{ m.entete_section('Dernières précommandes reçues', 'Flux FE-01R en direct (rejouez l’ouverture avec l’horloge × 60).', 'FE-01R FM-13') }}
+        <div class="space-y-1.5">
+          <template x-for="x in flux" :key="x.id">
+            <div class="flex items-center gap-2 rounded-xl bg-canvas-2 px-3 py-2 text-[12.5px]"><span class="tabnum text-ink-3" x-text="SI.fmt.heure(x.cree_le)"></span><span class="font-medium" x-text="x.reference"></span><span class="flex-1 truncate" x-text="x.libelle_config"></span><span class="badge badge-neutre" x-text="x.canal"></span></div>
+          </template>
+        </div>
+      </section>
+      <section class="carte-p" {{ m.insp('FM-11 FM-06', 'Page produit livrée par la création (FM-11) et date d’ouverture (FM-06)') }}>
+        {{ m.entete_section('Contenus et consignes reçus', '', 'FM-06 FM-11') }}
+        <template x-for="x in recus" :key="x.id"><div class="mb-1.5 text-[12.5px]"><span class="chip-flux" x-text="x.code"></span> <span x-text="x.objet"></span> <span class="text-ink-4" x-text="'· ' + SI.fmt.dh(x.horodatage)"></span></div></template>
+      </section>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('ecommerce', () => ({
+    cat: {}, k: {}, p: null, flux: [], recus: [],
+    caps: {'256': '256 Go', '512': '512 Go', '1T': '1 To', '2T': '2 To'}, cols: {naturel: 'Titane naturel', noir: 'Titane noir', blanc: 'Titane blanc', bleu: 'Titane bleu'},
+    async init() { await this.charger(); setInterval(() => this.charger(), 10000); window.addEventListener('si:maj', () => this.charger()); },
+    libConf(c) { const [a, b] = c.split('|'); return this.caps[a] + ' ' + this.cols[b]; },
+    nbAllonges() { return Object.values(this.cat.delais || {}).filter(v => !v.en_stock).length; },
+    async charger() {
+      const [cat, km, flux, r1, r2] = await Promise.all([SI.get('/api/catalogue'), SI.get('/api/kpi/marketing'), SI.get('/api/precommandes?limite=8'),
+        SI.get('/api/journal?code=FM-06&limite=3'), SI.get('/api/journal?code=FM-11&limite=3')]);
+      this.cat = cat; this.k = km.avant; this.p = km.precommandes; this.flux = flux; this.recus = r1.concat(r2);
+      window.dispatchEvent(new CustomEvent('si:rendu'));
+    },
+  }));
+});
+</script>
+{% endblock %}

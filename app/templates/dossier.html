@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block titre %}Dossier TD — {{ documents[doc].titre }}{% endblock %}
+{% block contenu %}
+<div class="grid grid-cols-[260px_minmax(0,1fr)] gap-6">
+  <aside class="sticky top-[78px] h-fit space-y-4">
+    <div class="carte p-2">
+      {% for code, d in documents.items() %}
+      <a href="/dossier?doc={{ code }}" class="nav-lien {% if code == doc %}nav-actif{% endif %}">{{ m.icone('livre', 'w-4 h-4 text-ink-3') }}<span>{{ d.titre }}</span></a>
+      {% endfor %}
+    </div>
+    <div class="carte p-3">
+      <div class="sur-titre mb-2 px-1">Sommaire</div>
+      <div class="max-h-[50vh] space-y-0.5 overflow-y-auto barre-defilement">
+        {% for t in toc %}<a href="#{{ t.id }}" class="block rounded-lg px-2 py-1 text-[12px] text-ink-2 hover:bg-canvas {% if t.niveau == 3 %}pl-5 text-ink-3{% endif %}">{{ t.titre }}</a>{% endfor %}
+      </div>
+    </div>
+    <div class="carte p-3 text-[12px]">
+      <div class="sur-titre mb-2 px-1">Fichiers (dossier livrables_td/)</div>
+      <a href="/livrables/{{ documents[doc].fichier }}" class="lien block py-0.5">{{ documents[doc].fichier }}</a>
+      <a href="/livrables/DOSSIER_COMPLET_SI.html" target="_blank" class="lien block py-0.5">DOSSIER_COMPLET_SI.html (imprimable)</a>
+      <a href="/livrables/DOSSIER_COMPLET_SI.pdf" target="_blank" class="lien block py-0.5">DOSSIER_COMPLET_SI.pdf</a>
+      <button onclick="window.print()" class="btn-sec btn-petit mt-2 w-full">Imprimer cette page</button>
+    </div>
+  </aside>
+  <article class="carte prose-dossier max-w-[920px] px-10 py-8" {{ m.insp('', 'Livrable consultable dans l’application (rendu Moodle)') }}>{{ contenu|safe }}</article>
+</div>
+{% endblock %}

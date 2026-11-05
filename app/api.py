@@ -262,6 +262,33 @@ def list_precommandes(statut: Optional[str] = None, q: Optional[str] = None, lim
     return out
 
 
+@router.get("/clients/{cid}/export")
+def export_client(cid: int, conn=Depends(get_conn)):
+    """Droit d'accès (RGPD, art. 15) : toutes les données du client, au format JSON."""
+    t = maintenant(conn)
+    c = conn.execute("SELECT * FROM clients WHERE id=?", (cid,)).fetchone()
+    if c is None:
+        raise KeyError("Client introuvable")
+    pcs = [dict(r) for r in conn.execute("SELECT reference, capacite, coloris, prix_ttc, statut, delai_affiche, cree_le "
+                                         "FROM precommandes WHERE client_id=? AND cree_le <= ?", (cid, t))]
+    return {"responsable_du_traitement": "Apple (maquette pédagogique)", "finalites": [
+        "Gestion des précommandes", "Information sur l'ouverture des précommandes (« Me prévenir »)",
+        "Communications marketing (si consentement)"], "donnees": dict(c), "precommandes": pcs,
+        "droits": "Accès, rectification, effacement, opposition, portabilité — délai de réponse : 1 mois."}
+
+
+@router.post("/clients/{cid}/consentement")
+def consentement_client(cid: int, body: Dict[str, Any] = Body(...), conn=Depends(get_conn)):
+    autoriser_acteurs(body.get("acteur"), ["client"])
+    t = maintenant(conn)
+    v = 1 if body.get("consentement") else 0
+    if not conn.execute("UPDATE clients SET consentement_marketing=? WHERE id=?", (v, cid)).rowcount:
+        raise KeyError("Client introuvable")
+    emettre(conn, "FE-01R", "Préférence de consentement marketing mise à jour (%s)" % ("accepté" if v else "retiré"), t,
+            emetteur="client", recepteur="mkt_data", demo=1)
+    return {"ok": True, "message": "Préférence enregistrée dans le CRM (consentement %s)." % ("accordé" if v else "retiré")}
+
+
 @router.get("/precommandes/{ref}")
 def get_precommande(ref: str, conn=Depends(get_conn)):
     t = maintenant(conn)
@@ -322,6 +349,86 @@ def post_credit(did: int, body: Dict[str, Any] = Body(...), conn=Depends(get_con
     t = maintenant(conn)
     p = svc_pc.decision_credit(conn, did, body.get("decision"), t)
     return detail_precommande(conn, p["id"], t)
+
+
+# =========================================================================== CRM (équipe data)
+SEGMENTS = {
+    "iphone_3ans": ("Possesseurs d'un iPhone de plus de 3 ans", "plateforme='iOS' AND appareil_annee <= 2023"),
+    "android": ("Utilisateurs Android (dont pliables)", "plateforme='Android'"),
+    "android_pliable": ("Android équipés d'un pliable", "plateforme='Android' AND (appareil LIKE '%Fold%' OR appareil LIKE '%Flip%' OR appareil LIKE '%Mate X%')"),
+    "inscrits_sans_pc": ("Inscrits « Me prévenir » sans précommande", "me_prevenir_le IS NOT NULL AND id NOT IN (SELECT client_id FROM precommandes WHERE client_id IS NOT NULL)"),
+    "consentants": ("Clients ayant consenti au marketing", "consentement_marketing = 1"),
+    "createurs": ("Créatifs et professionnels", "segment = 'Créatif / professionnel'"),
+}
+
+
+@router.get("/crm/segments")
+def crm_segments(conn=Depends(get_conn)):
+    t = maintenant(conn)
+    total = conn.execute("SELECT COUNT(*) FROM clients WHERE cree_le <= ?", (t,)).fetchone()[0]
+    out = []
+    for code, (lib, cond) in SEGMENTS.items():
+        n = conn.execute("SELECT COUNT(*) FROM clients WHERE cree_le <= ? AND " + cond, (t,)).fetchone()[0]
+        nc = conn.execute("SELECT COUNT(*) FROM clients WHERE cree_le <= ? AND consentement_marketing=1 AND " + cond,
+                          (t,)).fetchone()[0]
+        out.append({"code": code, "libelle": lib, "clients": n, "ciblables": nc})
+    me = conn.execute("SELECT COUNT(*) FROM clients WHERE me_prevenir_le IS NOT NULL AND me_prevenir_le <= ?", (t,)).fetchone()[0]
+    cons = conn.execute("SELECT AVG(consentement_marketing) FROM clients WHERE cree_le <= ?", (t,)).fetchone()[0] or 0
+    pcs = conn.execute("SELECT COUNT(*) FROM precommandes WHERE crm_le IS NOT NULL AND crm_le <= ?", (t,)).fetchone()[0]
+    return {"total": total, "me_prevenir": me, "taux_consentement": round(100 * cons, 1), "precommandes_crm": pcs,
+            "segments": out}
+
+
+@router.get("/crm/clients")
+def crm_clients(q: Optional[str] = None, segment: Optional[str] = None, limite: int = Query(25, le=100),
+                conn=Depends(get_conn)):
+    t = maintenant(conn)
+    sql = ("SELECT c.*, (SELECT COUNT(*) FROM precommandes p WHERE p.client_id=c.id AND p.cree_le <= ?) AS nb_pc "
+           "FROM clients c WHERE c.cree_le <= ?")
+    args: list = [t, t]
+    if segment in SEGMENTS:
+        sql += " AND " + SEGMENTS[segment][1].replace("id NOT IN", "c.id NOT IN")
+    if q:
+        sql += " AND (c.nom LIKE ? OR c.ville LIKE ? OR c.appareil LIKE ?)"
+        args += ["%" + q + "%"] * 3
+    sql += " ORDER BY c.cree_le DESC LIMIT ?"
+    args.append(limite)
+    out = []
+    for r in conn.execute(sql, args):
+        d = dict(r)
+        d["apple_id"] = lecture.pseudonymiser(d["apple_id"])
+        d["nom"] = d["nom"][:1] + "."
+        out.append(d)
+    return out
+
+
+@router.post("/crm/diffusion")
+def crm_diffusion(body: Dict[str, Any] = Body(...), conn=Depends(get_conn)):
+    """Flux sortants de l'équipe data : ciblage (FM-15), précommandes par pays (FM-19), coût par précommande (FM-18)."""
+    autoriser_acteurs(body.get("acteur"), ["mkt_data"])
+    t = maintenant(conn)
+    code = body.get("code")
+    if code == "FM-15":
+        seg = SEGMENTS.get(body.get("segment"), ("Segment", ""))[0]
+        emettre(conn, "FM-15", "Ciblage des audiences : %s" % seg, t, emetteur="mkt_data", recepteur="mkt_social",
+                lien="/a/mkt_social/campagne", demo=1)
+    elif code == "FM-19":
+        tab = svc_pilot.tableau(conn, t)
+        txt = ", ".join("%s %s" % (l["pays"], "{:,}".format(l["precommandes"]).replace(",", " ")) for l in tab[:5])
+        emettre(conn, "FM-19", "Précommandes par pays : %s…" % txt, t, emetteur="mkt_data", recepteur="production",
+                lien="/a/production/plan", demo=1)
+    elif code == "FM-18":
+        k = svc_kpi.kpi_finance(conn, t)
+        emettre(conn, "FM-18", "Coût par précommande : %s" % euros(k["cout_par_precommande"] or 0, 2), t,
+                emetteur="mkt_data", recepteur="finance", lien="/a/finance/budgets", demo=1)
+    elif code == "FM-17":
+        h = svc_kpi.tableau_hebdomadaire(conn, t)
+        emettre(conn, "FM-17", "Tableau de bord hebdomadaire : %s objectif(s) atteint(s) sur %s" %
+                (h.get("atteints", 0), h.get("total", 7)), t, emetteur="mkt_data", recepteur="dir_marketing",
+                lien="/a/dir_marketing/cockpit", demo=1)
+    else:
+        raise ValueError("Flux non géré")
+    return {"ok": True, "message": "Flux %s émis." % code}
 
 
 # =========================================================================== pilotage P1 (T10 -> T12)

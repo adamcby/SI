@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% set p = PROCESSUS[proc] %}
+{% block titre %}Processus {{ proc }} — {{ PROCESSUS[proc].nom }}{% endblock %}
+{% block sous_titre %}{{ PROCESSUS[proc].figure }} du dossier (Séance 5), rendu exécutable : chaque jeton bleu est une instance en attente sur une tâche{% endblock %}
+{% block contenu %}
+<div x-data="vueProcessus('{{ proc }}')" x-init="init()" class="grid grid-cols-[minmax(0,1fr)_380px] gap-5">
+  <div class="space-y-4">
+    <section class="carte-p">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex gap-1 rounded-full bg-black/5 p-1">
+          <a href="/processus/P1" class="onglet {% if proc == 'P1' %}onglet-actif{% endif %}">P1 · Précommandes (Fig. 4)</a>
+          <a href="/processus/P2" class="onglet {% if proc == 'P2' %}onglet-actif{% endif %}">P2 · Campagne TikTok (Fig. 5)</a>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 text-[12px] text-ink-2">
+          <span class="inline-flex items-center gap-1.5"><span class="inline-block h-3.5 w-6 rounded-full bg-action"></span>jetons en attente</span>
+          <span class="inline-flex items-center gap-1.5 text-ok-ink">✓ passages</span>
+          <span class="inline-flex items-center gap-1.5"><span class="inline-block h-3 w-3 rounded-full border-2 border-ink-3"></span>tâche automatisée</span>
+          <span class="chip-flux">FE-01R</span><span>flux porté par la transition</span>
+          <label class="ml-2 inline-flex items-center gap-1.5"><input type="checkbox" x-model="afficherFlux" @change="dessiner()" class="rounded"> codes de flux</label>
+        </div>
+      </div>
+      <p class="mt-3 text-[13px] leading-relaxed text-ink-2">{{ p.resume }}</p>
+    </section>
+    <section class="carte overflow-hidden" {{ m.insp(proc ~ '-T01 ' ~ proc ~ '-G01', 'Diagramme BPMN du dossier, rendu vivant (couloirs, tâches, passerelles, jetons)') }}>
+      <div class="flex items-center justify-between border-b border-line-soft px-4 py-2 text-[12px] text-ink-3">
+        <span x-text="selection ? 'Instance n°' + selection.instance.id + ' : ' + selection.instance.libelle : 'Vue agrégée de toutes les instances visibles à l\'heure du SI'"></span>
+        <button x-show="selection" @click="selection = null; dessiner()" class="font-medium text-action-link hover:underline">Revenir à la vue agrégée</button>
+      </div>
+      <svg x-ref="svg" class="bpmn block w-full bg-white" style="height: auto; aspect-ratio: 1440 / 2000"></svg>
+    </section>
+  </div>
+
+  <aside class="sticky top-[78px] h-fit max-h-[calc(100vh-100px)] space-y-4 overflow-y-auto barre-defilement pr-1">
+    <section class="carte-p" x-show="noeud" x-cloak {{ m.insp('', 'Détail de la tâche sélectionnée : couloir, acteurs, flux, écran') }}>
+      <template x-if="noeud">
+        <div>
+          <div class="flex items-center gap-2"><span class="chip-tache" x-text="'{{ proc }}-' + noeudId"></span><span class="badge badge-neutre" x-text="noeud.type"></span><span x-show="noeud.auto" class="badge badge-info">automatisée</span></div>
+          <div class="mt-2 text-[16px] font-semibold leading-snug" x-text="noeud.libelle.replace(/\n/g, ' ')"></div>
+          <div class="mt-1 text-[12.5px] text-ink-3" x-text="'Couloir : ' + noeud.couloir"></div>
+          <p x-show="noeud.note" class="mt-2 rounded-xl bg-canvas p-2.5 text-[12px] text-ink-2" x-text="noeud.note"></p>
+          <div class="mt-3 grid grid-cols-2 gap-2">
+            <div class="rounded-xl bg-action-soft p-2.5"><div class="text-[11px] text-ink-3">Jetons en attente</div><div class="text-[20px] font-semibold tabnum" x-text="SI.fmt.n((jetons[noeudId] || {}).jetons || 0)"></div></div>
+            <div class="rounded-xl bg-ok-soft p-2.5"><div class="text-[11px] text-ink-3">Passages</div><div class="text-[20px] font-semibold tabnum" x-text="SI.fmt.n((jetons[noeudId] || {}).passages || 0)"></div></div>
+          </div>
+          <template x-if="(noeud.flux || []).length"><div class="mt-3"><div class="sur-titre mb-1">Flux d'information</div>
+            <template x-for="f in noeud.flux"><div class="mb-1 text-[12.5px]"><span class="chip-flux" x-text="f"></span> <span x-text="ref.flux[f].libelle"></span></div></template></div></template>
+          <template x-if="(noeud.acteurs || []).length"><div class="mt-3"><div class="sur-titre mb-1">Exécutée par</div>
+            <template x-for="a in noeud.acteurs"><button @click="ouvrirEcran(a)" class="mb-1 flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-left text-[12.5px] ring-1 ring-line-soft hover:bg-canvas-2"><span x-text="ref.acteurs[a].nom"></span><span class="text-action-link">ouvrir l'écran →</span></button></template></div></template>
+        </div>
+      </template>
+    </section>
+
+    <section class="carte-p" {{ m.insp(proc ~ '-T01', 'Instances du processus (une par précommande, campagne ou analyse)') }}>
+      {{ m.entete_section('Instances', 'Cliquez pour tracer son parcours sur le diagramme.') }}
+      <div class="space-y-1.5">
+        <template x-for="i in instances" :key="i.id">
+          <button @click="choisir(i.id)" class="w-full rounded-xl px-3 py-2 text-left ring-1 transition hover:bg-canvas-2" :class="selection && selection.instance.id == i.id ? 'ring-action bg-action-soft/40' : 'ring-line-soft'">
+            <div class="flex items-center justify-between gap-2"><span class="truncate text-[12.5px] font-medium" x-text="i.libelle"></span>
+              <span class="badge shrink-0" :class="i.fini ? 'badge-ok' : 'badge-info'" x-text="i.fini ? 'terminée' : i.jetons.join(', ')"></span></div>
+            <div class="mt-0.5 text-[11px] text-ink-3" x-text="'n°' + i.id + ' · ' + i.type + ' · ' + SI.fmt.dh(i.cree_le) + (i.demo ? ' · démo' : '')"></div>
+          </button>
+        </template>
+      </div>
+      {% if proc == 'P1' %}
+      <a href="/a/client/configurateur" class="btn mt-3 w-full">{{ m.icone('plus', 'w-4 h-4') }} Créer une précommande (vue Client)</a>
+      {% else %}
+      <a href="/a/dir_marketing/campagne" class="btn mt-3 w-full">{{ m.icone('plus', 'w-4 h-4') }} Lancer une campagne (vue Dir. marketing)</a>
+      {% endif %}
+    </section>
+
+    <section class="carte-p" x-show="selection" x-cloak>
+      {{ m.entete_section('Historique de l’instance') }}
+      <ol class="space-y-1.5">
+        <template x-for="e in (selection ? selection.evenements : [])" :key="e.id">
+          <li class="flex gap-2 text-[12px]"><span class="chip-tache shrink-0" x-text="e.noeud + (e.issue ? ':' + e.issue : '')"></span><span><span class="text-ink-3" x-text="SI.fmt.dh(e.horodatage)"></span> — <span x-text="e.details || ''"></span></span></li>
+        </template>
+      </ol>
+    </section>
+  </aside>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('vueProcessus', (code) => ({
+    ref: null, proc: null, jetons: {}, instances: [], selection: null, noeudId: null, noeud: null, afficherFlux: true,
+    async init() {
+      this.ref = await SI.referentiel(); this.proc = this.ref.processus[code];
+      const focus = new URLSearchParams(location.search).get('focus');
+      if (focus) this.cliquer(focus);
+      await this.charger();
+      setInterval(() => this.charger(), 5000);
+    },
+    async charger() {
+      const [j, inst] = await Promise.all([SI.get('/api/processus/' + code + '/jetons'), SI.get('/api/processus/' + code + '/instances')]);
+      this.jetons = j; this.instances = inst;
+      if (this.selection) this.selection = await SI.get('/api/instances/' + this.selection.instance.id);
+      this.dessiner();
+    },
+    dessiner() {
+      const ecran = (this.ref.ecrans.find(e => e.code == document.body.dataset.ecran) || {});
+      const focus = new URLSearchParams(location.search).get('focus');
+      const opts = {flux: this.afficherFlux, onClic: (n) => this.cliquer(n), onFlux: (f) => SI.toast(f + ' — ' + this.ref.flux[f].libelle + ' (' + this.ref.flux[f].figure + ')', 'info'),
+                    surligner: [focus, this.noeudId].filter(Boolean)};
+      let etat = this.jetons;
+      if (this.selection) {
+        const s = this.selection;
+        opts.actifs = s.etat.jetons; etat = {};
+        const evts = s.evenements.filter(e => !e.partiel);
+        opts.faits = new Set(); evts.forEach((e, i) => { opts.faits.add(e.noeud); if (i > 0) opts.faits.add(evts[i - 1].noeud + '>' + e.noeud); });
+        s.etat.jetons.forEach(j => etat[j] = {jetons: 1});
+        opts.passages = false;
+      }
+      SI.dessinerBPMN(this.$refs.svg, this.proc, etat, opts);
+      window.dispatchEvent(new CustomEvent('si:rendu'));
+    },
+    cliquer(n) { this.noeudId = n; this.noeud = this.proc.noeuds[n]; this.dessiner(); },
+    async choisir(id) { this.selection = await SI.get('/api/instances/' + id); this.dessiner(); },
+    ouvrirEcran(a) {
+      const e = this.ref.ecrans.find(x => x.code == this.noeud.ecran && (x.acteur == a || !x.acteur)) || this.ref.ecrans.find(x => x.acteur == a);
+      if (e) SI.aller(e.url, a);
+    },
+  }));
+});
+</script>
+{% endblock %}

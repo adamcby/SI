@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block titre %}Le SI du lancement de l'iPhone Duo{% endblock %}
+{% block sous_titre %}Prototype interactif des Séances 6-7 — fidèle aux acteurs, flux et processus BPMN des Séances 1 à 5{% endblock %}
+{% block contenu %}
+<div x-data="accueil()" x-init="charger()" class="space-y-6">
+
+  <!-- Héros -->
+  <section class="carte overflow-hidden">
+    <div class="grid grid-cols-[1.25fr_1fr] items-center gap-6 p-8">
+      <div>
+        <div class="sur-titre mb-2">{{ PROJET.universite }} · {{ PROJET.formation }}</div>
+        <h2 class="degrade-titre text-[34px] font-semibold leading-[1.1] tracking-tight">Piloter le lancement<br>avant même la commercialisation.</h2>
+        <p class="mt-4 max-w-[560px] text-[15px] leading-relaxed text-ink-2" {{ m.insp('FM-17', 'Problématique du dossier (introduction)') }}>
+          <b class="text-ink">Problématique :</b> {{ PROJET.problematique }}
+        </p>
+        <div class="mt-5 flex flex-wrap gap-2">
+          <a href="/a/client/configurateur" class="btn">{{ m.icone('lecture', 'w-4 h-4') }} Rejouer une précommande (P1)</a>
+          <a href="/a/dir_marketing/campagne" class="btn-sec">Piloter la campagne TikTok (P2)</a>
+          <a href="/flux" class="btn-sec">Cartographie des flux</a>
+        </div>
+      </div>
+      <div class="relative">
+        {{ m.iphone_duo('#3a3a3c', 'w-full max-w-[420px] mx-auto', 'hero') }}
+        <div class="absolute -bottom-1 right-6 w-[96px] rotate-[8deg]">{{ m.iphone_duo('#bdb5a6', 'w-full', 'hero2', ferme=True) }}</div>
+      </div>
+    </div>
+    <!-- Frise -->
+    <div class="border-t border-line-soft bg-canvas-2 px-8 py-5" {{ m.insp('P2-E0 P1-E0', 'Frise du lancement : événements de début des processus') }}>
+      <div class="relative">
+        <div class="absolute left-0 right-0 top-[9px] h-[3px] rounded bg-line-soft"></div>
+        <div class="absolute left-0 top-[9px] h-[3px] rounded bg-action" :style="'width:' + progression + '%'"></div>
+        <div class="relative grid grid-cols-5">
+          <template x-for="j in jalons" :key="j.date">
+            <div class="text-center">
+              <div class="mx-auto h-[21px] w-[21px] rounded-full ring-4 ring-canvas-2" :class="j.passe ? 'bg-action' : 'bg-white ring-line'" style="border:3px solid #fff"></div>
+              <div class="mt-2 text-[12.5px] font-semibold" x-text="j.titre"></div>
+              <div class="text-[11.5px] text-ink-3" x-text="j.libelle"></div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Indicateurs -->
+  <section class="grid grid-cols-6 gap-3" {{ m.insp('FM-17 FI-12 FM-14', 'Indicateurs en direct : signaux avancés puis précommandes') }}>
+    <div class="kpi-tuile"><div class="kpi-libelle">Visites page iPhone Duo</div><div class="kpi-valeur" x-text="SI.fmt.compact(k.visites)">—</div><div class="mt-1 text-[11.5px] text-ink-3">objectif 2 M</div></div>
+    <div class="kpi-tuile"><div class="kpi-libelle">Inscriptions « Me prévenir »</div><div class="kpi-valeur" x-text="SI.fmt.compact(k.me_prevenir)">—</div><div class="mt-1 text-[11.5px] text-ink-3">objectif 120 k</div></div>
+    <div class="kpi-tuile"><div class="kpi-libelle">Vues TikTok</div><div class="kpi-valeur" x-text="SI.fmt.compact(k.vues_tiktok)">—</div><div class="mt-1 text-[11.5px] text-ink-3">objectif 20 M</div></div>
+    <div class="kpi-tuile"><div class="kpi-libelle">Précommandes France</div><div class="kpi-valeur" x-text="p ? SI.fmt.n(p.total) : 'à venir'">—</div><div class="mt-1 text-[11.5px] text-ink-3">ouverture 16/10, 14 h</div></div>
+    <div class="kpi-tuile"><div class="kpi-libelle">CA prévisionnel HT</div><div class="kpi-valeur" x-text="p ? SI.fmt.compact(p.ca_ht) + '€' : '—'">—</div><div class="mt-1 text-[11.5px] text-ink-3">enregistré par la finance</div></div>
+    <div class="kpi-tuile"><div class="kpi-libelle">Flux échangés</div><div class="kpi-valeur" x-text="SI.fmt.compact(totalFlux)">—</div><div class="mt-1 text-[11.5px] text-ink-3">55 flux codifiés</div></div>
+  </section>
+
+  <!-- Processus -->
+  <section class="grid grid-cols-2 gap-5">
+    {% for code in ['P1', 'P2'] %}{% set p = PROCESSUS[code] %}
+    <div class="carte-p" {{ m.insp(code ~ '-T01', 'Processus ' ~ code ~ ' exécutable (' ~ p.figure ~ ')') }}>
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <div class="sur-titre">{{ code }} · {{ p.figure }} · Séance 5</div>
+          <h3 class="mt-1 text-[18px] font-semibold tracking-tight">{{ p.nom }}</h3>
+        </div>
+        <a href="/processus/{{ code }}" class="btn-sec btn-petit">Voir le BPMN vivant</a>
+      </div>
+      <p class="mt-2 text-[13px] leading-relaxed text-ink-2">{{ p.resume }}</p>
+      <div class="mt-3 flex flex-wrap gap-1.5">
+        {% for c in p.couloirs %}<span class="badge badge-neutre">{{ c.libelle|title }}</span>{% endfor %}
+      </div>
+      <div class="mt-4 flex items-center gap-2 text-[12.5px] text-ink-3">
+        <span class="badge badge-info" x-text="(files.filter(f => f.processus=='{{ code }}').length) + ' tâche(s) en attente'"></span>
+        <span>· chaque action d'un acteur fait avancer un jeton dans le diagramme</span>
+      </div>
+    </div>
+    {% endfor %}
+  </section>
+
+  <!-- Acteurs -->
+  <section class="carte-p">
+    {{ m.entete_section('Choisir une « Vue acteur »', 'Chaque acteur interne et externe des modèles de flux dispose de son interface dédiée.', 'FE-01R FI-10 FM-17') }}
+    <div class="grid grid-cols-5 gap-x-4 gap-y-1">
+      {% for gcode, glib in GROUPES %}
+      <div class="{% if gcode == 'externes' %}col-span-2{% endif %}">
+        <div class="sur-titre mb-1.5 mt-2">{{ glib.split(' (')[0] }}</div>
+        <div class="{% if gcode == 'externes' %}grid grid-cols-2 gap-x-3{% endif %}">
+        {% for code, a in ACTEURS.items() if a.groupe == gcode %}
+          <button onclick="SI.changerActeur('{{ code }}', '{{ a.ecran_defaut or '' }}')" class="mb-1 flex w-full items-center gap-2 rounded-xl px-2 py-1.5 text-left hover:bg-canvas">
+            {{ m.avatar(code, 'w-6 h-6', 'w-3 h-3') }}<span class="truncate text-[12.5px] font-medium">{{ a.court }}</span>
+          </button>
+        {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Démo guidée -->
+  <section class="carte-p" {{ m.insp('P1-T01 P1-G01 P1-G02 P1-T10 P2-T01', 'Démo guidée de la soutenance') }}>
+    {{ m.entete_section('Démo guidée pour la soutenance (≈ 4 minutes)', 'Chaque étape change de vue acteur et fait avancer un processus BPMN.') }}
+    <ol class="grid grid-cols-3 gap-3">
+      {% set etapes = [
+        ('client', 'configurateur', 'Le client précommande', 'P1-T01 → T03 : configuration, reprise, paiement en 10 fois.'),
+        ('finance', 'paiements', 'La finance valide le paiement', 'P1-G01 puis T04/T05 : CA prévisionnel et marge.'),
+        ('production', 'stocks', 'La production réserve l\'appareil', 'P1-G02, T07, T08 : stock, délai, réservation.'),
+        ('dir_marketing', 'pilotage-precommandes', 'Le marketing analyse le tableau de bord', 'P1-T10, G03 : demande > offre ? Hausse ou relance.'),
+        ('dir_marketing', 'campagne', 'Une campagne TikTok complète', 'P2 : budget, vidéos, influenceurs, mesure, rapport.'),
+        ('dir_marketing', 'cockpit', 'Le cockpit KPI + mode inspection', 'Indicateurs du § 3.6 et du § 6.3, touche I.'),
+      ] %}
+      {% for a, e, t, d in etapes %}
+      <li>
+        <button onclick="SI.changerActeur('{{ a }}', '{{ e }}')" class="flex w-full items-start gap-3 rounded-2xl p-3 text-left ring-1 ring-line-soft transition hover:bg-canvas-2 hover:ring-action/30">
+          <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink text-[13px] font-semibold text-white">{{ loop.index }}</span>
+          <span><span class="block text-[13.5px] font-semibold">{{ t }}</span><span class="block text-[12px] text-ink-3">{{ d }}</span>
+          <span class="mt-1.5 inline-flex items-center gap-1.5 text-[11.5px] text-ink-3">{{ m.avatar(a, 'w-4 h-4', 'w-2.5 h-2.5') }} {{ ACTEURS[a].court }}</span></span>
+        </button>
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+
+  <!-- Séances -->
+  <section class="carte-p">
+    {{ m.entete_section('Cohérence du projet : des Séances 1 à 10', 'Chaque séance alimente la suivante — le prototype les rend exécutables.') }}
+    <div class="grid grid-cols-5 gap-3">
+      {% for s, d in SEANCES.items() %}
+      <div class="rounded-2xl p-3 ring-1 {% if s in ['S6', 'S7'] %}bg-action-soft ring-action/30{% elif s == 'S8' %}bg-s7/5 ring-s7/20{% else %}ring-line-soft{% endif %}">
+        <div class="chip-seance">{{ s }}</div>
+        <div class="mt-1.5 text-[13px] font-semibold leading-snug">{{ d.titre }}</div>
+        <div class="mt-1 text-[11.5px] leading-snug text-ink-3">{{ d.apport }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('accueil', () => ({
+    k: {}, p: null, files: [], totalFlux: 0, progression: 0,
+    jalons: [
+      {date: '2026-09-09T19:00:00', titre: 'Keynote', libelle: 'mer. 9 sept., 19 h — début de P2'},
+      {date: '2026-10-12T09:00:00', titre: 'Tableau de bord', libelle: 'lun. 12 oct. — § 6.3'},
+      {date: '2026-10-16T14:00:00', titre: 'Précommandes', libelle: 'ven. 16 oct., 14 h — début de P1'},
+      {date: '2026-10-23T08:00:00', titre: 'Sortie', libelle: 'ven. 23 oct. — fin de P1'},
+      {date: '2026-11-02T10:00:00', titre: 'Résultats', libelle: 'satisfaction, retours, ventes'},
+    ],
+    async charger() {
+      const [km, files, stats, h] = await Promise.all([SI.get('/api/kpi/marketing'), SI.get('/api/files'), SI.get('/api/flux/stats'), SI.get('/api/horloge')]);
+      this.k = km.avant; this.p = km.precommandes; this.files = files;
+      this.totalFlux = Object.values(stats).reduce((a, s) => a + (s.volume || 0), 0);
+      this.jalons.forEach(j => j.passe = j.date <= h.iso);
+      const n = this.jalons.filter(j => j.passe).length;
+      this.progression = Math.max(0, Math.min(100, (n - 0.5) / 4 * 100));
+    },
+  }));
+});
+</script>
+{% endblock %}

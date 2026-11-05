@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Police de repli embarquée (hors-ligne) — sur macOS, SF Pro est utilisée en priorité */
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/static/vendor/inter-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/static/vendor/inter-latin-ext-wght-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@layer base {
+  :root { color-scheme: light; }
+  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  body { @apply bg-canvas text-ink font-sans; letter-spacing: -0.003em; }
+  [x-cloak] { display: none !important; }
+  .tabnum { font-variant-numeric: tabular-nums; }
+}
+
+@layer components {
+  .carte { @apply bg-white rounded-2xl ring-1 ring-black/5 shadow-card; }
+  .carte-p { @apply bg-white rounded-2xl ring-1 ring-black/5 shadow-card p-5; }
+  .titre-page { @apply text-[28px] leading-tight font-semibold tracking-tight text-ink; }
+  .titre-carte { @apply text-[15px] font-semibold text-ink tracking-tight; }
+  .sur-titre { @apply text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-3; }
+  .texte-doux { @apply text-[13px] text-ink-3; }
+
+  .btn { @apply inline-flex items-center justify-center gap-1.5 rounded-full bg-action px-4 py-2 text-[13px] font-medium text-white transition hover:bg-action-hover disabled:cursor-not-allowed disabled:opacity-40; }
+  .btn-sec { @apply inline-flex items-center justify-center gap-1.5 rounded-full bg-white px-4 py-2 text-[13px] font-medium text-ink ring-1 ring-line transition hover:bg-canvas disabled:cursor-not-allowed disabled:opacity-40; }
+  .btn-ok { @apply inline-flex items-center justify-center gap-1.5 rounded-full bg-ok-ink px-4 py-2 text-[13px] font-medium text-white transition hover:opacity-90 disabled:opacity-40; }
+  .btn-crit { @apply inline-flex items-center justify-center gap-1.5 rounded-full bg-crit px-4 py-2 text-[13px] font-medium text-white transition hover:opacity-90 disabled:opacity-40; }
+  .btn-petit { @apply px-3 py-1 text-[12px]; }
+  .lien { @apply text-action-link hover:underline; }
+
+  .badge { @apply inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-medium; }
+  .badge-ok { @apply bg-ok-soft text-ok-ink; }
+  .badge-warn { @apply bg-warn-soft text-warn-ink; }
+  .badge-crit { @apply bg-crit-soft text-crit-ink; }
+  .badge-info { @apply bg-action-soft text-action-link; }
+  .badge-neutre { @apply bg-canvas text-ink-2 ring-1 ring-line-soft; }
+  .badge-noir { @apply bg-ink text-white; }
+
+  .chip-flux { @apply inline-flex items-center whitespace-nowrap rounded-md bg-action-soft px-1.5 py-[1px] font-mono text-[10.5px] font-medium text-action-link; }
+  .chip-tache { @apply inline-flex items-center whitespace-nowrap rounded-md bg-ink px-1.5 py-[1px] font-mono text-[10.5px] font-medium text-white; }
+  .chip-seance { @apply inline-flex items-center whitespace-nowrap rounded-md bg-s7/10 px-1.5 py-[1px] font-mono text-[10.5px] font-semibold text-s7; }
+
+  .champ { @apply block w-full rounded-xl border-0 bg-white px-3 py-2 text-[13px] text-ink ring-1 ring-line placeholder:text-ink-4 focus:outline-none focus:ring-2 focus:ring-action; }
+  .etiquette { @apply mb-1 block text-[12px] font-medium text-ink-2; }
+
+  .tableau { @apply w-full text-left text-[13px]; }
+  .tableau thead th { @apply whitespace-nowrap border-b border-line-soft px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-ink-3; }
+  .tableau tbody td { @apply border-b border-line-soft px-3 py-2.5 align-middle; }
+  .tableau tbody tr:last-child td { @apply border-b-0; }
+  .tableau tbody tr:hover td { @apply bg-canvas-2; }
+
+  .kpi-tuile { @apply rounded-2xl bg-white p-4 ring-1 ring-black/5 shadow-card; }
+  .kpi-libelle { @apply text-[12px] font-medium text-ink-3; }
+  .kpi-valeur { @apply mt-1 text-[26px] font-semibold leading-none tracking-tight text-ink; }
+
+  .onglet { @apply rounded-full px-3 py-1.5 text-[13px] font-medium text-ink-2 transition hover:bg-white; }
+  .onglet-actif { @apply bg-white text-ink shadow-card ring-1 ring-black/5; }
+
+  .nav-lien { @apply flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-[13px] text-ink-2 transition hover:bg-white hover:text-ink; }
+  .nav-actif { @apply bg-white text-ink shadow-card ring-1 ring-black/5 font-medium; }
+
+  .etape { @apply flex items-start gap-3 rounded-xl px-3 py-2.5 ring-1 ring-line-soft; }
+  .etape-active { @apply bg-action-soft ring-action/40; }
+  .etape-faite { @apply bg-ok-soft/60 ring-ok/20; }
+}
+
+/* ---------------------------------------------------------------- Mode inspection maquette */
+body.inspection [data-insp] { position: relative; outline: 2px dashed rgba(98, 80, 214, 0.75); outline-offset: 3px; border-radius: 12px; }
+.insp-pastille { position: absolute; top: -12px; left: -12px; z-index: 30; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 12px; background: #6250d6; color: #fff; font: 600 12px/24px -apple-system, BlinkMacSystemFont, "Inter Variable", sans-serif; text-align: center; box-shadow: 0 0 0 2px #fff; pointer-events: none; }
+body.inspection .insp-masque { display: none; }
+
+/* ---------------------------------------------------------------- BPMN */
+.bpmn text { font-family: -apple-system, BlinkMacSystemFont, "Inter Variable", Inter, sans-serif; }
+.bpmn .noeud { cursor: pointer; }
+.bpmn .noeud:hover .forme { stroke: #0071e3; }
+@keyframes pulse-jeton { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+.bpmn .jeton-pulse { animation: pulse-jeton 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .bpmn .jeton-pulse { animation: none; } }
+
+/* ---------------------------------------------------------------- Divers */
+.barre-defilement::-webkit-scrollbar { width: 8px; height: 8px; }
+.barre-defilement::-webkit-scrollbar-thumb { background: #d2d2d7; border-radius: 8px; }
+.verre { background: rgba(251, 251, 253, 0.82); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); }
+.degrade-titre { background: linear-gradient(92deg, #1d1d1f 0%, #3e566f 55%, #8a7a62 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.prose-dossier h1 { @apply mb-4 mt-2 text-[30px] font-semibold tracking-tight; }
+.prose-dossier h2 { @apply mb-3 mt-10 border-b border-line-soft pb-2 text-[22px] font-semibold tracking-tight; }
+.prose-dossier h3 { @apply mb-2 mt-7 text-[17px] font-semibold; }
+.prose-dossier h4 { @apply mb-2 mt-5 text-[15px] font-semibold; }
+.prose-dossier p { @apply my-3 text-[15px] leading-7 text-ink-2; }
+.prose-dossier ul { @apply my-3 list-disc space-y-1.5 pl-6 text-[15px] leading-7 text-ink-2; }
+.prose-dossier ol { @apply my-3 list-decimal space-y-1.5 pl-6 text-[15px] leading-7 text-ink-2; }
+.prose-dossier table { @apply my-5 w-full overflow-hidden rounded-xl text-[13.5px] ring-1 ring-line; }
+.prose-dossier th { @apply bg-canvas px-3 py-2 text-left font-semibold; }
+.prose-dossier td { @apply border-t border-line-soft px-3 py-2 align-top; }
+.prose-dossier blockquote { @apply my-4 rounded-r-xl border-l-4 border-action bg-action-soft px-4 py-2 text-ink-2; }
+.prose-dossier code { @apply rounded bg-canvas px-1 py-0.5 font-mono text-[12.5px]; }
+.prose-dossier strong { @apply font-semibold text-ink; }
+.prose-dossier img { @apply my-4 rounded-xl ring-1 ring-line; }
+.prose-dossier hr { @apply my-8 border-line-soft; }
+.prose-dossier a { @apply text-action-link underline-offset-2 hover:underline; }

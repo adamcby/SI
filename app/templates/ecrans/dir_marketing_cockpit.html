@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block contenu %}
+<div x-data="cockpit()" x-init="init()" class="space-y-5">
+  <div class="flex items-center justify-between">
+    <div class="flex gap-1 rounded-full bg-black/5 p-1" {{ m.insp('FM-17', 'Trois phases d’indicateurs (§ 3.6) : avant la sortie, précommandes, après la sortie') }}>
+      <button @click="onglet='avant'; dessiner()" class="onglet" :class="onglet=='avant' && 'onglet-actif'">Avant la sortie (depuis le 9/09)</button>
+      <button @click="onglet='precommandes'; dessiner()" class="onglet" :class="onglet=='precommandes' && 'onglet-actif'">Précommandes (16/10)</button>
+      <button @click="onglet='apres'; dessiner()" class="onglet" :class="onglet=='apres' && 'onglet-actif'">Après la sortie (23/10)</button>
+    </div>
+    <span class="texte-doux">Données arrêtées à l'heure du SI · rafraîchies toutes les 20 s</span>
+  </div>
+
+  <!-- ======================== AVANT -->
+  <div x-show="onglet=='avant'" class="space-y-5">
+    <section class="grid grid-cols-4 gap-3" {{ m.insp('FM-13 FM-14 FM-16 FE-08R', 'Indicateurs avancés : mesurer l’effet de la communication sans chiffre de ventes') }}>
+      <template x-for="t in tuilesAvant()" :key="t.lib">
+        <div class="kpi-tuile">
+          <div class="flex items-center justify-between"><span class="kpi-libelle" x-text="t.lib"></span>
+            <span class="badge" :class="t.ok ? 'badge-ok' : 'badge-crit'" x-text="t.ok ? '✓ objectif' : '▼ en retard'"></span></div>
+          <div class="kpi-valeur" x-text="t.val"></div>
+          <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-action-soft"><div class="h-full rounded-full" :class="t.ok ? 'bg-ok' : 'bg-action'" :style="'width:' + Math.min(100, t.pct) + '%'"></div></div>
+          <div class="mt-1 text-[11.5px] text-ink-3" x-text="'Objectif : ' + t.obj + ' · source ' + t.src"></div>
+        </div>
+      </template>
+    </section>
+    <div class="grid grid-cols-2 gap-5">
+      <section class="carte-p" {{ m.insp('FM-13', 'Trafic de la page iPhone Duo (e-commerce -> data)') }}>{{ m.entete_section('Visites quotidiennes de la page iPhone Duo', 'Pics : keynote (9/09), vidéos TikTok (11/09), ouverture des précommandes (16/10).', 'FM-13') }}<div class="h-[230px]"><canvas id="g-visites"></canvas></div></section>
+      <section class="carte-p" {{ m.insp('FE-01R FI-10', 'Inscriptions « Me prévenir » enregistrées dans le CRM') }}>{{ m.entete_section('Inscriptions « Me prévenir » par jour', 'Relance du 12/10 (reprise + paiement en 10 fois) : objectif de 120 000 atteint à l’ouverture.', 'FE-01R') }}<div class="h-[230px]"><canvas id="g-me"></canvas></div></section>
+      <section class="carte-p" {{ m.insp('FM-14 P2-T06', 'Vues TikTok cumulées (mesurées par la tâche P2-T06)') }}>{{ m.entete_section('Vues TikTok cumulées (@apple)', 'Objectif : 20 millions.', 'FM-14') }}<div class="h-[230px]"><canvas id="g-tiktok"></canvas></div></section>
+      <section class="carte-p" {{ m.insp('FM-14 FE-08R', 'Mesures hebdomadaires : sentiment (écoute sociale), intention (institut), part Android') }}>{{ m.entete_section('Mesures hebdomadaires (%)', 'Sentiment : écoute sociale · intention : sondage de l’institut (FE-08R) · visiteurs Android.', 'FM-14 FE-08R') }}<div class="h-[230px]"><canvas id="g-hebdo"></canvas></div></section>
+    </div>
+  </div>
+
+  <!-- ======================== PRÉCOMMANDES -->
+  <div x-show="onglet=='precommandes'" class="space-y-5">
+    <template x-if="!p"><div class="carte-p py-12 text-center texte-doux">Les précommandes ouvrent le vendredi 16 octobre à 14 h. Réglez l'horloge du SI sur une date postérieure.</div></template>
+    <template x-if="p">
+      <div class="space-y-5">
+        <section class="grid grid-cols-6 gap-3" {{ m.insp('FM-13 FI-12 FI-10', 'Transformation de l’intérêt en achat (§ 3.6)') }}>
+          <div class="kpi-tuile col-span-2"><div class="kpi-libelle">Précommandes France</div><div class="mt-1 text-[44px] font-semibold leading-none tracking-tight" x-text="SI.fmt.n(p.total)"></div><div class="mt-1 text-[11.5px] text-ink-3">depuis le 16/10 à 14 h</div></div>
+          <div class="kpi-tuile"><div class="kpi-libelle">Conversion visite → précommande</div><div class="kpi-valeur" x-text="SI.fmt.pct(p.conversion, 2)"></div></div>
+          <div class="kpi-tuile"><div class="kpi-libelle">Clients venant d'Android</div><div class="kpi-valeur" x-text="SI.fmt.pct(p.part_android)"></div></div>
+          <div class="kpi-tuile"><div class="kpi-libelle">Avec reprise</div><div class="kpi-valeur" x-text="SI.fmt.pct(p.part_reprise)"></div></div>
+          <div class="kpi-tuile"><div class="kpi-libelle">Délai allongé</div><div class="kpi-valeur" x-text="SI.fmt.pct(p.part_delai_allonge)"></div></div>
+        </section>
+        <div class="grid grid-cols-[1.5fr_1fr] gap-5">
+          <section class="carte-p" {{ m.insp('FE-01R P1-T03', 'Précommandes par heure : le pic de 14 h le 16/10') }}>{{ m.entete_section('Précommandes par heure', 'Données en temps réel : rejouez l’ouverture (horloge × 60) pour voir les précommandes arriver.', 'FE-01R') }}<div class="h-[260px]"><canvas id="g-heures"></canvas></div></section>
+          <section class="carte-p" {{ m.insp('FI-04', 'Répartition par coloris : base des prévisions transmises à la production') }}>{{ m.entete_section('Par coloris', 'Base des prévisions par couleur transmises à la production (FI-04).', 'FI-04') }}<div class="h-[260px]"><canvas id="g-coloris"></canvas></div></section>
+          <section class="carte-p">{{ m.entete_section('Par capacité') }}<div class="h-[200px]"><canvas id="g-capacite"></canvas></div></section>
+          <section class="carte-p" {{ m.insp('FE-09A', 'Modes de paiement : poids du paiement en plusieurs fois') }}>{{ m.entete_section('Par mode de paiement', '', 'FE-09A') }}<div class="h-[200px]"><canvas id="g-paiement"></canvas></div></section>
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <!-- ======================== APRÈS -->
+  <div x-show="onglet=='apres'" class="space-y-5">
+    <template x-if="!a"><div class="carte-p py-12 text-center texte-doux">La sortie a lieu le vendredi 23 octobre. Réglez l'horloge sur « Après la sortie » pour voir les indicateurs de résultat.</div></template>
+    <template x-if="a">
+      <div class="space-y-5">
+        <section class="grid grid-cols-5 gap-3" {{ m.insp('FE-02R FE-03R FI-18', 'Succès commercial et satisfaction (§ 3.6)') }}>
+          <div class="kpi-tuile"><div class="kpi-libelle">Appareils livrés (France)</div><div class="kpi-valeur" x-text="SI.fmt.n(a.livrees)"></div></div>
+          <div class="kpi-tuile"><div class="kpi-libelle">Satisfaction client</div><div class="kpi-valeur" x-text="SI.fmt.pct(a.satisfaction, 0)"></div></div>
+          <div class="kpi-tuile"><div class="kpi-libelle">Taux de retour</div><div class="kpi-valeur" x-text="SI.fmt.pct(a.retours)"></div></div>
+          <div class="kpi-tuile"><div class="kpi-libelle">Souscriptions AppleCare+</div><div class="kpi-valeur" x-text="SI.fmt.pct(a.applecare)"></div></div>
+          <div class="kpi-tuile"><div class="kpi-libelle">Activations eSIM</div><div class="kpi-valeur" x-text="SI.fmt.compact(a.activations_esim)"></div></div>
+        </section>
+        <div class="grid grid-cols-2 gap-5">
+          <section class="carte-p">{{ m.entete_section('Commandes quotidiennes après la sortie') }}<div class="h-[240px]"><canvas id="g-ventes"></canvas></div></section>
+          <section class="carte-p" {{ m.insp('FE-08R', 'Part de marché des pliables (étude IDC, flux FE-08R)') }}>{{ m.entete_section('Part de marché des smartphones pliables (octobre)', 'Étude d’institut reçue par le flux FE-08R.', 'FE-08R') }}<div class="h-[240px]"><canvas id="g-pdm"></canvas></div></section>
+        </div>
+      </div>
+    </template>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('cockpit', () => ({
+    d: null, k: {}, p: null, a: null, onglet: 'avant',
+    async init() {
+      await this.charger();
+      this.onglet = this.d.phase;
+      this.$nextTick(() => this.dessiner());
+      setInterval(() => this.charger().then(() => this.dessiner()), 20000);
+    },
+    async charger() { this.d = await SI.get('/api/kpi/marketing'); this.k = this.d.avant; this.p = this.d.precommandes; this.a = this.d.apres; },
+    tuilesAvant() {
+      const k = this.k, o = k.objectifs || {};
+      const t = (lib, v, obj, fmt, src) => ({lib, val: fmt(v), obj: fmt(obj), ok: v >= obj, pct: obj ? 100 * v / obj : 0, src});
+      if (!o.visites) return [];
+      return [
+        t('Visites page iPhone Duo', k.visites, o.visites, SI.fmt.compact, 'FM-13'),
+        t('Inscriptions « Me prévenir »', k.me_prevenir, o.me_prevenir, SI.fmt.compact, 'CRM'),
+        t('Rendez-vous de démonstration', k.rdv_demo, o.rdv_demo, SI.fmt.compact, 'FM-16'),
+        t('Vues TikTok', k.vues_tiktok, o.vues_tiktok, SI.fmt.compact, 'FM-14'),
+        t('Commentaires positifs', k.sentiment, o.sentiment, v => SI.fmt.pct(v, 0), 'FM-14'),
+        t('Intention d\'achat', k.intention, o.intention, v => SI.fmt.pct(v, 1), 'FE-08R'),
+        t('Visiteurs sous Android', k.android, o.android, v => SI.fmt.pct(v, 1), 'FM-13'),
+        t('Mentions sociales', k.mentions, 400000, SI.fmt.compact, 'FM-14'),
+      ];
+    },
+    dessiner() {
+      this.$nextTick(() => {
+        const s = this.k.series || {};
+        if (this.onglet == 'avant' && s.visites) {
+          SI.graphique('g-visites', 'line', s.visites.map(p => SI.fmt.jour(p.x)), [{nom: 'Visites', valeurs: s.visites.map(p => p.y), aire: true}]);
+          SI.graphique('g-me', 'bar', s.me_prevenir.map(p => SI.fmt.jour(p.x)), [{nom: 'Inscriptions', valeurs: s.me_prevenir.map(p => p.y), slot: 2}]);
+          let c = 0; const cum = s.vues_tiktok.map(p => (c += p.y));
+          SI.graphique('g-tiktok', 'line', s.vues_tiktok.map(p => SI.fmt.jour(p.x)), [{nom: 'Vues cumulées', valeurs: cum, aire: true},
+            {nom: 'Objectif (20 M)', valeurs: cum.map(() => 20000000), couleur: '#6e6e73', pointille: true}]);
+          SI.graphique('g-hebdo', 'line', s.sentiment.map(p => SI.fmt.jour(p.x)), [
+            {nom: 'Commentaires positifs', valeurs: s.sentiment.map(p => p.y)}, {nom: 'Visiteurs Android', valeurs: s.android.map(p => p.y)},
+            {nom: 'Intention d\'achat', valeurs: s.intention.map(p => p.y)}], {formatVal: v => SI.fmt.pct(v), formatAxe: v => v + ' %'});
+        }
+        if (this.onglet == 'precommandes' && this.p) {
+          const p = this.p;
+          SI.graphique('g-heures', 'bar', p.par_heure.map(h => h.x.slice(8, 10) + '/' + h.x.slice(5, 7) + ' ' + h.x.slice(11, 13) + 'h'), [{nom: 'Précommandes (échantillon détaillé)', valeurs: p.par_heure.map(h => h.y)}]);
+          const col = {naturel: 'Titane naturel', noir: 'Titane noir', blanc: 'Titane blanc', bleu: 'Titane bleu'};
+          const cap = {'256': '256 Go', '512': '512 Go', '1T': '1 To', '2T': '2 To'};
+          const pay = {cb: 'Carte bancaire', apple_pay: 'Apple Pay', cetelem_10x: '10x sans frais', cetelem_24m: 'Crédit 24 mois'};
+          const barres = (id, dict, libs) => { const ks = Object.keys(libs).filter(x => dict[x] !== undefined); SI.graphique(id, 'bar', ks.map(x => libs[x]), [{nom: 'Précommandes', valeurs: ks.map(x => dict[x])}], {horizontal: true}); };
+          barres('g-coloris', p.par_coloris, col); barres('g-capacite', p.par_capacite, cap); barres('g-paiement', p.par_paiement, pay);
+        }
+        if (this.onglet == 'apres' && this.a) {
+          SI.graphique('g-ventes', 'bar', this.a.ventes_jour.map(p => SI.fmt.jour(p.x)), [{nom: 'Commandes', valeurs: this.a.ventes_jour.map(p => p.y)}]);
+          const pdm = this.a.parts_de_marche || {};
+          SI.graphique('g-pdm', 'bar', Object.keys(pdm), [{nom: 'Part de marché', valeurs: Object.values(pdm),
+            extra: {backgroundColor: Object.keys(pdm).map(k => k == 'Apple' ? '#0071e3' : '#c7c7cc')}}], {horizontal: true, formatVal: v => v + ' %', formatAxe: v => v + ' %'});
+        }
+        window.dispatchEvent(new CustomEvent('si:rendu'));
+      });
+    },
+  }));
+});
+</script>
+{% endblock %}

@@ -28,8 +28,8 @@ FIN_DONNEES = parse("2026-11-04T23:59:00")
 T_DEFAUT = parse("2026-10-19T10:00:00")
 LUNDI_12 = parse("2026-10-12T00:00:00")
 
-MIX_OFFRE_CAP = {"256": .38, "512": .34, "1T": .20, "2T": .08}
-MIX_OFFRE_COL = {"naturel": .30, "noir": .32, "blanc": .18, "bleu": .20}
+MIX_OFFRE_CAP = {"256": .40, "512": .32, "1T": .19, "2T": .09}
+MIX_OFFRE_COL = {"naturel": .30, "noir": .28, "blanc": .21, "bleu": .21}
 MIX_DEMANDE_CAP = {"256": .33, "512": .36, "1T": .22, "2T": .09}
 MIX_DEMANDE_COL = {"naturel": .27, "noir": .35, "blanc": .16, "bleu": .22}
 
