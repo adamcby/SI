@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Soutenance — plan de l&#x27;oral et questions du jury</title><style>
+@page { size: A4; margin: 17mm 15mm 19mm; }
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #f5f5f7; color: #1d1d1f;
+  font: 10.5pt/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter Variable", Inter, "Helvetica Neue", Arial, sans-serif; }
+main { max-width: 210mm; margin: 0 auto; background: #fff; padding: 16mm 15mm; }
+.bandeau { font-size: 8pt; color: #6e6e73; border-bottom: 1px solid #e8e8ed; padding-bottom: 3mm; margin-bottom: 6mm; display: flex; justify-content: space-between; }
+h1 { font-size: 21pt; line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 4mm; }
+h2 { font-size: 15pt; letter-spacing: -0.01em; margin: 9mm 0 3mm; padding-bottom: 1.5mm; border-bottom: 1px solid #d2d2d7; }
+h3 { font-size: 12pt; margin: 6mm 0 2mm; }
+h4 { font-size: 10.5pt; margin: 4mm 0 1.5mm; }
+p, li { orphans: 3; widows: 3; }
+a { color: #0066cc; text-decoration: none; }
+strong { font-weight: 600; }
+table { border-collapse: collapse; width: 100%; margin: 3mm 0 5mm; font-size: 8.6pt; }
+th, td { border: 1px solid #d2d2d7; padding: 1.6mm 2mm; vertical-align: top; text-align: left; }
+th { background: #f5f5f7; font-weight: 600; }
+tr { page-break-inside: avoid; }
+blockquote { margin: 4mm 0; padding: 3mm 4mm; border-left: 3px solid #0071e3; background: #f2f7fd; border-radius: 0 6px 6px 0; }
+blockquote p { margin: 1mm 0; }
+code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 8.8pt; background: #f5f5f7; padding: 0 1.2mm; border-radius: 3px; }
+pre { background: #f5f5f7; padding: 3mm; font-size: 7.4pt; line-height: 1.35; border-radius: 6px; overflow: hidden; page-break-inside: avoid; }
+pre code { background: none; padding: 0; }
+hr { border: 0; border-top: 1px solid #e8e8ed; margin: 6mm 0; }
+figure { margin: 5mm 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; max-height: 118mm; border: 1px solid #d2d2d7; border-radius: 6px; }
+figure.haute img { max-height: 205mm; }
+figcaption { font-size: 8.4pt; color: #6e6e73; margin-top: 2mm; font-style: italic; }
+.page-de-garde { text-align: center; padding: 34mm 8mm 0; min-height: 250mm; page-break-after: always; }
+.page-de-garde h1 { font-size: 25pt; margin: 14mm 0 8mm; }
+.page-de-garde table { width: 80%; margin: 18mm auto; font-size: 10pt; }
+.page-de-garde table th, .page-de-garde table td { text-align: center; border: none; background: none; }
+.page-de-garde p { margin: 2mm 0; }
+@media print {
+  body { background: #fff; }
+  main { max-width: none; margin: 0; padding: 0; }
+  h2 { page-break-after: avoid; }
+  h3, h4 { page-break-after: avoid; }
+  .bandeau { display: none; }
+}
+</style></head>
+<body><main>
+<div class="bandeau"><span>SI marketing · lancement de l'iPhone Duo — TD Fondamentaux des SI, IAE Lyon 3</span><span>Imprimer : Fichier → Imprimer → Enregistrer en PDF</span></div>
+<h1 id="soutenance-plan-de-loral-10-minutes-et-questions-du-jury-5-minutes">Soutenance — plan de l'oral (10 minutes) et questions du jury (5 minutes)</h1>
+<p><strong>Sujet :</strong> le système d'information marketing d'Apple pour le lancement de l'iPhone Duo.
+<strong>Problématique :</strong> <em>en quoi le SI marketing d'Apple lui permet-il de piloter et d'évaluer le lancement de l'iPhone Duo avant même sa commercialisation ?</em></p>
+<p><strong>Répartition proposée (4 orateurs) :</strong> A = introduction et entreprise · B = fonction marketing, stratégie digitale, flux · C = processus BPMN et prototype · D = démonstration, Séance 8, conclusion. <em>Adaptez les lettres aux prénoms du groupe.</em></p>
+<p><strong>Règle d'or :</strong> une idée par diapositive, un visuel par diapositive (les captures sont dans <code>livrables_td/captures/</code>, les figures du dossier dans <code>livrables_td/figures/</code>). Le prototype est lancé <strong>avant</strong> la soutenance (double-clic sur <code>lancer_app.command</code>), horloge réglée sur « Précommandes J+3 », <strong>mode Pas à pas</strong>.</p>
+<hr />
+<h2 id="deroule-minute">Déroulé minuté</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Diapositive</th>
+<th>Durée</th>
+<th>Orateur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Titre</td>
+<td>0:00 – 0:15</td>
+<td>A</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Problématique et fil rouge</td>
+<td>0:15 – 0:55</td>
+<td>A</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Apple et l'iPhone Duo : chiffres clés et SWOT ciblé</td>
+<td>0:55 – 1:50</td>
+<td>A</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Pourquoi la fonction marketing ?</td>
+<td>1:50 – 2:40</td>
+<td>B</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Stratégie digitale : du site et de TikTok aux données</td>
+<td>2:40 – 3:20</td>
+<td>B</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Acteurs et flux d'information</td>
+<td>3:20 – 4:15</td>
+<td>B</td>
+</tr>
+<tr>
+<td>7</td>
+<td>BPMN P1 : les précommandes du 16 octobre</td>
+<td>4:15 – 5:00</td>
+<td>C</td>
+</tr>
+<tr>
+<td>8</td>
+<td>BPMN P2 : la campagne TikTok</td>
+<td>5:00 – 5:35</td>
+<td>C</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Notre prototype : un SI qui exécute nos modèles</td>
+<td>5:35 – 6:15</td>
+<td>C</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Démonstration en direct</td>
+<td>6:15 – 8:00</td>
+<td>D (C au clavier)</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Le tableau de bord : décider avant les ventes</td>
+<td>8:00 – 8:30</td>
+<td>D</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Séance 8 : qui fait vivre le SI, et demain ?</td>
+<td>8:30 – 9:30</td>
+<td>D</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Conclusion : réponse à la problématique</td>
+<td>9:30 – 10:00</td>
+<td>A</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="diapositive-par-diapositive">Diapositive par diapositive</h2>
+<h3 id="1-titre-15-s-a">1. Titre (15 s) — A</h3>
+<ul>
+<li><strong>Contenu :</strong> « Le système d'information marketing d'Apple — le lancement de l'iPhone Duo ». Noms, TD, enseignant(e), année 2026-2027.</li>
+<li><strong>Visuel :</strong> <code>captures/E10_client_produit.png</code> (page produit) en fond, ou l'illustration du pliable de l'accueil.</li>
+<li><strong>À dire :</strong> « Bonjour, nous allons vous montrer comment un système d'information permet de piloter le lancement d'un produit… avant même qu'il soit en vente. »</li>
+</ul>
+<h3 id="2-problematique-et-fil-rouge-40-s-a">2. Problématique et fil rouge (40 s) — A</h3>
+<ul>
+<li><strong>Contenu :</strong> l'iPhone Duo, premier iPhone pliable : keynote le 9/09, précommandes le 16/10 à 14 h, sortie le 23/10, à partir de 2 339 €. <strong>Problème :</strong> pas encore de chiffre de ventes → comment savoir si la communication fonctionne ? Fil rouge : Séances 1-2 (entreprise, fonction) → 3 (digital) → 4-5 (flux, BPMN) → 6-7 (prototype) → 8 (maintenance, évolutions).</li>
+<li><strong>Visuel :</strong> frise de l'accueil (<code>captures/E00_transversal_accueil.png</code>, zone de la frise).</li>
+<li><strong>Message clé :</strong> le SI doit capter des <strong>signaux avancés</strong> (visites, inscriptions, sentiment, essais) puis les <strong>précommandes</strong>.</li>
+<li><strong>Transition :</strong> « Pour comprendre ce besoin, il faut d'abord comprendre Apple. »</li>
+</ul>
+<h3 id="3-apple-et-liphone-duo-chiffres-cles-et-swot-cible-55-s-a">3. Apple et l'iPhone Duo : chiffres clés et SWOT ciblé (55 s) — A</h3>
+<ul>
+<li><strong>Contenu :</strong> 416 Md$ de CA en 2025 (iPhone ≈ 50 %, services ≈ 26 %), 2,5 milliards d'appareils actifs, 166 000 salariés, 532 Apple Store. SWOT <strong>ciblé sur le lancement</strong> : forces (marque, écosystème, fidélité, données du parc) ; faiblesses (dépendance à l'iPhone, <strong>Samsung Display fournisseur unique de l'écran</strong>) ; opportunités (nouvelle catégorie, reprise, paiement en plusieurs fois) ; menaces (<strong>prix</strong>, flambée de la mémoire, concurrents déjà installés, DMA).</li>
+<li><strong>Visuel :</strong> matrice SWOT en 4 cases, 2 éléments par case maximum.</li>
+<li><strong>Message clé :</strong> atouts marketing exceptionnels, mais un produit très cher, attendu par des concurrents déjà présents → il faut <strong>mesurer vite</strong> si le message passe.</li>
+</ul>
+<h3 id="4-pourquoi-la-fonction-marketing-50-s-b">4. Pourquoi la fonction marketing ? (50 s) — B</h3>
+<ul>
+<li><strong>Contenu :</strong> rôles (image premium, lancement des nouvelles catégories, services, différenciation sur la confidentialité) ; interactions <strong>production</strong> (volumes, Samsung Display) et <strong>finance</strong> (prix, budget, marge) ; outils : <strong>CRM</strong> (compte Apple = identifiant unique), <strong>ERP</strong>, analytique, écoute sociale, BI.</li>
+<li><strong>Visuel :</strong> triangle marketing – production – finance (<code>figures/Fig2_flux_internes.png</code>).</li>
+<li><strong>Message clé :</strong> le marketing ne peut rien promettre sans la production et la finance → le SI doit être <strong>partagé</strong>.</li>
+</ul>
+<h3 id="5-strategie-digitale-40-s-b">5. Stratégie digitale (40 s) — B</h3>
+<ul>
+<li><strong>Contenu :</strong> site apple.com (informer, rassurer, convertir : charnière en titane, reprise, paiement en 10 fois, onglet « passer d'Android ») ; TikTok (usages humoristiques : yoga, café, cinéma de poche ; influenceurs). <strong>Chaque visite, inscription, vue, commentaire devient une donnée pour le SI.</strong></li>
+<li><strong>Visuel :</strong> <code>captures/E10_client_produit.png</code> + une vidéo du fil TikTok (<code>captures/E23_mkt_social_campagne.png</code>).</li>
+<li><strong>Limite relevée :</strong> restrictions européennes (Siri IA) reléguées en notes de bas de page ; prix jamais évoqué sur TikTok.</li>
+</ul>
+<h3 id="6-acteurs-et-flux-dinformation-55-s-b">6. Acteurs et flux d'information (55 s) — B</h3>
+<ul>
+<li><strong>Contenu :</strong> 12 acteurs externes (diagramme de contexte), 8 acteurs internes, 3 niveaux de modèles (Fig. 1 contexte, Fig. 2 flux internes, Fig. 3 flux marketing). <strong>Apport du prototype : chaque flèche a reçu un code</strong> (FE = externe, FI = interne, FM = marketing) : 54 flux issus de nos figures + 6 compléments = 60 flux codifiés.</li>
+<li><strong>Visuel :</strong> <code>captures/E01_transversal_flux.png</code> (cartographie interactive, épaisseur = volume réel).</li>
+<li><strong>Message clé :</strong> l'équipe <strong>data et CRM est le centre du système</strong> (elle reçoit tout et produit le tableau de bord hebdomadaire).</li>
+</ul>
+<h3 id="7-bpmn-p1-les-precommandes-du-16-octobre-45-s-c">7. BPMN P1 : les précommandes du 16 octobre (45 s) — C</h3>
+<ul>
+<li><strong>Contenu :</strong> 4 couloirs (client, marketing, finance, production) ; 3 passerelles = 3 <strong>règles de gestion</strong> : <em>Paiement accepté ?</em> (finance, avec la réponse de l'organisme financier), <em>Stock disponible ?</em> (production → sinon allonger le délai), <em>Demande supérieure à l'offre ?</em> (marketing → hausse de production ou relance de la communication).</li>
+<li><strong>Visuel :</strong> <code>captures/E02_transversal_processus-P1.png</code> (BPMN vivant avec jetons).</li>
+<li><strong>Message clé :</strong> une précommande enregistrée est <strong>immédiatement</strong> visible par le marketing, la finance et la production.</li>
+</ul>
+<h3 id="8-bpmn-p2-la-campagne-tiktok-35-s-c">8. BPMN P2 : la campagne TikTok (35 s) — C</h3>
+<ul>
+<li><strong>Contenu :</strong> même une campagne de communication mobilise la <strong>finance</strong> (budget, coût d'acquisition) et la <strong>production</strong> (appareils de test, plan de production). Une <strong>boucle</strong> : mesurer → objectifs atteints ? non → ajuster → mesurer.</li>
+<li><strong>Visuel :</strong> <code>captures/E03_transversal_processus-P2.png</code>.</li>
+<li><strong>Anecdote utile :</strong> en codant le processus, nous avons découvert un flux absent de notre Fig. 2 : la <strong>demande d'appareils de test</strong> du marketing à la production (FI-13). Le prototype a <strong>amélioré nos modèles</strong>.</li>
+</ul>
+<h3 id="9-notre-prototype-un-si-qui-execute-nos-modeles-40-s-c">9. Notre prototype : un SI qui exécute nos modèles (40 s) — C</h3>
+<ul>
+<li><strong>Contenu :</strong> application web (FastAPI, SQLite, fonctionne hors-ligne). Quatre principes : (1) un <strong>référentiel unique</strong> issu des Séances 1-5 ; (2) un <strong>moteur BPMN</strong> à jetons ; (3) un <strong>bus d'information</strong> : chaque action émet un flux codifié et notifie le destinataire ; (4) un <strong>contrôle d'accès par rôle</strong> : seule la finance franchit « Paiement accepté ? ». Base pré-remplie : 120 000 inscrits « Me prévenir », 38 000 précommandes en France, calée sur notre tableau de bord du 12/10. 25 « vues acteur », 41 écrans, 21 tests automatisés.</li>
+<li><strong>Visuel :</strong> <code>captures/E00_transversal_accueil.png</code> (grille des acteurs) ou schéma d'architecture simple.</li>
+</ul>
+<h3 id="10-demonstration-en-direct-1-min-45-d-c-au-clavier">10. Démonstration en direct (1 min 45) — D (C au clavier)</h3>
+<p>Scénario <strong>testé</strong>, clic par clic (voir aussi <code>GUIDE_DEMO_Soutenance.md</code>) :
+1. <strong>Vue Client</strong> → <em>Configurer et précommander</em> : 512 Go Titane noir, reprise d'un iPhone 13 Pro, paiement en 10 fois → le délai affiché est calculé <strong>en direct</strong> à partir du stock (tâche T02) → <em>Valider</em>. <em>(20 s)</em>
+2. <strong>Vue Finance</strong> → la précommande est dans la file → <em>Accepter</em> : CA prévisionnel et marge enregistrés (T04, T05), CRM mis à jour (T06), production notifiée. <em>(20 s)</em>
+3. <strong>Vue Production</strong> → <em>Vérifier le stock</em> : Titane noir en rupture pour le 23/10 → <em>Allonger le délai affiché</em> → <em>Réserver</em>. Le client reçoit sa confirmation. <em>(25 s)</em>
+4. Touche <strong>I</strong> : <strong>mode Inspection</strong> → on voit sur l'écran quelles tâches BPMN et quels flux sont illustrés. <em>(15 s)</em>
+5. <strong>Processus P1</strong> : la précommande a avancé de couloir en couloir (cliquer sur l'instance pour tracer son parcours). <em>(25 s)</em>
+* <strong>Plan B</strong> si le réseau ou l'ordinateur pose problème : les captures <code>captures/E11…</code>, <code>E30…</code>, <code>E35…</code> et <code>E02…</code> sur les diapositives suivantes.</p>
+<h3 id="11-le-tableau-de-bord-decider-avant-les-ventes-30-s-d">11. Le tableau de bord : décider avant les ventes (30 s) — D</h3>
+<ul>
+<li><strong>Contenu :</strong> le lundi 12/10, 4 objectifs sur 7 atteints : beaucoup de curiosité (2,35 M de visites, 31 M de vues TikTok, 17 200 essais) mais une intention d'achat en retard (6 % pour 8 %) et des commentaires négatifs sur le <strong>prix</strong>. Décision : mettre en avant la <strong>reprise</strong> et le <strong>paiement en 10 fois</strong> → 120 000 inscrits à l'ouverture. Puis à J+1 : demande projetée 1,28 × l'offre en France → transfert de 3 000 unités depuis l'Allemagne.</li>
+<li><strong>Visuel :</strong> <code>captures/E25_mkt_data_mesure.png</code> (tableau du § 6.3) et <code>captures/E21_dir_marketing_pilotage-precommandes.png</code>.</li>
+<li><strong>Message clé :</strong> <strong>c'est la réponse à la problématique</strong> : le SI permet d'agir avant le 16/10, puis pendant les précommandes.</li>
+</ul>
+<h3 id="12-seance-8-qui-fait-vivre-le-si-et-demain-1-min-d">12. Séance 8 : qui fait vivre le SI, et demain ? (1 min) — D</h3>
+<ul>
+<li><strong>Contenu :</strong> <strong>MOA</strong> = direction marketing (+ finance, production) ; <strong>MOE</strong> = DSI d'Apple (IS&amp;T), architectes, développeurs, exploitation ; <strong>éditeurs</strong> (CRM, ERP) et <strong>intégrateurs</strong> ; <strong>TMA</strong> (corrective, évolutive, adaptative, préventive) ; <strong>SLA</strong> : 99,95 % de disponibilité la semaine du 16/10, incident bloquant résolu en 4 h. Évolutions : <strong>IA prédictive</strong> (demande par pays et couleur), <strong>IA générative</strong> (variantes de campagnes, SAV), <strong>API</strong> temps réel, <strong>cloud</strong> élastique pour le pic de 14 h, <strong>IoT</strong> (magasins, supply chain), <strong>RPA</strong>, <strong>cybersécurité et RGPD</strong>.</li>
+<li><strong>Visuel :</strong> tableau RACI simplifié + feuille de route (court / moyen / long terme).</li>
+</ul>
+<h3 id="13-conclusion-30-s-a">13. Conclusion (30 s) — A</h3>
+<ul>
+<li><strong>Réponse à la problématique :</strong> le SI marketing permet de piloter le lancement avant la commercialisation <strong>parce qu'il relie</strong> les signaux avancés (site, TikTok, magasins) aux décisions de la finance et de la production, <strong>dans des processus partagés</strong>.</li>
+<li><strong>Limites :</strong> données fictives (calées sur le dossier), intégrations partenaires simulées, pas de test de charge réel.</li>
+<li><strong>Ouverture :</strong> le prix reste le principal frein : le SI le <strong>révèle</strong>, mais ce sont des <strong>décisions marketing et financières</strong> qui y répondent.</li>
+<li><strong>Phrase finale :</strong> « Merci de votre attention, nous sommes prêts pour vos questions. »</li>
+</ul>
+<h3 id="diapositives-dannexe-pour-les-questions">Diapositives d'annexe (pour les questions)</h3>
+<p>RACI détaillé, tableau des SLA, matrice de traçabilité (tâches BPMN ↔ écrans), liste des 60 flux, glossaire. <em>Elles ne sont pas présentées, mais permettent de répondre avec un visuel.</em></p>
+<hr />
+<h2 id="les-15-questions-pieges-du-jury-et-leurs-reponses">Les 15 questions pièges du jury… et leurs réponses</h2>
+<p><strong>1. Quelle est la différence entre un système d'information et un système informatique ?</strong>
+Le <strong>système d'information</strong> est l'ensemble organisé des ressources (personnes, procédures, données, outils) qui collectent, stockent, traitent et diffusent l'information utile à l'organisation. Le <strong>système informatique</strong> n'en est que la partie technique (matériels, logiciels, réseaux). Exemple : la décision de la directrice marketing le lundi 12/10, prise à partir du tableau de bord, fait partie du SI ; le serveur qui calcule le tableau de bord fait partie du système informatique.</p>
+<p><strong>2. Pourquoi la fonction marketing, alors que la production semble plus critique (pénurie d'écrans) ?</strong>
+Parce que <strong>le marketing est au cœur du modèle d'Apple</strong> (marque, fidélité, écosystème) et que le lancement d'une nouvelle catégorie exige de <strong>créer le désir avant la vente</strong>. Mais nous n'avons pas ignoré la production : nos schémas sont construits sur le <strong>triangle marketing – production – finance</strong>, et la contrainte Samsung Display apparaît dans nos flux (FE-04), dans le BPMN (<em>Stock disponible ?</em>) et dans le prototype (capacité qui limite la hausse de production).</p>
+<p><strong>3. Comment être sûr que vos « signaux avancés » prédisent vraiment les ventes ?</strong>
+On ne l'est pas a priori : c'est pourquoi le SI <strong>compare</strong> ensuite les signaux aux précommandes (taux de conversion visite → précommande, part des clients venant d'Android) puis aux ventes. Notre SWOT et notre tableau de bord montrent d'ailleurs un <strong>écart</strong> : beaucoup de curiosité, moins d'intention d'achat. L'évolution proposée en Séance 8 est un <strong>modèle de prévision</strong> calibré sur ces historiques.</p>
+<p><strong>4. Pourquoi la passerelle « Paiement accepté ? » est-elle dans le couloir Finance et pas chez la banque ?</strong>
+La banque (organisme financier) est un <strong>acteur externe</strong> : elle n'est pas un couloir de notre processus interne mais un émetteur de flux (FE-09 : demande de crédit / accord). La décision d'accepter le paiement reste une <strong>règle interne</strong> de la finance d'Apple, qui s'appuie sur la réponse de la banque. Dans le prototype, la finance ne peut pas valider tant que la réponse FE-09R n'est pas arrivée.</p>
+<p><strong>5. Dans votre BPMN, « Analyse le tableau de bord » est déclenchée après chaque précommande. Est-ce réaliste ?</strong>
+Non, et le prototype nous l'a montré : nous l'avons implémentée comme une <strong>tâche par lot</strong> — une analyse regroupe toutes les précommandes en attente (les « jetons » s'accumulent sur la tâche). Pour être plus rigoureux en BPMN, on utiliserait un <strong>événement intermédiaire temporel</strong> (« chaque lundi à 9 h ») ou un <strong>sous-processus</strong> de pilotage. C'est une piste d'amélioration du modèle.</p>
+<p><strong>6. Quelle différence entre votre diagramme de contexte et votre diagramme des flux internes ?</strong>
+Le <strong>diagramme de contexte</strong> représente le système (le SI marketing) comme une boîte noire et ses échanges avec l'<strong>environnement</strong> (12 acteurs externes). Le <strong>diagramme des flux internes</strong> ouvre la boîte : il montre les échanges entre <strong>acteurs internes</strong> (direction générale, marketing, finance, production, SI partagé). La Fig. 3 descend encore d'un niveau, dans la direction marketing.</p>
+<p><strong>7. Les concurrents sont reliés en pointillés : pourquoi les représenter s'il n'y a aucun échange ?</strong>
+Parce que l'information existe : Apple <strong>observe</strong> les prix et produits concurrents (veille). Ce flux est <strong>indirect</strong> : il n'y a pas d'émetteur volontaire. C'est pourquoi le prototype ne propose pas d'interface « concurrent » : l'écran de veille est celui de l'<strong>équipe data d'Apple</strong>.</p>
+<p><strong>8. Vos données sont-elles réelles ?</strong>
+Les données sur l'<strong>entreprise</strong> viennent de sources réelles (Xerfi Global, résultats publiés par Apple, presse spécialisée), citées dans le dossier. Les données <strong>du SI</strong> (clients, précommandes, campagnes) sont <strong>fictives</strong>, comme l'annonce notre dossier, mais <strong>cohérentes</strong> : la base est calée pour reproduire exactement notre tableau de bord du 12/10 (2 350 000 visites, 96 000 inscriptions, 31 M de vues…). Les identifiants clients sont en plus <strong>pseudonymisés</strong> à l'affichage.</p>
+<p><strong>9. Votre prototype est-il un vrai SI ou une maquette ?</strong>
+C'est une <strong>maquette haute fidélité exécutable</strong> : les processus s'exécutent réellement (moteur BPMN, règles de gestion, base de données, contrôle des rôles, 21 tests automatisés). Mais ce n'est pas un SI de production : pas d'authentification réelle, pas de test de charge, intégrations partenaires simulées. Il sert à <strong>valider les besoins</strong> avec les utilisateurs avant de développer — c'est le rôle du prototypage dans un projet SI.</p>
+<p><strong>10. Quelle est la différence entre MOA et MOE ? Qui est la MOA ici ?</strong>
+La <strong>MOA</strong> (maîtrise d'ouvrage) exprime le besoin, finance et valide (recette) : c'est la <strong>direction marketing iPhone</strong>, avec la finance et la production pour leurs couloirs. La <strong>MOE</strong> (maîtrise d'œuvre) conçoit, réalise et exploite : la <strong>DSI</strong> (IS&amp;T chez Apple), avec ses architectes, développeurs et équipes d'exploitation, ainsi que les intégrateurs. L'<strong>AMOA</strong> aide la MOA à formaliser ses besoins — ce que nous avons fait avec nos diagrammes.</p>
+<p><strong>11. Qu'est-ce qu'un SLA ? Donnez un exemple chiffré.</strong>
+Un <strong>accord de niveau de service</strong> : un engagement mesurable d'un prestataire, assorti de pénalités. Exemple : disponibilité du site de précommande de <strong>99,95 %</strong> pendant la semaine du 16/10, temps d'affichage du prix et du délai inférieur à <strong>1,5 s</strong> pour 95 % des requêtes, incident bloquant <strong>résolu en 4 heures</strong> avec astreinte 24 h/24.</p>
+<p><strong>12. Comment votre SI respecte-t-il le RGPD ?</strong>
+Par la <strong>conception</strong> : consentement explicite (case non pré-cochée pour « Me prévenir », bandeau cookies avec « Refuser »), <strong>minimisation</strong> (seuls les clients consentants sont ciblables dans le CRM), <strong>pseudonymisation</strong> des identifiants à l'affichage, <strong>droit d'accès</strong> (export des données dans « Mon compte »), <strong>registre des traitements</strong> et <strong>analyse d'impact</strong> transmis à la CNIL (flux FE-11A). Le DPO en est garant (Séance 8).</p>
+<p><strong>13. CRM ou ERP : lequel est le plus important pour le marketing ?</strong>
+Les deux sont <strong>complémentaires</strong>. Le <strong>CRM</strong> connaît le client (compte Apple, appareil actuel, inscription « Me prévenir », consentements) : il sert au <strong>ciblage</strong>. L'<strong>ERP</strong> connaît les stocks, les coûts et le chiffre d'affaires : il conditionne le <strong>délai affiché</strong> et la <strong>marge</strong>. Notre Fig. 2 et notre prototype montrent qu'il faut un <strong>SI partagé</strong> : sans ERP, le marketing promettrait des délais impossibles.</p>
+<p><strong>14. Si la demande dépasse l'offre, pourquoi ne pas simplement augmenter le prix ?</strong>
+Parce que le prix est un <strong>arbitrage marketing – finance</strong> (§ 3.4) : un iPhone Duo déjà à 2 339 € rencontre un frein prix (commentaires négatifs, intention d'achat en retard). Augmenter le prix pénaliserait l'image et la conquête des utilisateurs Android. Le SI propose d'autres leviers : <strong>transférer</strong> des stocks entre pays, <strong>augmenter</strong> la production dans la limite de la capacité de Samsung Display, <strong>allonger le délai</strong> de façon transparente. Le pouvoir de fixation des prix d'Apple (SWOT) sert plutôt à <strong>absorber</strong> la hausse du coût de la mémoire.</p>
+<p><strong>15. Si vous ne deviez financer qu'une seule évolution du SI, laquelle ?</strong>
+La <strong>prévision de la demande par IA</strong> (pays × couleur), car elle agit sur le problème le plus coûteux observé dans notre prototype : les <strong>délais allongés</strong> sur le Titane noir et les transferts d'urgence entre pays. Elle s'appuie sur des données que le SI collecte déjà (signaux avancés, précommandes) et réduit à la fois les ruptures (marketing), les coûts logistiques (production) et le coût d'acquisition (finance). À court terme et pour un coût faible, nous automatiserions d'abord le <strong>tableau de bord hebdomadaire</strong>.</p>
+<h3 id="questions-bonus-si-le-jury-creuse">Questions bonus (si le jury creuse)</h3>
+<ul>
+<li><strong>« Pourquoi le flux FI-13 n'apparaît-il pas dans votre Fig. 2 ? »</strong> — Parce que nous l'avons découvert en codant le BPMN P2 : la tâche « Fournit les appareils de test » suppose une demande du marketing à la production. Le prototypage sert aussi à <strong>valider et corriger</strong> les modèles.</li>
+<li><strong>« Que se passe-t-il si l'organisme financier refuse le crédit ? »</strong> — La finance refuse le paiement : branche « non » de la passerelle, retour à la tâche « Choisit sa configuration » ; le client est notifié et peut choisir un autre moyen de paiement (démontrable avec l'option « simuler un refus »).</li>
+<li><strong>« Pourquoi SQLite et pas un vrai SGBD ? »</strong> — Pour un prototype hors-ligne installable en un double-clic, SQLite suffit (une base de 60 000 précommandes y tient sans difficulté) ; en production on utiliserait un SGBD serveur ou les bases du CRM et de l'ERP.</li>
+</ul>
+<hr />
+<h2 id="conseils-pour-le-jour-j">Conseils pour le jour J</h2>
+<ul>
+<li><strong>Répéter avec un chronomètre</strong> : la démonstration est le moment le plus risqué ; la faire à deux (un qui parle, un qui clique).</li>
+<li><strong>Réinitialiser la base</strong> juste avant de passer (menu horloge → « Réinitialiser la base de démonstration »), puis régler l'horloge sur « Précommandes J+3 ».</li>
+<li><strong>Prévoir le plan B</strong> : captures intégrées aux diapositives, au cas où.</li>
+<li><strong>Répondre en reliant aux séances</strong> : « comme nous l'avons montré en Séance 4… », c'est ce qui prouve la cohérence du projet.</li>
+<li><strong>Ne jamais affirmer qu'une donnée fictive est réelle</strong> : dire « dans notre simulation, calée sur notre tableau de bord ».</li>
+</ul>
+</main></body></html>

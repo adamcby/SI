@@ -58,7 +58,7 @@
 * **Limite relevée :** restrictions européennes (Siri IA) reléguées en notes de bas de page ; prix jamais évoqué sur TikTok.
 
 ### 6. Acteurs et flux d'information (55 s) — B
-* **Contenu :** 12 acteurs externes (diagramme de contexte), 8 acteurs internes, 3 niveaux de modèles (Fig. 1 contexte, Fig. 2 flux internes, Fig. 3 flux marketing). **Apport du prototype : chaque flèche a reçu un code** (FE = externe, FI = interne, FM = marketing) : 55 flux codifiés.
+* **Contenu :** 12 acteurs externes (diagramme de contexte), 8 acteurs internes, 3 niveaux de modèles (Fig. 1 contexte, Fig. 2 flux internes, Fig. 3 flux marketing). **Apport du prototype : chaque flèche a reçu un code** (FE = externe, FI = interne, FM = marketing) : 54 flux issus de nos figures + 6 compléments = 60 flux codifiés.
 * **Visuel :** `captures/E01_transversal_flux.png` (cartographie interactive, épaisseur = volume réel).
 * **Message clé :** l'équipe **data et CRM est le centre du système** (elle reçoit tout et produit le tableau de bord hebdomadaire).
 
@@ -101,7 +101,7 @@ Scénario **testé**, clic par clic (voir aussi `GUIDE_DEMO_Soutenance.md`) :
 * **Phrase finale :** « Merci de votre attention, nous sommes prêts pour vos questions. »
 
 ### Diapositives d'annexe (pour les questions)
-RACI détaillé, tableau des SLA, matrice de traçabilité (tâches BPMN ↔ écrans), liste des 55 flux, glossaire. *Elles ne sont pas présentées, mais permettent de répondre avec un visuel.*
+RACI détaillé, tableau des SLA, matrice de traçabilité (tâches BPMN ↔ écrans), liste des 60 flux, glossaire. *Elles ne sont pas présentées, mais permettent de répondre avec un visuel.*
 
 ---
 

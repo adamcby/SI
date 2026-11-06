@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide de démonstration du prototype</title><style>
+@page { size: A4; margin: 17mm 15mm 19mm; }
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #f5f5f7; color: #1d1d1f;
+  font: 10.5pt/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter Variable", Inter, "Helvetica Neue", Arial, sans-serif; }
+main { max-width: 210mm; margin: 0 auto; background: #fff; padding: 16mm 15mm; }
+.bandeau { font-size: 8pt; color: #6e6e73; border-bottom: 1px solid #e8e8ed; padding-bottom: 3mm; margin-bottom: 6mm; display: flex; justify-content: space-between; }
+h1 { font-size: 21pt; line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 4mm; }
+h2 { font-size: 15pt; letter-spacing: -0.01em; margin: 9mm 0 3mm; padding-bottom: 1.5mm; border-bottom: 1px solid #d2d2d7; }
+h3 { font-size: 12pt; margin: 6mm 0 2mm; }
+h4 { font-size: 10.5pt; margin: 4mm 0 1.5mm; }
+p, li { orphans: 3; widows: 3; }
+a { color: #0066cc; text-decoration: none; }
+strong { font-weight: 600; }
+table { border-collapse: collapse; width: 100%; margin: 3mm 0 5mm; font-size: 8.6pt; }
+th, td { border: 1px solid #d2d2d7; padding: 1.6mm 2mm; vertical-align: top; text-align: left; }
+th { background: #f5f5f7; font-weight: 600; }
+tr { page-break-inside: avoid; }
+blockquote { margin: 4mm 0; padding: 3mm 4mm; border-left: 3px solid #0071e3; background: #f2f7fd; border-radius: 0 6px 6px 0; }
+blockquote p { margin: 1mm 0; }
+code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 8.8pt; background: #f5f5f7; padding: 0 1.2mm; border-radius: 3px; }
+pre { background: #f5f5f7; padding: 3mm; font-size: 7.4pt; line-height: 1.35; border-radius: 6px; overflow: hidden; page-break-inside: avoid; }
+pre code { background: none; padding: 0; }
+hr { border: 0; border-top: 1px solid #e8e8ed; margin: 6mm 0; }
+figure { margin: 5mm 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; max-height: 118mm; border: 1px solid #d2d2d7; border-radius: 6px; }
+figure.haute img { max-height: 205mm; }
+figcaption { font-size: 8.4pt; color: #6e6e73; margin-top: 2mm; font-style: italic; }
+.page-de-garde { text-align: center; padding: 34mm 8mm 0; min-height: 250mm; page-break-after: always; }
+.page-de-garde h1 { font-size: 25pt; margin: 14mm 0 8mm; }
+.page-de-garde table { width: 80%; margin: 18mm auto; font-size: 10pt; }
+.page-de-garde table th, .page-de-garde table td { text-align: center; border: none; background: none; }
+.page-de-garde p { margin: 2mm 0; }
+@media print {
+  body { background: #fff; }
+  main { max-width: none; margin: 0; padding: 0; }
+  h2 { page-break-after: avoid; }
+  h3, h4 { page-break-after: avoid; }
+  .bandeau { display: none; }
+}
+</style></head>
+<body><main>
+<div class="bandeau"><span>SI marketing · lancement de l'iPhone Duo — TD Fondamentaux des SI, IAE Lyon 3</span><span>Imprimer : Fichier → Imprimer → Enregistrer en PDF</span></div>
+<h1 id="guide-de-demonstration-du-prototype-soutenance">Guide de démonstration du prototype (soutenance)</h1>
+<p>Ce guide permet de <strong>rejouer en direct</strong>, en moins de deux minutes, les processus de nos Séances 4 et 5 dans le prototype. Chaque étape a été testée par un script qui clique réellement dans l'application.</p>
+<h2 id="avant-de-passer-5-minutes-avant">Avant de passer (5 minutes avant)</h2>
+<ol>
+<li>Double-cliquer sur <strong><code>lancer_app.command</code></strong> : le navigateur s'ouvre sur http://localhost:8005.</li>
+<li>Cliquer sur l'<strong>horloge</strong> (en haut à droite) → <strong>« Réinitialiser la base de démonstration »</strong> (efface les essais de répétition).</li>
+<li>Toujours dans l'horloge : choisir <strong>« Précommandes J+3 — lun. 19 oct. 2026, 10:00 »</strong>, exécution <strong>« Pas à pas »</strong>, vitesse <strong>« Pause »</strong> (l'heure ne bouge plus pendant l'oral).</li>
+<li>Agrandir la fenêtre (plein écran) et zoomer à 90 % si le vidéoprojecteur est en 1280 px.</li>
+<li>Ouvrir un second onglet sur <strong>Processus P1</strong> (http://localhost:8005/processus/P1) pour la fin de la démonstration.</li>
+</ol>
+<p><strong>Raccourcis :</strong> <strong>A</strong> = changer de vue acteur · <strong>I</strong> = mode inspection · <strong>Échap</strong> = fermer un menu.</p>
+<h2 id="scenario-principal-une-precommande-traverse-les-quatre-couloirs-du-bpmn-p1">Scénario principal : une précommande traverse les quatre couloirs du BPMN P1</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Vue acteur</th>
+<th>Action</th>
+<th>Ce qu'il faut dire</th>
+<th>Tâches / flux</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Client</strong> → <em>Configurer et précommander</em></td>
+<td>Garder 512 Go Titane noir, reprise d'un iPhone 13 Pro, paiement en 10 fois → <strong>Valider la précommande</strong></td>
+<td>« Le délai affiché est calculé en direct par le SI à partir du stock de l'ERP : c'est la tâche T02, automatisée. »</td>
+<td>P1-T01, T02, T03 · FE-01R, FE-10, FE-09A</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Bouton <strong>« Passer à la vue Finance »</strong></td>
+<td>Dans la file <em>Paiements à vérifier</em> : <strong>Accepter</strong></td>
+<td>« La finance franchit la passerelle <em>Paiement accepté ?</em> ; le SI enregistre aussitôt le CA prévisionnel, la marge et met à jour le CRM. »</td>
+<td>P1-G01, T04, T05, T06 · FI-12, FM-19</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Production</strong> → <em>Stocks et réservations</em></td>
+<td><strong>Vérifier le stock</strong> → <strong>Allonger le délai affiché</strong> → <strong>Réserver l'appareil</strong></td>
+<td>« Le Titane noir est en rupture pour le 23/10 : c'est la branche <em>non</em> de <em>Stock disponible ?</em>. Le client reçoit la nouvelle date. »</td>
+<td>P1-G02, T07, T08, T09 · FI-11, FI-05, FE-01A</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Touche <strong>I</strong></td>
+<td>Montrer le tiroir d'inspection</td>
+<td>« Chaque écran indique quelles tâches BPMN et quels flux de nos séances il illustre. »</td>
+<td>—</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Onglet <strong>Processus P1</strong></td>
+<td>Cliquer sur l'instance la plus récente</td>
+<td>« Le jeton a parcouru tout le diagramme de notre Fig. 4. »</td>
+<td>E02</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variante si le jury demande « et si le paiement est refusé ? »</strong> : à l'étape 1, cocher <em>« simuler un refus de la banque »</em> ; à l'étape 2, cliquer <strong>Refuser</strong> → le client voit « Paiement refusé — Modifier ma configuration » (retour à T01).</p>
+<p><strong>Variante crédit :</strong> choisir 2 To + financement 24 mois (&gt; 3 000 €) → la demande part en <strong>étude</strong> chez l'organisme financier (vue <em>Organismes financiers</em> → <em>Décider</em> → <em>Accorder</em>), puis la finance peut valider.</p>
+<h2 id="scenario-complementaire-decider-avec-le-tableau-de-bord-30-s">Scénario complémentaire : décider avec le tableau de bord (30 s)</h2>
+<ol>
+<li><strong>Direction marketing</strong> → <em>Analyse des précommandes</em> : la France affiche <strong>Demande &gt; offre</strong>.</li>
+<li><strong>Analyser</strong> (tâche T10) → <strong>Oui → demander à la production</strong> (G03).</li>
+<li><strong>Production</strong> → <em>Plan de production</em> → <strong>Exécuter (T11)</strong> : transfert depuis l'Allemagne et hausse hebdomadaire, dans la limite de la capacité de Samsung Display (essayer une hausse énorme : le SI la refuse).</li>
+</ol>
+<h2 id="scenario-p2-si-le-jury-veut-voir-la-campagne">Scénario P2 (si le jury veut voir la campagne)</h2>
+<ol>
+<li><strong>Direction marketing</strong> → <em>Campagne et consignes</em> → <strong>Nouvelle campagne</strong> → <strong>Proposer à la finance</strong>.</li>
+<li><strong>Finance</strong> → <em>Budgets, prix et CAC</em> → <strong>Accorder le budget</strong> (ou <em>Non : revoir</em> pour montrer la boucle).</li>
+<li><strong>Réseaux sociaux</strong> → <strong>Publier sur TikTok</strong> → cocher 2 influenceurs → <strong>Sélectionner</strong>.</li>
+<li><strong>Production</strong> → <em>Appareils de test</em> → <strong>Expédier</strong>.</li>
+<li><strong>Influenceurs &amp; médias</strong> → <strong>Publier mon avis</strong> (deux fois).</li>
+<li><strong>Data &amp; CRM</strong> → <em>Mesure</em> → <strong>Mesurer maintenant</strong> → <strong>Direction marketing</strong> → <strong>Non : ajuster</strong> → <strong>Réseaux sociaux</strong> → <strong>Ajuster</strong> → nouvelle mesure → <strong>Oui : atteints</strong> → <strong>Envoyer rapport et prévisions</strong>.</li>
+<li><strong>Production</strong> → <strong>Ajuster le plan</strong> ; <strong>Finance</strong> → <strong>Calculer le coût d'acquisition</strong> → le processus atteint l'événement <strong>Fin</strong>.</li>
+</ol>
+<p><em>Astuce : la pastille noire en bas à gauche (« tâches en attente ») indique à chaque instant quelle vue acteur doit agir : un clic y emmène directement.</em></p>
+<h2 id="rejouer-le-temps">Rejouer le temps</h2>
+<table>
+<thead>
+<tr>
+<th>Préréglage de l'horloge</th>
+<th>À montrer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Keynote — 9 sept. 19:00</td>
+<td>Début du processus P2 ; configurateur fermé, « Me prévenir » ouvert</td>
+</tr>
+<tr>
+<td>Tableau de bord — 12 oct. 09:00</td>
+<td>Le tableau du § 6.3 à l'identique (<em>Mesure et tableau de bord</em>) ; la campagne de lancement attend la décision « Objectifs atteints ? »</td>
+</tr>
+<tr>
+<td>Ouverture — 16 oct. 14:00 (vitesse × 60)</td>
+<td>Les précommandes arrivent en direct (cockpit, onglet <em>Précommandes</em>)</td>
+</tr>
+<tr>
+<td>J+3 — 19 oct. 10:00</td>
+<td>Files d'attente de chaque acteur (démonstration principale)</td>
+</tr>
+<tr>
+<td>Après la sortie — 2 nov. 10:00</td>
+<td>Indicateurs de résultat : livraisons, satisfaction, retours, part de marché</td>
+</tr>
+</tbody>
+</table>
+<h2 id="plan-b">Plan B</h2>
+<p>Si l'ordinateur ou l'application pose problème, utiliser les captures de <code>livrables_td/captures/</code> (versions propres et annotées) intégrées au diaporama.</p>
+</main></body></html>

@@ -22,8 +22,8 @@ def rendre(code: str) -> Tuple[str, List[dict]]:
         return "<p>Document en cours de rédaction.</p>", []
     texte = chemin.read_text(encoding="utf-8")
     # les images des livrables sont servies sous /livrables/
-    texte = re.sub(r"\]\((captures|figures)/", r"](/livrables/\1/", texte)
-    md = markdown.Markdown(extensions=["tables", "toc", "sane_lists", "attr_list"],
+    texte = re.sub(r"\]\((captures|figures|images_dossier)/", r"](/livrables/\1/", texte)
+    md = markdown.Markdown(extensions=["tables", "toc", "sane_lists", "attr_list", "md_in_html"],
                            extension_configs={"toc": {"toc_depth": "2-3"}})
     html = md.convert(texte)
     toc = []

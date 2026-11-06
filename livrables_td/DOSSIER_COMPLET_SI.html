@@ -1,0 +1,1598 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dossier complet — SI marketing du lancement de l&#x27;iPhone Duo</title><style>
+@page { size: A4; margin: 17mm 15mm 19mm; }
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #f5f5f7; color: #1d1d1f;
+  font: 10.5pt/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter Variable", Inter, "Helvetica Neue", Arial, sans-serif; }
+main { max-width: 210mm; margin: 0 auto; background: #fff; padding: 16mm 15mm; }
+.bandeau { font-size: 8pt; color: #6e6e73; border-bottom: 1px solid #e8e8ed; padding-bottom: 3mm; margin-bottom: 6mm; display: flex; justify-content: space-between; }
+h1 { font-size: 21pt; line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 4mm; }
+h2 { font-size: 15pt; letter-spacing: -0.01em; margin: 9mm 0 3mm; padding-bottom: 1.5mm; border-bottom: 1px solid #d2d2d7; }
+h3 { font-size: 12pt; margin: 6mm 0 2mm; }
+h4 { font-size: 10.5pt; margin: 4mm 0 1.5mm; }
+p, li { orphans: 3; widows: 3; }
+a { color: #0066cc; text-decoration: none; }
+strong { font-weight: 600; }
+table { border-collapse: collapse; width: 100%; margin: 3mm 0 5mm; font-size: 8.6pt; }
+th, td { border: 1px solid #d2d2d7; padding: 1.6mm 2mm; vertical-align: top; text-align: left; }
+th { background: #f5f5f7; font-weight: 600; }
+tr { page-break-inside: avoid; }
+blockquote { margin: 4mm 0; padding: 3mm 4mm; border-left: 3px solid #0071e3; background: #f2f7fd; border-radius: 0 6px 6px 0; }
+blockquote p { margin: 1mm 0; }
+code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 8.8pt; background: #f5f5f7; padding: 0 1.2mm; border-radius: 3px; }
+pre { background: #f5f5f7; padding: 3mm; font-size: 7.4pt; line-height: 1.35; border-radius: 6px; overflow: hidden; page-break-inside: avoid; }
+pre code { background: none; padding: 0; }
+hr { border: 0; border-top: 1px solid #e8e8ed; margin: 6mm 0; }
+figure { margin: 5mm 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; max-height: 118mm; border: 1px solid #d2d2d7; border-radius: 6px; }
+figure.haute img { max-height: 205mm; }
+figcaption { font-size: 8.4pt; color: #6e6e73; margin-top: 2mm; font-style: italic; }
+.page-de-garde { text-align: center; padding: 34mm 8mm 0; min-height: 250mm; page-break-after: always; }
+.page-de-garde h1 { font-size: 25pt; margin: 14mm 0 8mm; }
+.page-de-garde table { width: 80%; margin: 18mm auto; font-size: 10pt; }
+.page-de-garde table th, .page-de-garde table td { text-align: center; border: none; background: none; }
+.page-de-garde p { margin: 2mm 0; }
+@media print {
+  body { background: #fff; }
+  main { max-width: none; margin: 0; padding: 0; }
+  h2 { page-break-after: avoid; }
+  h3, h4 { page-break-after: avoid; }
+  .bandeau { display: none; }
+}
+</style></head>
+<body><main>
+<div class="bandeau"><span>SI marketing · lancement de l'iPhone Duo — TD Fondamentaux des SI, IAE Lyon 3</span><span>Imprimer : Fichier → Imprimer → Enregistrer en PDF</span></div>
+<div class="page-de-garde">
+<p><strong>Université Jean Moulin Lyon 3 — IAE Lyon</strong>
+Licence 2 Gestion et Management — TD « Fondamentaux des systèmes d'information »</p>
+<h1 id="le-systeme-dinformation-dans-le-domaine-marketing-apple-et-le-lancement-de-liphone-duo">Le système d'information dans le domaine marketing : APPLE et le lancement de l'iPhone Duo</h1>
+<p><strong>Dossier complet — Séances 1 à 8 (analyse, modélisation, prototype, maintenance et évolution du SI)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Réalisé par</th>
+<th>Encadré par</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[NOM Prénom] · [NOM Prénom] · [NOM Prénom] · [NOM Prénom]</td>
+<td>[Mme / M. NOM de l'enseignant(e)]</td>
+</tr>
+</tbody>
+</table>
+<p>Année universitaire 2026-2027</p>
+<p><em>Prototype interactif associé : application « SI Marketing · iPhone Duo » (dossier du projet, lancement par <code>lancer_app.command</code>, adresse http://localhost:8005).</em></p>
+</div>
+<h2 id="sommaire">Sommaire</h2>
+<ol>
+<li>Introduction et problématique</li>
+<li>Présentation de l'entreprise (Séance 1)</li>
+<li>Diagnostic interne et externe : matrice SWOT (Séance 1)</li>
+<li>La fonction choisie : le marketing (Séance 2)</li>
+<li>La stratégie digitale (Séance 3)</li>
+<li>Acteurs et flux d'information (Séance 4)</li>
+<li>Modélisation des processus BPMN et tableau de bord (Séance 5)</li>
+<li>Le prototype du système d'information (Séances 6 et 7)</li>
+<li>Développement, maintenance et évolution du SI (Séance 8)</li>
+<li>Cohérence d'ensemble : le fil rouge du projet</li>
+<li>Conclusion</li>
+<li>Annexes : flux codifiés, écrans, traçabilité, glossaire, sources</li>
+</ol>
+<hr />
+<h2 id="1-introduction-et-problematique">1. Introduction et problématique</h2>
+<p>Apple a présenté le <strong>9 septembre 2026</strong>, lors de sa keynote « Surprise and Shine », l'<strong>iPhone Duo</strong>, son premier iPhone pliable. Les précommandes ouvrent le <strong>vendredi 16 octobre 2026 à 14 h</strong> et la sortie en France est fixée au <strong>vendredi 23 octobre 2026</strong>, à un prix compris entre <strong>2 339 €</strong> (256 Go) et <strong>3 839 €</strong> (2 To).</p>
+<p>Ce lancement pose une question particulière à la fonction marketing : <strong>comment savoir si la communication fonctionne alors que le produit n'est pas encore en vente ?</strong> Il n'existe pas encore de chiffre de ventes. Le marketing doit s'appuyer sur un système d'information (SI) capable de collecter et d'analyser des <strong>signaux avancés</strong> : trafic sur le site, réactions sur les réseaux sociaux, essais en magasin, inscriptions « Me prévenir », puis précommandes.</p>
+<blockquote>
+<p><strong>Problématique : en quoi le système d'information marketing d'Apple lui permet-il de piloter et d'évaluer le lancement de l'iPhone Duo avant même sa commercialisation ?</strong></p>
+</blockquote>
+<p>Conformément aux consignes, <strong>tous nos schémas sont construits autour des interactions entre trois fonctions : le marketing, la production et la finance</strong>. Le lancement d'un produit à 2 339 € ne dépend pas seulement de la communication : le marketing doit savoir combien d'appareils la production peut livrer, et la finance doit valider le prix et le budget.</p>
+<p><strong>Démarche du projet.</strong> Séances 1 et 2 : comprendre l'entreprise et la fonction. Séance 3 : analyser la stratégie digitale. Séances 4 et 5 : modéliser les acteurs, les flux et les processus. Séances 6 et 7 : <strong>construire un prototype interactif du SI</strong> qui exécute ces modèles. Séance 8 : identifier les acteurs qui développent et maintiennent ce SI, et ses perspectives d'évolution.</p>
+<p><em>Les données chiffrées de l'entreprise proviennent de sources réelles (Xerfi Global, résultats publiés par Apple, presse spécialisée). Les données du SI (clients, précommandes, campagnes) sont </em><em>fictives</em><em>, mais calées sur notre tableau de bord du 12 octobre (§ 7.3).</em></p>
+<hr />
+<h2 id="2-presentation-de-lentreprise-seance-1">2. Présentation de l'entreprise (Séance 1)</h2>
+<h3 id="21-fiche-didentite">2.1 Fiche d'identité</h3>
+<table>
+<thead>
+<tr>
+<th>Indicateur</th>
+<th>Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Raison sociale</td>
+<td>Apple Inc. (Apple Computer jusqu'au 9 janvier 2007)</td>
+</tr>
+<tr>
+<td>Siège</td>
+<td>Cupertino, Californie (États-Unis)</td>
+</tr>
+<tr>
+<td>Création</td>
+<td>1er avril 1976 à Los Altos ; constituée en société le 3 janvier 1977</td>
+</tr>
+<tr>
+<td>Fondateurs</td>
+<td>Steve Jobs, Steve Wozniak, Ronald Wayne</td>
+</tr>
+<tr>
+<td>Dirigeants</td>
+<td>John Ternus, PDG depuis le 1er septembre 2026 ; Tim Cook, président exécutif du conseil d'administration</td>
+</tr>
+<tr>
+<td>Effectifs</td>
+<td>Environ 166 000 salariés (2025)</td>
+</tr>
+<tr>
+<td>Réseau de vente</td>
+<td>532 Apple Store dans 25 pays, apple.com et app Apple Store</td>
+</tr>
+<tr>
+<td>Parc d'appareils actifs</td>
+<td>Plus de 2,5 milliards (janvier 2026), dont plus d'un milliard d'iPhone</td>
+</tr>
+<tr>
+<td>Part de marché smartphones</td>
+<td>21 %, n° 1 mondial (1er trimestre 2026)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-historique-en-bref">2.2 Historique en bref</h3>
+<p>1976 : création et Apple I · 1977-1984 : Apple II puis Macintosh (interface graphique, souris) · 1985-1997 : départ de Steve Jobs, quasi-faillite · 1997 : retour de Jobs (rachat de NeXT), recentrage, iMac (1998) · 2001-2003 : iPod, iTunes, premiers Apple Store · 2007-2010 : iPhone, App Store, iPad · 2011 : Tim Cook PDG · 2015-2024 : Apple Watch, AirPods, puces Apple Silicon, Vision Pro, Apple Intelligence · <strong>2026</strong> : John Ternus PDG (1er septembre), présentation de l'<strong>iPhone Duo</strong> (9 septembre).</p>
+<h3 id="23-chiffres-cles">2.3 Chiffres clés</h3>
+<table>
+<thead>
+<tr>
+<th>Exercice</th>
+<th>Chiffre d'affaires</th>
+<th>Résultat net</th>
+<th>Remarque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2022</td>
+<td>363,7 Md€</td>
+<td>92,1 Md€</td>
+<td>Marge EBIT 30,3 %</td>
+</tr>
+<tr>
+<td>2023</td>
+<td>353,5 Md€ (−2,8 %)</td>
+<td>89,5 Md€</td>
+<td>Marge EBIT 29,8 %</td>
+</tr>
+<tr>
+<td>2024</td>
+<td>360,7 Md€ (+2,0 %)</td>
+<td>86,5 Md€</td>
+<td>Marge EBIT 31,5 %</td>
+</tr>
+<tr>
+<td>2025</td>
+<td>416 Md$ (+6,4 %)</td>
+<td>112 Md$</td>
+<td>Exercice clos fin septembre</td>
+</tr>
+<tr>
+<td>Avril-juin 2026</td>
+<td>109,4 Md$ (+16 %)</td>
+<td>29,8 Md$</td>
+<td>Marge brute 50,1 %</td>
+</tr>
+</tbody>
+</table>
+<p><em>Sources : Xerfi Global (2022-2024, en euros) et résultats publiés par Apple (2025-2026, en dollars).</em></p>
+<p>En 2025, l'iPhone représente environ <strong>50 %</strong> du chiffre d'affaires (209,5 Md$) et les <strong>services</strong> environ <strong>26 %</strong> (109,1 Md$). En 2024, les produits reculent (−1,1 %) tandis que les services progressent (+12,9 %). L'<strong>Europe</strong> est la région qui progresse le plus vite (+7,5 % en 2024), ce qui en fait un marché clé pour l'iPhone Duo, alors que la <strong>Grande Chine recule</strong> (−7,7 %).</p>
+<h3 id="24-secteurs-strategies-et-clients">2.4 Secteurs, stratégies et clients</h3>
+<ul>
+<li><strong>Deux blocs complémentaires :</strong> le <strong>matériel</strong> (iPhone, Mac, iPad, Apple Watch, AirPods, Vision Pro) et les <strong>services</strong> (App Store, iCloud, Apple Music, Apple TV, Apple Pay, AppleCare). La force d'Apple est son <strong>écosystème fermé et intégré</strong> (puces, systèmes d'exploitation, appareils, services).</li>
+<li><strong>Trois axes stratégiques</strong> (Xerfi) : rattraper le retard sur l'IA en misant sur la <strong>confidentialité</strong> (marketing) ; développer les <strong>services et contenus</strong> (marketing, finance) ; <strong>relocaliser</strong> une partie de la production aux États-Unis (production, finance).</li>
+<li><strong>Clients :</strong> particuliers (cible principale, plutôt aisés et jeunes : 70 % ont moins de 45 ans), entreprises, éducation, créatifs et professionnels, développeurs. Pour l'iPhone Duo, la cible est plus resserrée : clients à fort pouvoir d'achat, amateurs de nouveautés, et <strong>utilisateurs d'Android déjà équipés d'un pliable</strong> qu'Apple veut convertir.</li>
+<li><strong>Distribution :</strong> directe (Apple Store, apple.com, app Apple Store) et indirecte (revendeurs agréés, opérateurs télécom).</li>
+</ul>
+<hr />
+<h2 id="3-diagnostic-interne-et-externe-matrice-swot-seance-1">3. Diagnostic interne et externe : matrice SWOT (Séance 1)</h2>
+<table>
+<thead>
+<tr>
+<th>Forces</th>
+<th>Faiblesses</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Marque très puissante et fidélité très élevée · marges robustes (31,5 % de marge EBIT en 2024) · réseau de magasins premium · <strong>écosystème intégré : le SI est une source directe d'avantage concurrentiel</strong> · parc de 2,5 milliards d'appareils (base captive pour les services) · pouvoir de fixation des prix · capacité d'investissement (free cash flow ≈ 100 Md€)</td>
+<td>Forte dépendance à l'iPhone (≈ 50 % du CA) sur un marché mature · supply chain concentrée en Asie · interopérabilité limitée · retard sur l'IA générative · changement de PDG au 1er septembre 2026 · offre réduite en Europe (Siri IA) · <strong>dépendance à Samsung Display</strong>, concurrent direct, pour l'écran pliable · ratio de liquidité générale de 0,87</td>
+</tr>
+<tr>
+<td><strong>Opportunités</strong></td>
+<td><strong>Menaces</strong></td>
+</tr>
+<tr>
+<td><strong>Nouvelle catégorie</strong> : l'iPhone Duo, très haut de gamme · arrivée tardive mais avec un produit abouti · monétisation du parc (abonnements, Apple Pay, AppleCare) · intérêt pour la vie privée · Inde et marchés émergents · relocalisation partielle de la production de puces</td>
+<td>Concurrence installée sur les pliables (Samsung, Google, Huawei) · <strong>prix très élevé</strong>, principal frein · droits de douane américains · <strong>flambée du prix de la mémoire</strong> (DRAM, NAND) · pression réglementaire européenne (DMA) · tensions États-Unis / Chine · concurrence de Google et d'OpenAI sur les assistants IA</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Lecture pour notre sujet.</strong> Apple dispose d'atouts marketing exceptionnels (marque, fidélité, écosystème, <strong>données</strong> issues du parc d'appareils), mais l'iPhone Duo arrive très cher sur un marché où les concurrents sont présents. Le marketing doit donc <strong>convaincre avant la sortie</strong> et <strong>mesurer très vite</strong> si le message passe : le SI marketing devient central. Trois éléments du SWOT se retrouvent directement dans le prototype : la <strong>dépendance à Samsung Display</strong> (contrainte de capacité dans le plan de production), la <strong>flambée de la mémoire</strong> (la version 256 Go passe sous l'objectif de marge) et le <strong>frein du prix</strong> (leviers de reprise et de paiement en plusieurs fois).</p>
+<hr />
+<h2 id="4-la-fonction-choisie-le-marketing-seance-2">4. La fonction choisie : le marketing (Séance 2)</h2>
+<h3 id="41-justification-du-choix">4.1 Justification du choix</h3>
+<p>Le marketing est au cœur du modèle d'Apple : la valeur de l'entreprise repose largement sur sa <strong>marque</strong> ; la <strong>fidélité</strong> et l'<strong>écosystème</strong> sont le fruit d'une stratégie de long terme ; et le lancement de l'iPhone Duo est un cas concret où le marketing doit <strong>créer le désir avant la disponibilité</strong> du produit.</p>
+<h3 id="42-roles-objectifs-et-responsabilites">4.2 Rôles, objectifs et responsabilités</h3>
+<ul>
+<li><strong>Rôles :</strong> entretenir une image premium qui justifie des prix élevés ; accompagner le lancement de nouvelles catégories ; développer les services ; se différencier sur l'IA par la <strong>confidentialité</strong> ; harmoniser l'expérience de marque à l'international.</li>
+<li><strong>Responsabilités :</strong> définir la stratégie de prix avec la finance ; piloter les lancements (keynote, précommandes, disponibilité en magasin) ; animer les développeurs de l'App Store ; concevoir les campagnes (films, réseaux sociaux, influence, presse) ; <strong>suivre les indicateurs à chaque étape du cycle de vie</strong> ; adapter l'offre à chaque marché.</li>
+</ul>
+<h3 id="43-interactions-avec-les-autres-fonctions">4.3 Interactions avec les autres fonctions</h3>
+<table>
+<thead>
+<tr>
+<th>Fonction</th>
+<th>Interaction avec le marketing pour l'iPhone Duo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Production / opérations</td>
+<td>Le marketing transmet ses <strong>prévisions de demande</strong> et reçoit les <strong>volumes disponibles</strong> : il ne peut pas promettre plus que ce que la production peut livrer (Samsung Display, fournisseur unique de l'écran).</td>
+</tr>
+<tr>
+<td>Finance</td>
+<td>Le <strong>prix</strong> est un arbitrage entre positionnement et marge ; la finance attribue le <strong>budget</strong> des campagnes et suit leur rentabilité.</td>
+</tr>
+<tr>
+<td>Ingénierie / produit</td>
+<td>Les caractéristiques (charnière en titane, double écran, puce A20 Pro) deviennent des <strong>arguments de vente</strong>.</td>
+</tr>
+<tr>
+<td>Ventes (Apple Store, en ligne)</td>
+<td>Argumentaires, démonstrations, offres (reprise, financement) ; remontée des précommandes et des retours.</td>
+</tr>
+<tr>
+<td>Juridique</td>
+<td>Validation des messages, des contrats d'influenceurs, conformité au RGPD.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="44-volet-digital-les-outils">4.4 Volet digital : les outils</h3>
+<p>CRM (Salesforce, Dynamics 365, HubSpot), ERP (SAP S/4HANA, Oracle), analyse web (Adobe Analytics, Google Analytics), écoute sociale (Brandwatch, Talkwalker, Sprinklr), achat publicitaire (TikTok Ads Manager, Meta Ads Manager, Google Ads), influence (Kolsquare, Upfluence), tableaux de bord (Tableau, Power BI). <strong>Focus CRM :</strong> chez Apple, le <strong>compte Apple</strong> joue le rôle d'<strong>identifiant unique</strong> du client : appareil possédé et ancienneté, abonnements, inscription « Me prévenir », précommandes — exploités <strong>dans le respect des choix de confidentialité</strong>.</p>
+<h3 id="45-indicateurs-de-performance-kpi">4.5 Indicateurs de performance (KPI)</h3>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Indicateurs</th>
+<th>Ce qu'ils mesurent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Avant la sortie (depuis le 9/09)</td>
+<td>Visites de la page produit · inscriptions « Me prévenir » · mentions et sentiment · vues TikTok · rendez-vous de démonstration · intention d'achat (sondage)</td>
+<td>L'intérêt suscité par la communication</td>
+</tr>
+<tr>
+<td>Précommandes (16/10)</td>
+<td>Nombre de précommandes · délai de livraison affiché · conversion visite → précommande · part des clients venant d'Android</td>
+<td>La transformation de l'intérêt en achat</td>
+</tr>
+<tr>
+<td>Après la sortie (23/10)</td>
+<td>Ventes et part de marché des pliables · satisfaction · taux de retour · souscriptions AppleCare</td>
+<td>Le succès commercial et la satisfaction</td>
+</tr>
+</tbody>
+</table>
+<p>Ces trois phases sont reproduites telles quelles dans le <strong>cockpit marketing</strong> du prototype (écran E20).</p>
+<hr />
+<h2 id="5-la-strategie-digitale-seance-3">5. La stratégie digitale (Séance 3)</h2>
+<ul>
+<li><strong>Site apple.com (page iPhone Duo).</strong> Le marketing y est omniprésent mais discret : la page produit est elle-même le support commercial. Informations essentielles en premier (dates, « Voir les prix »), récit en sections courtes, FAQ (pliure, eSIM, Apple Pencil, Touch ID). Messages : <strong>innovation et exclusivité</strong>, <strong>solidité</strong> (charnière en titane), <strong>nouveaux usages</strong>, <strong>conquête des utilisateurs Android</strong>, <strong>lever le frein du prix</strong> (reprise, paiement en plusieurs fois). Inclusivité (descriptions pour lecteurs d'écran), conformité (confidentialité « droit fondamental », cookies, mentions du crédit, impact environnemental). <strong>Limite :</strong> les restrictions européennes (Siri IA) sont reléguées en notes de bas de page.</li>
+<li><strong>TikTok.</strong> Sketchs humoristiques où l'iPhone Duo fait du yoga, sert de mini-portable au café, devient un cinéma de poche ; créateurs de contenu équipés d'appareils de test. Ton très différent des publicités habituelles d'Apple : il faut <strong>expliquer</strong> un nouveau type de produit. <strong>Limite :</strong> le prix n'est jamais évoqué.</li>
+<li><strong>Pour le SI</strong>, chaque visite, clic, inscription, vue, partage ou commentaire est une <strong>donnée</strong> : c'est la matière première des indicateurs avancés.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Critère</th>
+<th>Site apple.com</th>
+<th>TikTok</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Objectif</td>
+<td>Informer et convertir (précommandes)</td>
+<td>Créer le buzz, toucher les jeunes</td>
+</tr>
+<tr>
+<td>Ton</td>
+<td>Épuré, premium</td>
+<td>Humoristique, décalé</td>
+</tr>
+<tr>
+<td>Données collectées pour le SI</td>
+<td>Trafic, paniers, précommandes, inscriptions</td>
+<td>Vues, partages, commentaires, sentiment</td>
+</tr>
+<tr>
+<td>Limite</td>
+<td>Restrictions européennes peu visibles</td>
+<td>Prix jamais évoqué</td>
+</tr>
+</tbody>
+</table>
+<p>Dans le prototype, la <strong>page produit</strong> (E10) reproduit cette stratégie (y compris le bandeau cookies, la mention légale du crédit et les notes de bas de page) et transforme chaque interaction en flux d'information.</p>
+<figure class=""><img alt="Page produit iPhone Duo dans le prototype (écran E10)" src="images_dossier/E10_page_produit.jpg" /><figcaption>Page produit iPhone Duo dans le prototype (écran E10)</figcaption></figure>
+<hr />
+<h2 id="6-acteurs-et-flux-dinformation-seance-4">6. Acteurs et flux d'information (Séance 4)</h2>
+<h3 id="61-les-acteurs-du-systeme">6.1 Les acteurs du système</h3>
+<table>
+<thead>
+<tr>
+<th>Acteurs internes</th>
+<th>Acteurs externes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Direction générale · direction marketing et ses équipes (création, réseaux sociaux et influence, relations presse, e-commerce, marketing retail, data et CRM) · finance · ingénierie / produit · production (supply chain) · ventes · juridique et conformité · service client (AppleCare)</td>
+<td>Clients et prospects · opérateurs télécom · revendeurs agréés · fournisseurs (Samsung Display, TSMC, assembleurs) · développeurs de l'App Store · médias, réseaux sociaux et influenceurs · agences de publicité · instituts d'études · organismes financiers · partenaire de reprise · concurrents · régulateurs (Commission européenne, CNIL)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-diagramme-de-contexte-fig-1">6.2 Diagramme de contexte (Fig. 1)</h3>
+<figure class=""><img alt="Fig. 1 — Diagramme de contexte du SI marketing pour le lancement de l'iPhone Duo" src="figures/Fig1_diagramme_de_contexte.png" /><figcaption>Fig. 1 — Diagramme de contexte du SI marketing pour le lancement de l&#x27;iPhone Duo</figcaption></figure>
+<p>Le SI marketing d'Apple est au centre ; chaque flèche est un flux d'information, les flèches doubles indiquent un échange dans les deux sens et la flèche en <strong>pointillés</strong> un flux <strong>indirect</strong> (Apple surveille ses concurrents sans communiquer avec eux).</p>
+<h3 id="63-flux-internes-le-triangle-marketing-production-finance-fig-2">6.3 Flux internes : le triangle marketing – production – finance (Fig. 2)</h3>
+<figure class=""><img alt="Fig. 2 — Flux d'information entre le marketing, la production et la finance" src="figures/Fig2_flux_internes.png" /><figcaption>Fig. 2 — Flux d&#x27;information entre le marketing, la production et la finance</figcaption></figure>
+<p>Les trois fonctions s'appuient sur un <strong>SI partagé</strong> (CRM pour les clients, ERP pour les stocks, les coûts et les ventes) : une précommande enregistrée par le marketing est immédiatement visible par la production et la finance. La direction générale valide le plan de lancement et fixe à la finance les objectifs de marge.</p>
+<h3 id="64-circulation-de-linformation-dans-la-direction-marketing-fig-3">6.4 Circulation de l'information dans la direction marketing (Fig. 3)</h3>
+<figure class=""><img alt="Fig. 3 — Circulation de l'information au sein de la direction marketing" src="figures/Fig3_flux_marketing.png" /><figcaption>Fig. 3 — Circulation de l&#x27;information au sein de la direction marketing</figcaption></figure>
+<p>L'<strong>équipe data et CRM</strong> joue le rôle de centre du système : elle regroupe trafic, mentions, retombées presse et essais en magasin dans un <strong>tableau de bord hebdomadaire</strong> remis à la direction marketing, et transmet les précommandes par pays à la production et le coût par précommande à la finance.</p>
+<h3 id="65-apport-du-prototype-la-codification-de-60-flux">6.5 Apport du prototype : la codification de 60 flux</h3>
+<p>Pour rendre ces diagrammes <strong>exécutables</strong>, chaque flèche a reçu un <strong>code</strong> : <strong>FE-xx</strong> pour les flux externes (Fig. 1, avec A = aller d'Apple vers l'acteur, R = retour), <strong>FI-xx</strong> pour les flux internes (Fig. 2) et <strong>FM-xx</strong> pour les flux de la direction marketing (Fig. 3), soit <strong>54 flux issus de nos figures</strong>. Le prototype ajoute <strong>six compléments</strong> explicités pendant la construction : <strong>FI-13</strong> (demande d'appareils de test du marketing à la production, révélée par le BPMN P2) et <strong>FI-14 à FI-18</strong> (interactions du tableau du § 4.3 avec l'ingénierie, le juridique et le service client), soit <strong>60 flux codifiés</strong>. La liste complète figure en annexe A. Dans l'application, la <strong>cartographie vivante</strong> (E01) redessine les trois figures : l'épaisseur de chaque flèche correspond au volume d'échanges réellement enregistrés.</p>
+<figure class=""><img alt="Cartographie interactive du diagramme de contexte dans le prototype (écran E01)" src="images_dossier/E01_cartographie.jpg" /><figcaption>Cartographie interactive du diagramme de contexte dans le prototype (écran E01)</figcaption></figure>
+<hr />
+<h2 id="7-modelisation-des-processus-bpmn-et-tableau-de-bord-seance-5">7. Modélisation des processus BPMN et tableau de bord (Séance 5)</h2>
+<h3 id="71-processus-p1-gestion-des-precommandes-du-16-octobre-fig-4">7.1 Processus P1 : gestion des précommandes du 16 octobre (Fig. 4)</h3>
+<figure class="haute"><img alt="Fig. 4 — BPMN de la gestion des précommandes de l'iPhone Duo" src="figures/Fig4_BPMN_P1_precommandes.png" /><figcaption>Fig. 4 — BPMN de la gestion des précommandes de l&#x27;iPhone Duo</figcaption></figure>
+<p>Le processus démarre le 16/10 à 14 h. Le <strong>client</strong> choisit sa configuration ; le <strong>marketing</strong> (e-commerce) affiche le prix et le délai ; le client valide. La <strong>finance</strong> vérifie le paiement : s'il est refusé, le client revient au choix de sa configuration ; s'il est accepté, elle enregistre le <strong>CA prévisionnel</strong> et calcule la <strong>marge</strong> et le <strong>coût par précommande</strong>. Le <strong>marketing</strong> enregistre la précommande dans le <strong>CRM</strong>. La <strong>production</strong> vérifie le stock : s'il est disponible, elle réserve un appareil ; sinon, elle <strong>allonge le délai affiché</strong> puis réserve. Le client reçoit sa confirmation (livraison à partir du 23/10). Enfin, le marketing <strong>analyse le tableau de bord</strong> : si la <strong>demande dépasse l'offre</strong>, la production augmente sa production ou répartit autrement les stocks entre pays ; sinon, le marketing <strong>relance sa communication</strong>.</p>
+<h3 id="72-processus-p2-campagne-tiktok-et-mesure-de-son-efficacite-fig-5">7.2 Processus P2 : campagne TikTok et mesure de son efficacité (Fig. 5)</h3>
+<figure class="haute"><img alt="Fig. 5 — BPMN de la campagne réseaux sociaux avant la sortie" src="figures/Fig5_BPMN_P2_campagne_TikTok.png" /><figcaption>Fig. 5 — BPMN de la campagne réseaux sociaux avant la sortie</figcaption></figure>
+<p>Après la keynote du 9/09, le <strong>marketing</strong> propose objectifs et budget ; la <strong>finance</strong> valide ou demande de revoir. Le marketing publie les vidéos TikTok et sélectionne des influenceurs ; la <strong>production</strong> fournit les appareils de test ; les <strong>influenceurs</strong> testent et publient leur avis. Le marketing <strong>mesure</strong> vues, mentions et sentiment ; si les objectifs ne sont pas atteints, il <strong>ajuste</strong> ciblage et message puis mesure à nouveau ; sinon, il envoie son <strong>rapport et ses prévisions</strong> : la finance calcule le <strong>coût d'acquisition par précommande</strong> et la production <strong>ajuste son plan</strong>.</p>
+<h3 id="73-le-tableau-de-bord-crm-du-lundi-12-octobre-donnees-fictives">7.3 Le tableau de bord CRM du lundi 12 octobre (données fictives)</h3>
+<table>
+<thead>
+<tr>
+<th>Indicateur (France)</th>
+<th>Objectif</th>
+<th>Résultat</th>
+<th>Évaluation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Visites de la page iPhone Duo (cumul)</td>
+<td>2 000 000</td>
+<td>2 350 000</td>
+<td>Atteint</td>
+</tr>
+<tr>
+<td>Inscriptions « Me prévenir »</td>
+<td>120 000</td>
+<td>96 000</td>
+<td>En retard</td>
+</tr>
+<tr>
+<td>Rendez-vous de démonstration en Apple Store</td>
+<td>15 000</td>
+<td>17 200</td>
+<td>Atteint</td>
+</tr>
+<tr>
+<td>Vues des vidéos TikTok Apple</td>
+<td>20 millions</td>
+<td>31 millions</td>
+<td>Atteint</td>
+</tr>
+<tr>
+<td>Part de commentaires positifs</td>
+<td>60 %</td>
+<td>54 %</td>
+<td>En retard</td>
+</tr>
+<tr>
+<td>Intention d'achat déclarée (sondage)</td>
+<td>8 %</td>
+<td>6 %</td>
+<td>En retard</td>
+</tr>
+<tr>
+<td>Part des visiteurs utilisant Android</td>
+<td>15 %</td>
+<td>19 %</td>
+<td>Atteint</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Interprétation :</strong> la campagne suscite beaucoup de curiosité, mais elle se transforme moins bien en intention d'achat ; les commentaires négatifs portent surtout sur le <strong>prix</strong>. Le SI permet d'agir <strong>avant le 16 octobre</strong> en mettant en avant l'offre de reprise et le paiement en plusieurs fois. <strong>La base de données du prototype reproduit exactement ce tableau</strong> quand on règle son horloge sur le lundi 12 octobre à 9 h (vérifié par un test automatisé).</p>
+<hr />
+<h2 id="8-le-prototype-du-systeme-dinformation-seances-6-et-7">8. Le prototype du système d'information (Séances 6 et 7)</h2>
+<h3 id="81-objectif-des-maquettes-qui-executent-nos-modeles">8.1 Objectif : des maquettes qui exécutent nos modèles</h3>
+<p>Plutôt que des maquettes statiques, nous avons construit une <strong>application web interactive</strong> qui reproduit le SI marketing du lancement : chaque acteur des Fig. 1 à 5 dispose de son interface (« <strong>Vue acteur</strong> »), et les deux processus BPMN s'exécutent <strong>étape par étape</strong>, de couloir en couloir, avec déclenchement des flux d'information et notification des acteurs destinataires.</p>
+<h3 id="82-architecture-technique">8.2 Architecture technique</h3>
+<table>
+<thead>
+<tr>
+<th>Couche</th>
+<th>Choix</th>
+<th>Raison</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Serveur</td>
+<td>Python, <strong>FastAPI</strong></td>
+<td>Simple, lisible, API documentée automatiquement</td>
+</tr>
+<tr>
+<td>Base de données</td>
+<td><strong>SQLite</strong> (fichier unique)</td>
+<td>Aucune installation ; joue le rôle du « SI partagé » (CRM + ERP + pilotage)</td>
+</tr>
+<tr>
+<td>Interface</td>
+<td>HTML, <strong>Tailwind CSS</strong>, <strong>Alpine.js</strong>, <strong>Chart.js</strong></td>
+<td>Rendu moderne aux couleurs d'Apple ; librairies <strong>embarquées</strong> : l'application fonctionne <strong>hors-ligne</strong></td>
+</tr>
+<tr>
+<td>Lancement</td>
+<td><code>lancer_app.command</code> (macOS)</td>
+<td>Double-clic : installation, démarrage sur le port 8005, ouverture du navigateur</td>
+</tr>
+<tr>
+<td>Qualité</td>
+<td><strong>pytest</strong> (21 tests) + parcours navigateur</td>
+<td>Vérifie les processus de bout en bout</td>
+</tr>
+</tbody>
+</table>
+<h3 id="83-quatre-principes-de-conception">8.3 Quatre principes de conception</h3>
+<ol>
+<li><strong>Un référentiel unique</strong> issu des Séances 1 à 5 : 25 acteurs, 60 flux, 27 tâches et passerelles BPMN, 41 écrans. Tout ce que l'application affiche ou exécute en découle.</li>
+<li><strong>Un moteur BPMN à jetons</strong> : chaque précommande, campagne ou analyse est une <strong>instance</strong> ; une action valide fait avancer le jeton ; les passerelles sont de vraies règles de gestion ; les tâches automatisées (prix et délai affichés, CA prévisionnel, enregistrement CRM, confirmation) s'exécutent seules. L'état est recalculé à l'<strong>heure simulée</strong> : on peut « rejouer » la keynote, le tableau de bord du 12/10 ou l'ouverture des précommandes.</li>
+<li><strong>Un bus d'information</strong> : chaque action émet un <strong>flux codifié</strong> (journal) et une <strong>notification</strong> pour l'acteur destinataire — c'est la traduction concrète des flèches de nos diagrammes.</li>
+<li><strong>Un contrôle d'accès par rôle</strong> déduit des couloirs BPMN : seule la finance peut franchir « Paiement accepté ? », seule la production peut réserver un appareil.</li>
+</ol>
+<h3 id="84-une-base-de-donnees-realiste">8.4 Une base de données réaliste</h3>
+<p>Plus de 138 000 fiches clients dont 120 000 inscriptions « Me prévenir », environ 38 300 précommandes en France sur la première semaine (dont près de 6 400 entre 14 h et 15 h le 16/10), des agrégats pour 8 autres pays, des lots de production, une campagne de lancement complète (budget refusé puis accordé, 12 vidéos, 12 influenceurs, 4 mesures, 3 ajustements), une campagne de relance en attente de validation, des analyses de demande et d'offre, des partenaires (crédit, reprise, opérateurs, revendeurs, fournisseurs, instituts, régulateurs). Les identifiants des clients sont <strong>pseudonymisés</strong> à l'affichage.</p>
+<h3 id="85-les-ecrans">8.5 Les écrans</h3>
+<p>L'application compte <strong>41 écrans</strong> (liste complète en annexe B) : 8 vues transversales (accueil, cartographie des flux, BPMN vivants P1 et P2, journal des flux, SI partagé, dossier, atelier de captures) et 33 écrans d'acteurs. Les écrans principaux :</p>
+<ul>
+<li><strong>Client</strong> : page produit (E10), configurateur et précommande (E11 — tâches T01 à T03), suivi de la précommande et droits RGPD (E12).</li>
+<li><strong>Finance</strong> : contrôle des paiements, CA prévisionnel et marges (E30 — G01, T04, T05) ; budgets, prix, coût de revient et coût d'acquisition (E31).</li>
+<li><strong>Production</strong> : stocks et réservations (E35 — G02, T07, T08) ; plan de production et capacités (E36 — P1-T11, P2-T09) ; appareils de test (E37).</li>
+<li><strong>Direction marketing</strong> : cockpit KPI en trois phases (E20), analyse des précommandes (E21 — T10, G03, T12), pilotage de la campagne et consignes aux équipes (E22).</li>
+<li><strong>Équipes marketing</strong> : réseaux sociaux (E23), CRM (E24), mesure et tableau de bord hebdomadaire (E25), e-commerce (E26), création, presse, Apple Store.</li>
+<li><strong>Direction générale</strong> (E15) et <strong>portails des acteurs externes</strong> (E41 à E51).</li>
+</ul>
+<figure class=""><img alt="Configurateur : le délai affiché est calculé en direct à partir du stock (écran E11)" src="images_dossier/E11_configurateur.jpg" /><figcaption>Configurateur : le délai affiché est calculé en direct à partir du stock (écran E11)</figcaption></figure>
+<figure class=""><img alt="Finance : la passerelle « Paiement accepté ? » et le CA prévisionnel (écran E30)" src="images_dossier/E30_finance.jpg" /><figcaption>Finance : la passerelle « Paiement accepté ? » et le CA prévisionnel (écran E30)</figcaption></figure>
+<figure class=""><img alt="Production : stock disponible ?, allongement du délai, réservation (écran E35)" src="images_dossier/E35_production.jpg" /><figcaption>Production : stock disponible ?, allongement du délai, réservation (écran E35)</figcaption></figure>
+<figure class="haute"><img alt="Le BPMN P1 vivant : jetons en attente et passages par tâche (écran E02)" src="images_dossier/E02_bpmn_p1.jpg" /><figcaption>Le BPMN P1 vivant : jetons en attente et passages par tâche (écran E02)</figcaption></figure>
+<figure class=""><img alt="Cockpit marketing : les précommandes heure par heure (écran E20)" src="images_dossier/E20_cockpit.jpg" /><figcaption>Cockpit marketing : les précommandes heure par heure (écran E20)</figcaption></figure>
+<figure class=""><img alt="Analyse du tableau de bord : demande projetée et offre par pays (écran E21)" src="images_dossier/E21_pilotage.jpg" /><figcaption>Analyse du tableau de bord : demande projetée et offre par pays (écran E21)</figcaption></figure>
+<h3 id="86-demonstration-de-bout-en-bout-verifiee">8.6 Démonstration de bout en bout (vérifiée)</h3>
+<p>Les deux processus ont été <strong>rejoués par de vrais clics</strong> dans le navigateur : P1 (précommande d'un iPhone Duo 512 Go Titane noir → paiement accepté → stock insuffisant → délai allongé → réservation → confirmation → analyse France → transfert de stock et hausse de production) et P2 (nouvelle campagne → budget → vidéos → 2 influenceurs → appareils de test → 2 avis → mesure → ajustement → nouvelle mesure → rapport → plan de production → coût d'acquisition). Le scénario détaillé est dans <code>GUIDE_DEMO_Soutenance.md</code>.</p>
+<h3 id="87-mode-inspection-maquette-et-captures-hd">8.7 Mode « Inspection maquette » et captures HD</h3>
+<p>La touche <strong>I</strong> active le mode inspection : chaque zone importante de l'écran est encadrée et numérotée, et un tiroir indique les <strong>séances mobilisées</strong>, les <strong>tâches BPMN</strong> et les <strong>flux d'information</strong> illustrés, les données du SI utilisées et un argument « à dire au jury ». L'<strong>atelier de captures</strong> génère des PNG haute définition (×2) de chaque écran, avec ou sans annotations, pour le rapport et le diaporama ; 52 captures sont fournies dans <code>livrables_td/captures/</code>.</p>
+<figure class=""><img alt="Mode inspection : repères numérotés et tiroir de traçabilité (écran E11 annoté)" src="images_dossier/E11_inspection.jpg" /><figcaption>Mode inspection : repères numérotés et tiroir de traçabilité (écran E11 annoté)</figcaption></figure>
+<h3 id="88-tracabilite-et-tests">8.8 Traçabilité et tests</h3>
+<ul>
+<li><strong>Couverture totale des modèles</strong> : chaque tâche ou passerelle BPMN est réalisée par au moins un écran d'acteur, et chacun des 60 flux est illustré par au moins un écran (annexe C) — c'est vérifié par des tests automatisés.</li>
+<li><strong>21 tests pytest</strong> : parcours nominal de P1 en mode pas à pas, refus de paiement et retour à T01, étude de crédit par l'organisme financier, mode automatique, fermeture avant le 16/10, analyse et hausse de production (avec refus si la capacité de Samsung Display est dépassée), relance déclenchant une campagne P2, campagne P2 complète avec ses deux boucles, contrôle des rôles, rejeu dans le temps, calage du tableau du 12/10, portails partenaires.</li>
+</ul>
+<h3 id="89-limites">8.9 Limites</h3>
+<p>Données fictives (calées sur le dossier) ; prix des capacités intermédiaires supposés (512 Go : 2 839 €, 1 To : 3 339 €) ; intégrations partenaires simulées ; pas d'authentification réelle ; modèles de prévision volontairement simples ; « Analyse le tableau de bord » traitée par lot (voir questions du jury).</p>
+<hr />
+<h2 id="9-developpement-maintenance-et-evolution-du-si-seance-8">9. Développement, maintenance et évolution du SI (Séance 8)</h2>
+<p><em>Le document complet est fourni séparément : <code>SEANCE_8_Developpement_Maintenance_Evolution_SI.md</code>. Synthèse :</em></p>
+<ul>
+<li><strong>Gouvernance :</strong> un comité de pilotage (direction générale) arbitre budget et priorités.</li>
+<li><strong>MOA :</strong> la direction marketing iPhone (sponsor, propriétaire métier, product owner), avec la finance et la production pour leurs couloirs ; utilisateurs clés pour la recette ; <strong>AMOA</strong> pour formaliser les besoins.</li>
+<li><strong>MOE :</strong> la DSI d'Apple (IS&amp;T) — chef de projet, architectes, développeurs, équipe data, exploitation et support (N1 à N3), qualité et tests.</li>
+<li><strong>Prestataires :</strong> éditeurs (CRM, ERP, écoute sociale), intégrateurs (API entre e-commerce, CRM, ERP et partenaires), hébergeurs et cloud, <strong>TMA</strong> (maintenance corrective, évolutive, adaptative, préventive).</li>
+<li><strong>SLA proposés :</strong> disponibilité de 99,95 % la semaine du 16/10 ; affichage du prix et du délai en moins de 1,5 s ; incident bloquant résolu en 4 h ; tableau de bord le lundi à 9 h ; RPO 5 min, RTO 1 h.</li>
+<li><strong>Sécurité et conformité :</strong> RSSI, DPO, juridique ; matrice RACI.</li>
+<li><strong>Évolutions :</strong> IA prédictive (demande par pays et couleur, fraude), IA générative (variantes de campagnes, SAV), API et architecture orientée événements, cloud élastique et plateforme de données, IoT (magasins, supply chain), RPA et workflows, cybersécurité et RGPD — avec une feuille de route à court, moyen et long terme.</li>
+</ul>
+<hr />
+<h2 id="10-coherence-densemble-le-fil-rouge-du-projet">10. Cohérence d'ensemble : le fil rouge du projet</h2>
+<table>
+<thead>
+<tr>
+<th>Séance</th>
+<th>Ce que nous avons produit</th>
+<th>Ce que la séance suivante en a fait</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>S1</strong> Entreprise et SWOT</td>
+<td>Faiblesse « dépendance à Samsung Display », menace « prix » et « mémoire »</td>
+<td>S2 : le marketing doit convaincre et dialoguer avec production et finance</td>
+</tr>
+<tr>
+<td><strong>S2</strong> Fonction marketing</td>
+<td>Rôles, interactions, outils CRM/ERP, KPI en trois phases</td>
+<td>S4 : acteurs et flux ; S7 : cockpit KPI à trois onglets</td>
+</tr>
+<tr>
+<td><strong>S3</strong> Stratégie digitale</td>
+<td>Site et TikTok = sources de données ; limites (prix, restrictions UE)</td>
+<td>S5 : P2 campagne TikTok ; S7 : page produit et campagne dans le prototype</td>
+</tr>
+<tr>
+<td><strong>S4</strong> Acteurs et flux</td>
+<td>Fig. 1, 2 et 3</td>
+<td>S7 : 60 flux codifiés, bus d'information, cartographie vivante, portails</td>
+</tr>
+<tr>
+<td><strong>S5</strong> BPMN et tableau de bord</td>
+<td>P1, P2, tableau du 12/10</td>
+<td>S7 : moteur BPMN, écrans par couloir, base calée sur le tableau du 12/10</td>
+</tr>
+<tr>
+<td><strong>S6-S7</strong> Prototype</td>
+<td>41 écrans, 25 vues acteur, tests</td>
+<td>S7 a aussi <strong>corrigé les modèles</strong> (flux FI-13) ; S8 : qui maintient ce SI ?</td>
+</tr>
+<tr>
+<td><strong>S8</strong> Maintenance et évolution</td>
+<td>MOA/MOE, TMA, SLA, évolutions</td>
+<td>S9-S10 : soutenance</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple de fil rouge complet :</strong> la <em>dépendance à Samsung Display</em> (SWOT, S1) → la contrainte « le marketing ne peut pas promettre plus que la production » (S2) → le flux fournisseur <strong>FE-04</strong> (S4) → la passerelle <em>Stock disponible ?</em> et la tâche <em>Augmente la production</em> (S5) → l'écran de plan de production qui <strong>refuse</strong> une hausse supérieure à la capacité déclarée par Samsung Display (S7) → un <strong>SLA fournisseur</strong> et la <strong>prévision de la demande par IA</strong> (S8).</p>
+<hr />
+<h2 id="11-conclusion">11. Conclusion</h2>
+<p>Le lancement de l'iPhone Duo montre que, chez Apple, le système d'information marketing ne sert pas seulement à mesurer des ventes passées : il permet de <strong>piloter un lancement avant même que le produit soit en magasin</strong>. En reliant les données du site, des réseaux sociaux, des Apple Store et des précommandes dans un <strong>SI partagé</strong> avec la production et la finance, Apple peut vérifier si sa communication fonctionne et corriger le tir en quelques jours — c'est ce que notre prototype permet de <strong>vivre</strong> : le tableau de bord du 12 octobre révèle le frein du prix, la relance par la reprise et le paiement en plusieurs fois porte les inscriptions à 120 000 à l'ouverture, puis l'analyse de la demande déclenche un transfert de stock entre pays.</p>
+<p>Le principal défi reste le <strong>prix</strong> : le SI peut révéler ce frein, mais ce sont les <strong>décisions marketing et financières</strong> qui y répondent. Et un SI n'est jamais terminé : sa valeur dépend de l'organisation qui le fait vivre (MOA, MOE, prestataires, SLA) et de sa capacité à évoluer (IA, API, cloud, automatisation), dans le respect de la sécurité et de la vie privée — un argument central de la marque Apple.</p>
+<hr />
+<h2 id="12-annexes">12. Annexes</h2>
+<h3 id="annexe-a-les-60-flux-dinformation-codifies">Annexe A — Les 60 flux d'information codifiés</h3>
+<!-- DEBUT:FLUX -->
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Figure</th>
+<th>Émetteur</th>
+<th>Destinataire</th>
+<th>Information échangée</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FE-01A</td>
+<td>Fig. 1</td>
+<td>Apple (SI marketing)</td>
+<td>Clients et prospects</td>
+<td>Offres, publicités</td>
+</tr>
+<tr>
+<td>FE-01R</td>
+<td>Fig. 1</td>
+<td>Clients et prospects</td>
+<td>Apple (SI marketing)</td>
+<td>Précommandes, avis, données</td>
+</tr>
+<tr>
+<td>FE-02A</td>
+<td>Fig. 1</td>
+<td>Apple (SI marketing)</td>
+<td>Opérateurs télécom</td>
+<td>eSIM, stocks</td>
+</tr>
+<tr>
+<td>FE-02R</td>
+<td>Fig. 1</td>
+<td>Opérateurs télécom</td>
+<td>Apple (SI marketing)</td>
+<td>Ventes, forfaits</td>
+</tr>
+<tr>
+<td>FE-03A</td>
+<td>Fig. 1</td>
+<td>Apple (SI marketing)</td>
+<td>Revendeurs agréés</td>
+<td>Stocks, PLV</td>
+</tr>
+<tr>
+<td>FE-03R</td>
+<td>Fig. 1</td>
+<td>Revendeurs agréés</td>
+<td>Apple (SI marketing)</td>
+<td>Ventes</td>
+</tr>
+<tr>
+<td>FE-04A</td>
+<td>Fig. 1</td>
+<td>Apple (SI marketing)</td>
+<td>Fournisseurs</td>
+<td>Commandes</td>
+</tr>
+<tr>
+<td>FE-04R</td>
+<td>Fig. 1</td>
+<td>Fournisseurs</td>
+<td>Apple (SI marketing)</td>
+<td>Livraisons, capacités</td>
+</tr>
+<tr>
+<td>FE-05A</td>
+<td>Fig. 1</td>
+<td>Apple (SI marketing)</td>
+<td>Développeurs App Store</td>
+<td>Outils iOS 27</td>
+</tr>
+<tr>
+<td>FE-05R</td>
+<td>Fig. 1</td>
+<td>Développeurs App Store</td>
+<td>Apple (SI marketing)</td>
+<td>Apps adaptées au pliable</td>
+</tr>
+<tr>
+<td>FE-06A</td>
+<td>Fig. 1</td>
+<td>Apple (SI marketing)</td>
+<td>Médias, réseaux sociaux et influenceurs</td>
+<td>Contenus, invitations</td>
+</tr>
+<tr>
+<td>FE-06R</td>
+<td>Fig. 1</td>
+<td>Médias, réseaux sociaux et influenceurs</td>
+<td>Apple (SI marketing)</td>
+<td>Visibilité, retours</td>
+</tr>
+<tr>
+<td>FE-07A</td>
+<td>Fig. 1</td>
+<td>Apple (SI marketing)</td>
+<td>Agences de publicité et d'achat média</td>
+<td>Briefs, budget</td>
+</tr>
+<tr>
+<td>FE-07R</td>
+<td>Fig. 1</td>
+<td>Agences de publicité et d'achat média</td>
+<td>Apple (SI marketing)</td>
+<td>Campagnes, rapports</td>
+</tr>
+<tr>
+<td>FE-08A</td>
+<td>Fig. 1</td>
+<td>Apple (SI marketing)</td>
+<td>Instituts d'études</td>
+<td>Commandes d'études</td>
+</tr>
+<tr>
+<td>FE-08R</td>
+<td>Fig. 1</td>
+<td>Instituts d'études</td>
+<td>Apple (SI marketing)</td>
+<td>Parts de marché</td>
+</tr>
+<tr>
+<td>FE-09A</td>
+<td>Fig. 1</td>
+<td>Apple (SI marketing)</td>
+<td>Organismes financiers</td>
+<td>Demandes de crédit</td>
+</tr>
+<tr>
+<td>FE-09R</td>
+<td>Fig. 1</td>
+<td>Organismes financiers</td>
+<td>Apple (SI marketing)</td>
+<td>Accords, paiements</td>
+</tr>
+<tr>
+<td>FE-10A</td>
+<td>Fig. 1</td>
+<td>Apple (SI marketing)</td>
+<td>Partenaire reprise</td>
+<td>Estimations</td>
+</tr>
+<tr>
+<td>FE-10R</td>
+<td>Fig. 1</td>
+<td>Partenaire reprise</td>
+<td>Apple (SI marketing)</td>
+<td>Valeurs de reprise</td>
+</tr>
+<tr>
+<td>FE-11A</td>
+<td>Fig. 1</td>
+<td>Apple (SI marketing)</td>
+<td>Régulateurs</td>
+<td>Déclarations</td>
+</tr>
+<tr>
+<td>FE-11R</td>
+<td>Fig. 1</td>
+<td>Régulateurs</td>
+<td>Apple (SI marketing)</td>
+<td>Règles RGPD, DMA</td>
+</tr>
+<tr>
+<td>FE-12R</td>
+<td>Fig. 1</td>
+<td>Concurrents</td>
+<td>Apple (SI marketing)</td>
+<td>Veille prix et produits <em>(pointillés : indirect)</em></td>
+</tr>
+<tr>
+<td>FI-01</td>
+<td>Fig. 2</td>
+<td>Direction générale</td>
+<td>Direction marketing iPhone</td>
+<td>Validation du lancement</td>
+</tr>
+<tr>
+<td>FI-02</td>
+<td>Fig. 2</td>
+<td>Direction marketing iPhone</td>
+<td>Direction générale</td>
+<td>Plan de lancement</td>
+</tr>
+<tr>
+<td>FI-03</td>
+<td>Fig. 2</td>
+<td>Direction générale</td>
+<td>Finance</td>
+<td>Objectifs de marge</td>
+</tr>
+<tr>
+<td>FI-04</td>
+<td>Fig. 2</td>
+<td>Direction marketing iPhone</td>
+<td>Production / Opérations (supply chain)</td>
+<td>Prévisions de demande par pays et couleur</td>
+</tr>
+<tr>
+<td>FI-05</td>
+<td>Fig. 2</td>
+<td>Production / Opérations (supply chain)</td>
+<td>Direction marketing iPhone</td>
+<td>Volumes disponibles, dates de livraison</td>
+</tr>
+<tr>
+<td>FI-06</td>
+<td>Fig. 2</td>
+<td>Direction marketing iPhone</td>
+<td>Finance</td>
+<td>Proposition de prix, budget de campagne</td>
+</tr>
+<tr>
+<td>FI-07</td>
+<td>Fig. 2</td>
+<td>Finance</td>
+<td>Direction marketing iPhone</td>
+<td>Prix validé, budget accordé</td>
+</tr>
+<tr>
+<td>FI-08</td>
+<td>Fig. 2</td>
+<td>Production / Opérations (supply chain)</td>
+<td>Finance</td>
+<td>Coût de revient (écran, mémoire, titane)</td>
+</tr>
+<tr>
+<td>FI-09</td>
+<td>Fig. 2</td>
+<td>Finance</td>
+<td>Production / Opérations (supply chain)</td>
+<td>Budget de production</td>
+</tr>
+<tr>
+<td>FI-10</td>
+<td>Fig. 2</td>
+<td>Direction marketing iPhone</td>
+<td>SI partagé (CRM + ERP)</td>
+<td>Précommandes, données clients</td>
+</tr>
+<tr>
+<td>FI-11</td>
+<td>Fig. 2</td>
+<td>Production / Opérations (supply chain)</td>
+<td>SI partagé (CRM + ERP)</td>
+<td>Stocks</td>
+</tr>
+<tr>
+<td>FI-12</td>
+<td>Fig. 2</td>
+<td>Finance</td>
+<td>SI partagé (CRM + ERP)</td>
+<td>CA, marges</td>
+</tr>
+<tr>
+<td>FI-13</td>
+<td>Prototype</td>
+<td>Direction marketing iPhone</td>
+<td>Production / Opérations (supply chain)</td>
+<td>Demande d'appareils de test</td>
+</tr>
+<tr>
+<td>FI-14</td>
+<td>§ 3.4</td>
+<td>Ingénierie / Produit</td>
+<td>Direction marketing iPhone</td>
+<td>Caractéristiques produit (arguments de vente)</td>
+</tr>
+<tr>
+<td>FI-15</td>
+<td>§ 3.4</td>
+<td>Direction marketing iPhone</td>
+<td>Ingénierie / Produit</td>
+<td>Attentes des clients</td>
+</tr>
+<tr>
+<td>FI-16</td>
+<td>§ 3.4</td>
+<td>Direction marketing iPhone</td>
+<td>Juridique et conformité</td>
+<td>Messages publicitaires et contrats à valider</td>
+</tr>
+<tr>
+<td>FI-17</td>
+<td>§ 3.4</td>
+<td>Juridique et conformité</td>
+<td>Direction marketing iPhone</td>
+<td>Validation, réserves (publicité, RGPD)</td>
+</tr>
+<tr>
+<td>FI-18</td>
+<td>§ 3.4</td>
+<td>Service client (AppleCare)</td>
+<td>Direction marketing iPhone</td>
+<td>Retours clients (questions, satisfaction, retours)</td>
+</tr>
+<tr>
+<td>FM-01</td>
+<td>Fig. 3</td>
+<td>Direction marketing iPhone</td>
+<td>Finance</td>
+<td>Demande de budget</td>
+</tr>
+<tr>
+<td>FM-02</td>
+<td>Fig. 3</td>
+<td>Finance</td>
+<td>Direction marketing iPhone</td>
+<td>Budget accordé</td>
+</tr>
+<tr>
+<td>FM-03</td>
+<td>Fig. 3</td>
+<td>Direction marketing iPhone</td>
+<td>Production / Opérations (supply chain)</td>
+<td>Prévisions de demande</td>
+</tr>
+<tr>
+<td>FM-04</td>
+<td>Fig. 3</td>
+<td>Production / Opérations (supply chain)</td>
+<td>Direction marketing iPhone</td>
+<td>Volumes disponibles</td>
+</tr>
+<tr>
+<td>FM-05</td>
+<td>Fig. 3</td>
+<td>Direction marketing iPhone</td>
+<td>Relations presse et événementiel</td>
+<td>Calendrier keynote</td>
+</tr>
+<tr>
+<td>FM-06</td>
+<td>Fig. 3</td>
+<td>Direction marketing iPhone</td>
+<td>Équipe e-commerce (apple.com, app Apple Store)</td>
+<td>Date des précommandes</td>
+</tr>
+<tr>
+<td>FM-07</td>
+<td>Fig. 3</td>
+<td>Direction marketing iPhone</td>
+<td>Équipe création (films, visuels)</td>
+<td>Brief créatif</td>
+</tr>
+<tr>
+<td>FM-08</td>
+<td>Fig. 3</td>
+<td>Direction marketing iPhone</td>
+<td>Équipe réseaux sociaux et influence</td>
+<td>Objectifs, budget</td>
+</tr>
+<tr>
+<td>FM-09</td>
+<td>Fig. 3</td>
+<td>Direction marketing iPhone</td>
+<td>Marketing retail et ventes (Apple Store)</td>
+<td>Plan de démonstrations</td>
+</tr>
+<tr>
+<td>FM-10</td>
+<td>Fig. 3</td>
+<td>Équipe création (films, visuels)</td>
+<td>Équipe réseaux sociaux et influence</td>
+<td>Vidéos TikTok, visuels</td>
+</tr>
+<tr>
+<td>FM-11</td>
+<td>Fig. 3</td>
+<td>Équipe création (films, visuels)</td>
+<td>Équipe e-commerce (apple.com, app Apple Store)</td>
+<td>Page produit</td>
+</tr>
+<tr>
+<td>FM-12</td>
+<td>Fig. 3</td>
+<td>Relations presse et événementiel</td>
+<td>Équipe data et CRM</td>
+<td>Retombées presse</td>
+</tr>
+<tr>
+<td>FM-13</td>
+<td>Fig. 3</td>
+<td>Équipe e-commerce (apple.com, app Apple Store)</td>
+<td>Équipe data et CRM</td>
+<td>Trafic, paniers, précommandes</td>
+</tr>
+<tr>
+<td>FM-14</td>
+<td>Fig. 3</td>
+<td>Équipe réseaux sociaux et influence</td>
+<td>Équipe data et CRM</td>
+<td>Vues, mentions, engagement</td>
+</tr>
+<tr>
+<td>FM-15</td>
+<td>Fig. 3</td>
+<td>Équipe data et CRM</td>
+<td>Équipe réseaux sociaux et influence</td>
+<td>Ciblage des audiences</td>
+</tr>
+<tr>
+<td>FM-16</td>
+<td>Fig. 3</td>
+<td>Marketing retail et ventes (Apple Store)</td>
+<td>Équipe data et CRM</td>
+<td>Essais en magasin, rendez-vous</td>
+</tr>
+<tr>
+<td>FM-17</td>
+<td>Fig. 3</td>
+<td>Équipe data et CRM</td>
+<td>Direction marketing iPhone</td>
+<td>Tableau de bord hebdomadaire</td>
+</tr>
+<tr>
+<td>FM-18</td>
+<td>Fig. 3</td>
+<td>Équipe data et CRM</td>
+<td>Finance</td>
+<td>Coût par précommande <em>(pointillés : indirect)</em></td>
+</tr>
+<tr>
+<td>FM-19</td>
+<td>Fig. 3</td>
+<td>Équipe data et CRM</td>
+<td>Production / Opérations (supply chain)</td>
+<td>Précommandes par pays <em>(pointillés : indirect)</em></td>
+</tr>
+</tbody>
+</table>
+<!-- FIN:FLUX -->
+
+<h3 id="annexe-b-les-41-ecrans-du-prototype">Annexe B — Les 41 écrans du prototype</h3>
+<!-- DEBUT:ECRANS -->
+<table>
+<thead>
+<tr>
+<th>Écran</th>
+<th>Acteur</th>
+<th>Tâches BPMN</th>
+<th>Flux illustrés</th>
+<th>Séances</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E00 — Accueil</td>
+<td>Vue transversale</td>
+<td>—</td>
+<td>—</td>
+<td>S1, S2, S4, S5</td>
+</tr>
+<tr>
+<td>E01 — Cartographie des flux</td>
+<td>Vue transversale</td>
+<td>—</td>
+<td>FE-01A, FE-01R, FI-01, FI-02, FM-17</td>
+<td>S4</td>
+</tr>
+<tr>
+<td>E02 — Processus P1 (BPMN)</td>
+<td>Vue transversale</td>
+<td>P1-T01, P1-T02, P1-T03, P1-G01, P1-T04, P1-T05, P1-T06, P1-G02, P1-T07, P1-T08, P1-T09, P1-T10, P1-G03, P1-T11, P1-T12</td>
+<td>FE-01R, FE-09A, FE-09R, FI-10, FI-11, FI-12, FM-17, FM-19</td>
+<td>S5</td>
+</tr>
+<tr>
+<td>E03 — Processus P2 (BPMN)</td>
+<td>Vue transversale</td>
+<td>P2-T01, P2-G01, P2-T02, P2-T03, P2-T04, P2-T05, P2-T06, P2-G02, P2-T07, P2-T08, P2-T09, P2-T10</td>
+<td>FI-06, FI-07, FE-06A, FE-06R, FM-14, FM-15, FI-04, FM-18</td>
+<td>S5</td>
+</tr>
+<tr>
+<td>E04 — Journal des flux</td>
+<td>Vue transversale</td>
+<td>—</td>
+<td>FE-01R, FI-10, FM-13</td>
+<td>S4, S5</td>
+</tr>
+<tr>
+<td>E05 — SI partagé (CRM + ERP)</td>
+<td>Vue transversale</td>
+<td>—</td>
+<td>FI-10, FI-11, FI-12</td>
+<td>S2, S4</td>
+</tr>
+<tr>
+<td>E06 — Dossier TD</td>
+<td>Vue transversale</td>
+<td>—</td>
+<td>—</td>
+<td>S8, S9, S10</td>
+</tr>
+<tr>
+<td>E07 — Atelier captures HD</td>
+<td>Vue transversale</td>
+<td>—</td>
+<td>—</td>
+<td>S6, S7</td>
+</tr>
+<tr>
+<td>E10 — Page produit iPhone Duo</td>
+<td>Clients et prospects</td>
+<td>—</td>
+<td>FE-01A, FE-01R, FE-10A, FE-10R, FM-11, FM-13</td>
+<td>S3, S2</td>
+</tr>
+<tr>
+<td>E11 — Configurer et précommander</td>
+<td>Clients et prospects</td>
+<td>P1-T01, P1-T02, P1-T03</td>
+<td>FE-01R, FE-01A, FE-09A, FE-10A, FE-10R, FI-05</td>
+<td>S5, S3</td>
+</tr>
+<tr>
+<td>E12 — Mon compte — suivi</td>
+<td>Clients et prospects</td>
+<td>P1-T09, P1-T01</td>
+<td>FE-01A, FE-01R</td>
+<td>S5</td>
+</tr>
+<tr>
+<td>E15 — Plan de lancement et marge</td>
+<td>Direction générale</td>
+<td>—</td>
+<td>FI-01, FI-02, FI-03</td>
+<td>S4, S2</td>
+</tr>
+<tr>
+<td>E20 — Cockpit KPI marketing</td>
+<td>Direction marketing iPhone</td>
+<td>P1-T10</td>
+<td>FM-17, FM-13, FM-14, FM-16, FE-08R</td>
+<td>S2, S5</td>
+</tr>
+<tr>
+<td>E21 — Analyse des précommandes</td>
+<td>Direction marketing iPhone</td>
+<td>P1-T10, P1-G03, P1-T12</td>
+<td>FM-17, FI-04, FI-05, FM-04, FE-07A, FE-01A</td>
+<td>S5</td>
+</tr>
+<tr>
+<td>E22 — Campagne et consignes</td>
+<td>Direction marketing iPhone</td>
+<td>P2-T01, P2-T08</td>
+<td>FI-06, FM-01, FM-05, FM-06, FM-07, FM-08, FM-09, FI-02, FI-04, FM-03</td>
+<td>S5, S4</td>
+</tr>
+<tr>
+<td>E23 — Campagne TikTok et influence</td>
+<td>Équipe réseaux sociaux et influence</td>
+<td>P2-T02, P2-T03, P2-T07</td>
+<td>FM-10, FE-06A, FI-13, FM-15, FE-07A</td>
+<td>S3, S5</td>
+</tr>
+<tr>
+<td>E24 — CRM clients et précommandes</td>
+<td>Équipe data et CRM</td>
+<td>P1-T06</td>
+<td>FI-10, FM-13, FM-15, FM-18, FM-19</td>
+<td>S2, S5</td>
+</tr>
+<tr>
+<td>E25 — Mesure et tableau de bord</td>
+<td>Équipe data et CRM</td>
+<td>P2-T06, P2-G02</td>
+<td>FM-14, FM-12, FM-16, FM-17</td>
+<td>S5</td>
+</tr>
+<tr>
+<td>E26 — Suivi des précommandes</td>
+<td>Équipe e-commerce (apple.com, app Apple Store)</td>
+<td>P1-T02</td>
+<td>FM-06, FM-11, FM-13, FE-01A, FI-05</td>
+<td>S3, S5</td>
+</tr>
+<tr>
+<td>E27 — Studio création</td>
+<td>Équipe création (films, visuels)</td>
+<td>—</td>
+<td>FM-07, FM-10, FM-11</td>
+<td>S3, S4</td>
+</tr>
+<tr>
+<td>E28 — Presse et événementiel</td>
+<td>Relations presse et événementiel</td>
+<td>—</td>
+<td>FM-05, FE-06A, FM-12</td>
+<td>S4</td>
+</tr>
+<tr>
+<td>E29 — Démonstrations Apple Store</td>
+<td>Marketing retail et ventes (Apple Store)</td>
+<td>—</td>
+<td>FM-09, FM-16</td>
+<td>S4, S2</td>
+</tr>
+<tr>
+<td>E30 — Contrôle des paiements</td>
+<td>Finance</td>
+<td>P1-G01, P1-T04, P1-T05</td>
+<td>FE-09R, FI-12, FI-08, FM-18</td>
+<td>S5, S2</td>
+</tr>
+<tr>
+<td>E31 — Budgets, prix et CAC</td>
+<td>Finance</td>
+<td>P2-G01, P2-T10</td>
+<td>FI-06, FI-07, FM-02, FI-03, FI-08, FI-09, FM-18</td>
+<td>S5, S4</td>
+</tr>
+<tr>
+<td>E35 — Stocks et réservations</td>
+<td>Production / Opérations (supply chain)</td>
+<td>P1-G02, P1-T07, P1-T08</td>
+<td>FI-11, FI-05, FM-19</td>
+<td>S5, S4</td>
+</tr>
+<tr>
+<td>E36 — Plan de production</td>
+<td>Production / Opérations (supply chain)</td>
+<td>P1-T11, P2-T09</td>
+<td>FI-04, FI-05, FI-08, FI-09, FE-04A, FE-04R, FM-19</td>
+<td>S5, S4, S1</td>
+</tr>
+<tr>
+<td>E37 — Appareils de test</td>
+<td>Production / Opérations (supply chain)</td>
+<td>P2-T04</td>
+<td>FI-13, FE-06A</td>
+<td>S5</td>
+</tr>
+<tr>
+<td>E38 — Fiche produit</td>
+<td>Ingénierie / Produit</td>
+<td>—</td>
+<td>FI-14, FI-15</td>
+<td>S2</td>
+</tr>
+<tr>
+<td>E39 — Conformité RGPD / DMA</td>
+<td>Juridique et conformité</td>
+<td>—</td>
+<td>FE-11A, FE-11R, FI-16, FI-17</td>
+<td>S1, S2, S3</td>
+</tr>
+<tr>
+<td>E40 — Service client</td>
+<td>Service client (AppleCare)</td>
+<td>—</td>
+<td>FE-01R, FI-18</td>
+<td>S2</td>
+</tr>
+<tr>
+<td>E41 — Portail influenceurs</td>
+<td>Médias, réseaux sociaux et influenceurs</td>
+<td>P2-T05</td>
+<td>FE-06A, FE-06R</td>
+<td>S3, S5</td>
+</tr>
+<tr>
+<td>E42 — Portail opérateurs</td>
+<td>Opérateurs télécom</td>
+<td>—</td>
+<td>FE-02A, FE-02R</td>
+<td>S4</td>
+</tr>
+<tr>
+<td>E43 — Portail revendeurs</td>
+<td>Revendeurs agréés</td>
+<td>—</td>
+<td>FE-03A, FE-03R</td>
+<td>S4</td>
+</tr>
+<tr>
+<td>E44 — Portail fournisseurs</td>
+<td>Fournisseurs</td>
+<td>—</td>
+<td>FE-04A, FE-04R</td>
+<td>S4, S1</td>
+</tr>
+<tr>
+<td>E45 — Portail développeurs</td>
+<td>Développeurs App Store</td>
+<td>—</td>
+<td>FE-05A, FE-05R</td>
+<td>S4</td>
+</tr>
+<tr>
+<td>E46 — Portail agences</td>
+<td>Agences de publicité et d'achat média</td>
+<td>—</td>
+<td>FE-07A, FE-07R</td>
+<td>S4</td>
+</tr>
+<tr>
+<td>E47 — Portail instituts</td>
+<td>Instituts d'études</td>
+<td>—</td>
+<td>FE-08A, FE-08R</td>
+<td>S4, S1</td>
+</tr>
+<tr>
+<td>E48 — Portail crédit</td>
+<td>Organismes financiers</td>
+<td>P1-G01</td>
+<td>FE-09A, FE-09R</td>
+<td>S4, S5</td>
+</tr>
+<tr>
+<td>E49 — Portail reprise</td>
+<td>Partenaire reprise</td>
+<td>—</td>
+<td>FE-10A, FE-10R</td>
+<td>S4, S3</td>
+</tr>
+<tr>
+<td>E50 — Portail régulateurs</td>
+<td>Régulateurs</td>
+<td>—</td>
+<td>FE-11A, FE-11R</td>
+<td>S4, S1</td>
+</tr>
+<tr>
+<td>E51 — Veille concurrentielle</td>
+<td>Concurrents</td>
+<td>—</td>
+<td>FE-12R</td>
+<td>S1, S4</td>
+</tr>
+</tbody>
+</table>
+<!-- FIN:ECRANS -->
+
+<h3 id="annexe-c-tracabilite-taches-bpmn-ecrans-qui-les-realisent">Annexe C — Traçabilité : tâches BPMN → écrans qui les réalisent</h3>
+<!-- DEBUT:TRACABILITE -->
+<table>
+<thead>
+<tr>
+<th>Tâche ou passerelle</th>
+<th>Libellé (couloir)</th>
+<th>Exécutée par</th>
+<th>Écran(s) qui la réalisent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1-T01</td>
+<td>Choisit sa configuration (client)</td>
+<td>Client</td>
+<td>E11 Configurer et précommander · E12 Mon compte — suivi</td>
+</tr>
+<tr>
+<td>P1-T02</td>
+<td>Affiche prix et délai sur le site (marketing) — <em>automatisée</em></td>
+<td>E-commerce</td>
+<td>E11 Configurer et précommander · E26 Suivi des précommandes</td>
+</tr>
+<tr>
+<td>P1-T03</td>
+<td>Valide la précommande (client)</td>
+<td>Client</td>
+<td>E11 Configurer et précommander</td>
+</tr>
+<tr>
+<td>P1-G01</td>
+<td>Paiement accepté ? (finance)</td>
+<td>Finance</td>
+<td>E30 Contrôle des paiements · E48 Portail crédit</td>
+</tr>
+<tr>
+<td>P1-T04</td>
+<td>Enregistre le CA prévisionnel (finance) — <em>automatisée</em></td>
+<td>Finance</td>
+<td>E30 Contrôle des paiements</td>
+</tr>
+<tr>
+<td>P1-T05</td>
+<td>Calcule la marge et le coût par précommande (finance) — <em>automatisée</em></td>
+<td>Finance</td>
+<td>E30 Contrôle des paiements</td>
+</tr>
+<tr>
+<td>P1-T06</td>
+<td>Enregistre la précommande (CRM) (marketing) — <em>automatisée</em></td>
+<td>Data &amp; CRM</td>
+<td>E24 CRM clients et précommandes</td>
+</tr>
+<tr>
+<td>P1-T10</td>
+<td>Analyse le tableau de bord (marketing)</td>
+<td>Dir. marketing</td>
+<td>E20 Cockpit KPI marketing · E21 Analyse des précommandes</td>
+</tr>
+<tr>
+<td>P1-G03</td>
+<td>Demande supérieure à l'offre ? (marketing)</td>
+<td>Dir. marketing</td>
+<td>E21 Analyse des précommandes</td>
+</tr>
+<tr>
+<td>P1-T12</td>
+<td>Relance la communication (marketing)</td>
+<td>Dir. marketing</td>
+<td>E21 Analyse des précommandes</td>
+</tr>
+<tr>
+<td>P1-G02</td>
+<td>Stock disponible ? (production)</td>
+<td>Production</td>
+<td>E35 Stocks et réservations</td>
+</tr>
+<tr>
+<td>P1-T07</td>
+<td>Allonge le délai affiché (production)</td>
+<td>Production</td>
+<td>E35 Stocks et réservations</td>
+</tr>
+<tr>
+<td>P1-T08</td>
+<td>Réserve un appareil au client (production)</td>
+<td>Production</td>
+<td>E35 Stocks et réservations</td>
+</tr>
+<tr>
+<td>P1-T11</td>
+<td>Augmente la production / répartit les stocks par pays (production)</td>
+<td>Production</td>
+<td>E36 Plan de production</td>
+</tr>
+<tr>
+<td>P1-T09</td>
+<td>Reçoit la confirmation (client) — <em>automatisée</em></td>
+<td>Client</td>
+<td>E12 Mon compte — suivi</td>
+</tr>
+<tr>
+<td>P2-T01</td>
+<td>Propose objectifs et budget de campagne (marketing)</td>
+<td>Dir. marketing</td>
+<td>E22 Campagne et consignes</td>
+</tr>
+<tr>
+<td>P2-G01</td>
+<td>Budget validé ? (finance)</td>
+<td>Finance</td>
+<td>E31 Budgets, prix et CAC</td>
+</tr>
+<tr>
+<td>P2-T02</td>
+<td>Conçoit et publie les vidéos TikTok (marketing)</td>
+<td>Réseaux sociaux</td>
+<td>E23 Campagne TikTok et influence</td>
+</tr>
+<tr>
+<td>P2-T03</td>
+<td>Sélectionne les influenceurs (marketing)</td>
+<td>Réseaux sociaux</td>
+<td>E23 Campagne TikTok et influence</td>
+</tr>
+<tr>
+<td>P2-T04</td>
+<td>Fournit les appareils de test (production)</td>
+<td>Production</td>
+<td>E37 Appareils de test</td>
+</tr>
+<tr>
+<td>P2-T05</td>
+<td>Testent et publient leur avis (influenceurs)</td>
+<td>Influenceurs &amp; médias</td>
+<td>E41 Portail influenceurs</td>
+</tr>
+<tr>
+<td>P2-T06</td>
+<td>Mesure vues, mentions, sentiment (marketing)</td>
+<td>Data &amp; CRM, Réseaux sociaux</td>
+<td>E25 Mesure et tableau de bord</td>
+</tr>
+<tr>
+<td>P2-G02</td>
+<td>Objectifs atteints ? (marketing)</td>
+<td>Dir. marketing</td>
+<td>E25 Mesure et tableau de bord</td>
+</tr>
+<tr>
+<td>P2-T07</td>
+<td>Ajuste le ciblage et le message (marketing)</td>
+<td>Réseaux sociaux</td>
+<td>E23 Campagne TikTok et influence</td>
+</tr>
+<tr>
+<td>P2-T08</td>
+<td>Envoie le rapport et les prévisions (marketing)</td>
+<td>Dir. marketing</td>
+<td>E22 Campagne et consignes</td>
+</tr>
+<tr>
+<td>P2-T09</td>
+<td>Ajuste le plan de production (production)</td>
+<td>Production</td>
+<td>E36 Plan de production</td>
+</tr>
+<tr>
+<td>P2-T10</td>
+<td>Calcule le coût d'acquisition par précommande (finance)</td>
+<td>Finance</td>
+<td>E31 Budgets, prix et CAC</td>
+</tr>
+</tbody>
+</table>
+<!-- FIN:TRACABILITE -->
+
+<h3 id="annexe-d-glossaire">Annexe D — Glossaire</h3>
+<table>
+<thead>
+<tr>
+<th>Terme</th>
+<th>Définition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SI</strong> (système d'information)</td>
+<td>Ensemble organisé de ressources (personnes, procédures, données, outils) qui collectent, stockent, traitent et diffusent l'information utile à l'organisation.</td>
+</tr>
+<tr>
+<td><strong>CRM</strong></td>
+<td>Gestion de la relation client : données et historique des clients, ciblage, campagnes.</td>
+</tr>
+<tr>
+<td><strong>ERP</strong></td>
+<td>Progiciel de gestion intégré : stocks, production, achats, comptabilité, ventes, dans une base commune.</td>
+</tr>
+<tr>
+<td><strong>BPMN</strong></td>
+<td>Notation standard de modélisation des processus (couloirs, tâches, passerelles, événements).</td>
+</tr>
+<tr>
+<td><strong>Passerelle exclusive</strong></td>
+<td>Point de décision d'un processus BPMN : une seule branche est suivie (oui / non).</td>
+</tr>
+<tr>
+<td><strong>Flux d'information</strong></td>
+<td>Information transmise d'un émetteur à un destinataire (flèche des diagrammes de flux).</td>
+</tr>
+<tr>
+<td><strong>KPI</strong></td>
+<td>Indicateur clé de performance.</td>
+</tr>
+<tr>
+<td><strong>Indicateur avancé</strong></td>
+<td>Signal mesuré avant le résultat final (visites, inscriptions…) qui permet d'anticiper les ventes.</td>
+</tr>
+<tr>
+<td><strong>MOA / MOE</strong></td>
+<td>Maîtrise d'ouvrage (exprime le besoin, valide) / maîtrise d'œuvre (conçoit, réalise, exploite).</td>
+</tr>
+<tr>
+<td><strong>AMOA</strong></td>
+<td>Assistance à maîtrise d'ouvrage.</td>
+</tr>
+<tr>
+<td><strong>DSI</strong></td>
+<td>Direction des systèmes d'information (IS&amp;T chez Apple).</td>
+</tr>
+<tr>
+<td><strong>TMA</strong></td>
+<td>Tierce maintenance applicative : maintenance confiée à un prestataire.</td>
+</tr>
+<tr>
+<td><strong>SLA</strong></td>
+<td>Accord de niveau de service : engagement mesurable (disponibilité, délais) assorti de pénalités.</td>
+</tr>
+<tr>
+<td><strong>RPO / RTO</strong></td>
+<td>Perte de données maximale admissible / durée maximale d'interruption admissible.</td>
+</tr>
+<tr>
+<td><strong>API</strong></td>
+<td>Interface qui permet à deux logiciels d'échanger des données automatiquement.</td>
+</tr>
+<tr>
+<td><strong>RPA</strong></td>
+<td>Automatisation robotisée des processus : robots logiciels qui reproduisent des actions répétitives.</td>
+</tr>
+<tr>
+<td><strong>IoT</strong></td>
+<td>Internet des objets : objets connectés qui produisent des données.</td>
+</tr>
+<tr>
+<td><strong>RGPD</strong></td>
+<td>Règlement général sur la protection des données (UE, 2018).</td>
+</tr>
+<tr>
+<td><strong>DMA</strong></td>
+<td>Digital Markets Act : règlement européen sur les grandes plateformes numériques.</td>
+</tr>
+<tr>
+<td><strong>DPO / RSSI</strong></td>
+<td>Délégué à la protection des données / responsable de la sécurité des systèmes d'information.</td>
+</tr>
+<tr>
+<td><strong>Pseudonymisation</strong></td>
+<td>Remplacement des données identifiantes pour limiter l'identification directe des personnes.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="annexe-e-sources">Annexe E — Sources</h3>
+<ul>
+<li>Apple, page produit iPhone Duo, apple.com/fr (consultée le 8 octobre 2026) ; formulaire 10-Q, exercice 2026 (sec.gov).</li>
+<li>Xerfi Global, <em>Group Report : Apple — Overview, SWOT, Strategies, Recent Events, Financial Indicators</em>, J. Melic et O. Lemesle, juin 2025 (réf. 25XENT36).</li>
+<li>Bbox Mag, <em>iPhone Duo : prix officiel et date de sortie</em> ; Combak, <em>Date de sortie de l'iPhone Duo</em> ; iPhon.fr, <em>L'iPhone Duo plie déjà en deux la concurrence</em> ; Futura Sciences, <em>L'iPhone Duo ouvre de nouveaux usages</em> ; MacGeneration, <em>L'iPhone Duo fait son numéro sur TikTok</em> (11 septembre 2026) ; Creative Bloq, <em>Apple's iPhone Duo TikToks nail foldable phone marketing</em> ; iPhoneSoft, <em>Apple fait officiellement appel de l'amende DMA de 500 millions</em> ; Mac4Ever, <em>Aux Emmy Awards, John Ternus sort son iPhone Duo</em>.</li>
+<li>Compte TikTok officiel d'Apple : @apple.</li>
+</ul>
+<h3 id="annexe-f-utiliser-le-prototype">Annexe F — Utiliser le prototype</h3>
+<ol>
+<li>Double-cliquer sur <code>lancer_app.command</code> (macOS, Python 3.9 ou plus) : l'application s'installe, démarre sur <strong>http://localhost:8005</strong> et s'ouvre dans le navigateur. La première fois, la base de démonstration est créée (quelques secondes).</li>
+<li>Choisir une <strong>Vue acteur</strong> en haut de l'écran (raccourci <strong>A</strong>) ; activer le <strong>mode Inspection</strong> (raccourci <strong>I</strong>).</li>
+<li>Rejouer le lancement avec l'<strong>horloge</strong> (keynote du 9/09, tableau de bord du 12/10, ouverture des précommandes, J+3, après la sortie) ; choisir l'exécution <strong>pas à pas</strong> (soutenance) ou <strong>automatique</strong>.</li>
+<li>L'onglet <strong>Dossier TD</strong> (icône livre) affiche ce dossier, la Séance 8, le plan de soutenance et le guide de démonstration.</li>
+</ol>
+</main></body></html>
