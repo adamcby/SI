@@ -75,7 +75,7 @@ Chez Apple, l'informatique interne est assurée par l'organisation **IS&T** (*In
 | **Équipe data / BI** | Entrepôt de données, indicateurs du § 3.6, tableau de bord hebdomadaire (flux FM-17). |
 | **Exploitation (RUN) et SRE** | Mise en production, supervision 24 h/24, gestion de la capacité (montée en charge du 16/10), sauvegardes, plan de reprise. |
 | **Centre de services (support N1, N2, N3)** | N1 : assistance aux utilisateurs ; N2 : diagnostic applicatif ; N3 : correction par les développeurs ou l'éditeur. |
-| **Qualité et tests** | Tests automatisés (comme nos 21 tests pytest), tests de charge, tests de sécurité. |
+| **Qualité et tests** | Tests automatisés (comme nos 66 tests pytest), tests de charge, tests de sécurité. |
 
 ### 2.5 Les acteurs externes : éditeurs, intégrateurs, hébergeurs, TMA
 
@@ -158,7 +158,7 @@ Un **SLA** (*Service Level Agreement*, accord de niveau de service) fixe des eng
 Notre application est déjà conçue comme un « vrai » SI maintenable :
 
 * **un référentiel unique** (`app/referentiel.py`) qui décrit acteurs, flux et processus : une évolution du BPMN se fait à un seul endroit ;
-* **21 tests automatisés** (pytest) qui vérifient les processus P1 et P2 de bout en bout, le contrôle des rôles et le calage sur le tableau de bord du 12/10 : c'est le filet de sécurité de la **maintenance corrective** ;
+* **66 tests automatisés** (pytest) qui vérifient les processus P1 et P2 de bout en bout, le contrôle des rôles et le calage sur le tableau de bord du 12/10 : c'est le filet de sécurité de la **maintenance corrective** ;
 * un **historique Git** (commits) : traçabilité de chaque évolution, retour arrière possible ;
 * une **base de démonstration réinitialisable** : utile pour la recette.
 

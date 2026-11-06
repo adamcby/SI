@@ -235,7 +235,7 @@ Plutôt que des maquettes statiques, nous avons construit une **application web 
 | Base de données | **SQLite** (fichier unique) | Aucune installation ; joue le rôle du « SI partagé » (CRM + ERP + pilotage) |
 | Interface | HTML, **Tailwind CSS**, **Alpine.js**, **Chart.js** | Rendu moderne aux couleurs d'Apple ; librairies **embarquées** : l'application fonctionne **hors-ligne** |
 | Lancement | `lancer_app.command` (macOS) | Double-clic : installation, démarrage sur le port 8005, ouverture du navigateur |
-| Qualité | **pytest** (21 tests) + parcours navigateur | Vérifie les processus de bout en bout |
+| Qualité | **pytest** (66 tests) + parcours navigateur | Vérifie les processus de bout en bout |
 
 ### 8.3 Quatre principes de conception
 1. **Un référentiel unique** issu des Séances 1 à 5 : 25 acteurs, 60 flux, 27 tâches et passerelles BPMN, 41 écrans. Tout ce que l'application affiche ou exécute en découle.
@@ -278,7 +278,7 @@ La touche **I** active le mode inspection : chaque zone importante de l'écran e
 
 ### 8.8 Traçabilité et tests
 * **Couverture totale des modèles** : chaque tâche ou passerelle BPMN est réalisée par au moins un écran d'acteur, et chacun des 60 flux est illustré par au moins un écran (annexe C) — c'est vérifié par des tests automatisés.
-* **21 tests pytest** : parcours nominal de P1 en mode pas à pas, refus de paiement et retour à T01, étude de crédit par l'organisme financier, mode automatique, fermeture avant le 16/10, analyse et hausse de production (avec refus si la capacité de Samsung Display est dépassée), relance déclenchant une campagne P2, campagne P2 complète avec ses deux boucles, contrôle des rôles, rejeu dans le temps, calage du tableau du 12/10, portails partenaires.
+* **66 tests pytest** : affichage des 41 écrans, parcours nominal de P1 en mode pas à pas, refus de paiement et retour à T01, étude de crédit par l'organisme financier, mode automatique, fermeture avant le 16/10, analyse et hausse de production (avec refus si la capacité de Samsung Display est dépassée), relance déclenchant une campagne P2, campagne P2 complète avec ses deux boucles, contrôle des rôles, rejeu dans le temps, calage du tableau du 12/10, portails partenaires.
 
 ### 8.9 Limites
 Données fictives (calées sur le dossier) ; prix des capacités intermédiaires supposés (512 Go : 2 839 €, 1 To : 3 339 €) ; intégrations partenaires simulées ; pas d'authentification réelle ; modèles de prévision volontairement simples ; « Analyse le tableau de bord » traitée par lot (voir questions du jury).

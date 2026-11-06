@@ -100,7 +100,8 @@ def _acteur_cookie(request: Request) -> str:
 
 def _page(request: Request, code: str, template: str, acteur: str, **extra) -> HTMLResponse:
     ecran = ECRANS_PAR_CODE[code]
-    resp = templates.TemplateResponse(template, _contexte(request, ecran, acteur, **extra))
+    # signature (request, nom, contexte) : compatible Starlette 0.29+ et 1.x
+    resp = templates.TemplateResponse(request, template, _contexte(request, ecran, acteur, **extra))
     resp.set_cookie("acteur", acteur, max_age=3600 * 24 * 30, samesite="lax")
     return resp
 
