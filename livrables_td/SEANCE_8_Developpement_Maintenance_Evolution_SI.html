@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Séance 8 — Développement, maintenance et évolution du SI</title><style>
+@page { size: A4; margin: 17mm 15mm 19mm; }
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #f5f5f7; color: #1d1d1f;
+  font: 10.5pt/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter Variable", Inter, "Helvetica Neue", Arial, sans-serif; }
+main { max-width: 210mm; margin: 0 auto; background: #fff; padding: 16mm 15mm; }
+.bandeau { font-size: 8pt; color: #6e6e73; border-bottom: 1px solid #e8e8ed; padding-bottom: 3mm; margin-bottom: 6mm; display: flex; justify-content: space-between; }
+h1 { font-size: 21pt; line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 4mm; }
+h2 { font-size: 15pt; letter-spacing: -0.01em; margin: 9mm 0 3mm; padding-bottom: 1.5mm; border-bottom: 1px solid #d2d2d7; }
+h3 { font-size: 12pt; margin: 6mm 0 2mm; }
+h4 { font-size: 10.5pt; margin: 4mm 0 1.5mm; }
+p, li { orphans: 3; widows: 3; }
+a { color: #0066cc; text-decoration: none; }
+strong { font-weight: 600; }
+table { border-collapse: collapse; width: 100%; margin: 3mm 0 5mm; font-size: 8.6pt; }
+th, td { border: 1px solid #d2d2d7; padding: 1.6mm 2mm; vertical-align: top; text-align: left; }
+th { background: #f5f5f7; font-weight: 600; }
+tr { page-break-inside: avoid; }
+blockquote { margin: 4mm 0; padding: 3mm 4mm; border-left: 3px solid #0071e3; background: #f2f7fd; border-radius: 0 6px 6px 0; }
+blockquote p { margin: 1mm 0; }
+code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 8.8pt; background: #f5f5f7; padding: 0 1.2mm; border-radius: 3px; }
+pre { background: #f5f5f7; padding: 3mm; font-size: 7.4pt; line-height: 1.35; border-radius: 6px; overflow: hidden; page-break-inside: avoid; }
+pre code { background: none; padding: 0; }
+hr { border: 0; border-top: 1px solid #e8e8ed; margin: 6mm 0; }
+figure { margin: 5mm 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; max-height: 118mm; border: 1px solid #d2d2d7; border-radius: 6px; }
+figure.haute img { max-height: 205mm; }
+figcaption { font-size: 8.4pt; color: #6e6e73; margin-top: 2mm; font-style: italic; }
+.page-de-garde { text-align: center; padding: 34mm 8mm 0; min-height: 250mm; page-break-after: always; }
+.page-de-garde h1 { font-size: 25pt; margin: 14mm 0 8mm; }
+.page-de-garde table { width: 80%; margin: 18mm auto; font-size: 10pt; }
+.page-de-garde table th, .page-de-garde table td { text-align: center; border: none; background: none; }
+.page-de-garde p { margin: 2mm 0; }
+@media print {
+  body { background: #fff; }
+  main { max-width: none; margin: 0; padding: 0; }
+  h2 { page-break-after: avoid; }
+  h3, h4 { page-break-after: avoid; }
+  .bandeau { display: none; }
+}
+</style></head>
+<body><main>
+<div class="bandeau"><span>SI marketing · lancement de l'iPhone Duo — TD Fondamentaux des SI, IAE Lyon 3</span><span>Imprimer : Fichier → Imprimer → Enregistrer en PDF</span></div>
+<h1 id="seance-8-qui-developpe-maintient-et-fait-evoluer-le-si-marketing-de-liphone-duo">Séance 8 — Qui développe, maintient et fait évoluer le SI marketing de l'iPhone Duo ?</h1>
+<blockquote>
+<p><strong>Fil rouge du projet.</strong> Séances 1 à 5 : nous avons analysé Apple, choisi la fonction marketing, modélisé les acteurs, les flux et deux processus BPMN (précommandes du 16/10 et campagne TikTok). Séances 6-7 : nous avons construit le prototype interactif de ce SI. <strong>Séance 8 :</strong> nous identifions les acteurs chargés de <strong>développer</strong>, d'<strong>exploiter</strong> et de <strong>maintenir</strong> ce SI dans la durée, puis ses <strong>perspectives d'évolution numérique</strong>.</p>
+<p><em>Les organisations internes d'Apple ne sont pas publiques : nous proposons une organisation </em><em>réaliste et argumentée</em><em>, cohérente avec les pratiques du marché et avec notre dossier. Les chiffres (SLA, budgets) sont des hypothèses de travail.</em></p>
+</blockquote>
+<hr />
+<h2 id="1-le-si-a-faire-vivre-rappel-du-perimetre">1. Le SI à faire vivre : rappel du périmètre</h2>
+<p>Le SI marketing du lancement de l'iPhone Duo relie <strong>trois fonctions</strong> (marketing, production, finance) autour d'un <strong>SI partagé</strong> (Fig. 2 du dossier) :</p>
+<table>
+<thead>
+<tr>
+<th>Brique du SI</th>
+<th>Rôle dans le lancement</th>
+<th>Exemples de solutions (marché)</th>
+<th>Écrans du prototype</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CRM</strong> (relation client)</td>
+<td>Compte Apple = identifiant unique ; « Me prévenir », précommandes, consentements</td>
+<td>Salesforce, Microsoft Dynamics 365, HubSpot</td>
+<td>E24 CRM, E12 Mon compte</td>
+</tr>
+<tr>
+<td><strong>ERP</strong> (gestion intégrée)</td>
+<td>Stocks, lots de production, coûts de revient, CA prévisionnel, marges</td>
+<td>SAP S/4HANA, Oracle</td>
+<td>E30, E31, E35, E36</td>
+</tr>
+<tr>
+<td><strong>E-commerce</strong> (apple.com, app Apple Store)</td>
+<td>Configurateur, prix et délai affichés, paiement</td>
+<td>Plateforme interne d'Apple</td>
+<td>E10, E11, E26</td>
+</tr>
+<tr>
+<td><strong>Analytique et écoute sociale</strong></td>
+<td>Trafic, vues, mentions, sentiment</td>
+<td>Adobe Analytics, Brandwatch, Talkwalker, Sprinklr</td>
+<td>E20, E25</td>
+</tr>
+<tr>
+<td><strong>Gestion des campagnes et de l'influence</strong></td>
+<td>Achat média, influenceurs, appareils de test</td>
+<td>TikTok Ads Manager, Meta Ads Manager, Kolsquare, Upfluence</td>
+<td>E22, E23, E37, E41</td>
+</tr>
+<tr>
+<td><strong>Pilotage (BI)</strong></td>
+<td>Tableau de bord hebdomadaire, décisions</td>
+<td>Tableau, Power BI</td>
+<td>E20, E21, E15</td>
+</tr>
+<tr>
+<td><strong>Échanges partenaires (API, EDI)</strong></td>
+<td>Banque/crédit, reprise, opérateurs (eSIM), fournisseurs, régulateurs</td>
+<td>API REST, EDI, portails</td>
+<td>E42 à E51</td>
+</tr>
+<tr>
+<td><strong>Moteur de processus (BPMN) et bus d'événements</strong></td>
+<td>Orchestration de P1 et P2, notifications entre acteurs</td>
+<td>Camunda, Pega, Kafka (exemples)</td>
+<td>E02, E03, E04</td>
+</tr>
+</tbody>
+</table>
+<p>Un SI de ce type n'est jamais « livré une fois pour toutes » : il doit <strong>tenir la charge</strong> le 16 octobre à 14 h (pic de précommandes), <strong>s'adapter</strong> chaque semaine (nouvelles campagnes, nouveaux pays : Inde le 6/11), <strong>rester conforme</strong> (RGPD, DMA) et <strong>être sécurisé</strong>.</p>
+<hr />
+<h2 id="2-les-acteurs-du-developpement-et-de-la-maintenance">2. Les acteurs du développement et de la maintenance</h2>
+<h3 id="21-vue-densemble-la-gouvernance-du-si">2.1 Vue d'ensemble : la gouvernance du SI</h3>
+<pre><code>                    ┌──────────────────────────────────────────┐
+                    │  COMITÉ DE PILOTAGE (direction générale)  │  arbitre budget, priorités, risques
+                    └───────────────┬──────────────────────────┘
+          ┌─────────────────────────┼──────────────────────────────┐
+┌─────────▼─────────┐     ┌─────────▼─────────┐          ┌─────────▼──────────┐
+│ MOA : direction   │◄───►│ MOE : DSI (IS&amp;T)   │◄────────►│ Éditeurs, intégrateurs│
+│ marketing (+ fin., │     │ architectes, dév., │  contrats │ hébergeurs, TMA       │
+│ production)       │     │ exploitation       │  SLA     │ (prestataires)        │
+└─────────▲─────────┘     └─────────▲─────────┘          └──────────────────────┘
+          │ recette, besoins         │ sécurité, conformité
+┌─────────┴─────────┐     ┌─────────┴─────────┐
+│ Utilisateurs clés │     │ RSSI, DPO,        │
+│ (key users)       │     │ juridique         │
+└───────────────────┘     └───────────────────┘
+</code></pre>
+<p>La <strong>gouvernance</strong> répartit les décisions entre ceux qui <strong>expriment le besoin</strong> (maîtrise d'ouvrage), ceux qui <strong>construisent et exploitent</strong> (maîtrise d'œuvre) et ceux qui <strong>contrôlent</strong> (sécurité, conformité, finance).</p>
+<h3 id="22-la-maitrise-douvrage-moa-le-client-du-si">2.2 La maîtrise d'ouvrage (MOA) : le « client » du SI</h3>
+<table>
+<thead>
+<tr>
+<th>Acteur</th>
+<th>Rôle dans le SI de l'iPhone Duo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Direction marketing iPhone</strong> (sponsor et propriétaire métier)</td>
+<td>Porte le besoin : piloter le lancement avant la commercialisation. Fixe les priorités (ex. : tableau de bord hebdomadaire avant le 12/10), valide le budget du projet, prononce la <strong>recette</strong> fonctionnelle.</td>
+</tr>
+<tr>
+<td><strong>Finance et production</strong> (MOA associées)</td>
+<td>Les processus P1 et P2 traversent leurs couloirs : elles valident les règles de gestion qui les concernent (paiement accepté ?, calcul de la marge et du coût par précommande, stock disponible ?, allongement du délai).</td>
+</tr>
+<tr>
+<td><strong>Utilisateurs clés</strong> (<em>key users</em>) des équipes e-commerce, data &amp; CRM, réseaux sociaux, Apple Store</td>
+<td>Décrivent les besoins concrets, testent les écrans (recette), forment leurs collègues, remontent les anomalies.</td>
+</tr>
+<tr>
+<td><strong>Product owner</strong> (méthode agile)</td>
+<td>Issu de la direction marketing ou de l'équipe data &amp; CRM : tient le <strong>backlog</strong> (liste priorisée des évolutions) et accepte les livraisons de chaque sprint.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Livrables de la MOA :</strong> expression de besoins, cahier des charges fonctionnel (ou <em>user stories</em>), règles de gestion, jeux de données de recette, procès-verbal de recette (VABF : vérification d'aptitude au bon fonctionnement).</p>
+<h3 id="23-lassistance-a-maitrise-douvrage-amoa">2.3 L'assistance à maîtrise d'ouvrage (AMOA)</h3>
+<p>Business analysts internes ou cabinet de conseil : ils <strong>traduisent</strong> les besoins métier en spécifications (c'est exactement ce que nous avons fait avec les diagrammes de flux et le BPMN), animent les ateliers, rédigent les cahiers de recette et accompagnent la <strong>conduite du changement</strong> (formation des équipes, guides d'utilisation).</p>
+<h3 id="24-la-maitrise-duvre-moe-la-dsi-et-ses-equipes">2.4 La maîtrise d'œuvre (MOE) : la DSI et ses équipes</h3>
+<p>Chez Apple, l'informatique interne est assurée par l'organisation <strong>IS&amp;T</strong> (<em>Information Systems &amp; Technology</em>), qui joue le rôle de <strong>DSI</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Équipe MOE</th>
+<th>Responsabilités</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Direction de projet / chef de projet SI</strong></td>
+<td>Planning, budget, risques, coordination des prestataires, comités.</td>
+</tr>
+<tr>
+<td><strong>Architectes</strong> (entreprise, solution, données)</td>
+<td>Choix des briques (CRM, ERP, cloud), intégration par API, modèle de données (identifiant client unique), performance du 16/10.</td>
+</tr>
+<tr>
+<td><strong>Équipes de développement</strong> (front e-commerce, back-end, data engineering)</td>
+<td>Développent le configurateur, le moteur de délai (tâche P1-T02), les tableaux de bord, les interfaces partenaires.</td>
+</tr>
+<tr>
+<td><strong>Équipe data / BI</strong></td>
+<td>Entrepôt de données, indicateurs du § 3.6, tableau de bord hebdomadaire (flux FM-17).</td>
+</tr>
+<tr>
+<td><strong>Exploitation (RUN) et SRE</strong></td>
+<td>Mise en production, supervision 24 h/24, gestion de la capacité (montée en charge du 16/10), sauvegardes, plan de reprise.</td>
+</tr>
+<tr>
+<td><strong>Centre de services (support N1, N2, N3)</strong></td>
+<td>N1 : assistance aux utilisateurs ; N2 : diagnostic applicatif ; N3 : correction par les développeurs ou l'éditeur.</td>
+</tr>
+<tr>
+<td><strong>Qualité et tests</strong></td>
+<td>Tests automatisés (comme nos 66 tests pytest), tests de charge, tests de sécurité.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="25-les-acteurs-externes-editeurs-integrateurs-hebergeurs-tma">2.5 Les acteurs externes : éditeurs, intégrateurs, hébergeurs, TMA</h3>
+<table>
+<thead>
+<tr>
+<th>Acteur</th>
+<th>Ce qu'il apporte</th>
+<th>Exemple pour notre SI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Éditeurs de logiciels</strong></td>
+<td>Progiciels et SaaS (licences ou abonnements), correctifs, nouvelles versions</td>
+<td>Éditeur du CRM (type Salesforce), de l'ERP (type SAP), de l'écoute sociale (type Brandwatch)</td>
+</tr>
+<tr>
+<td><strong>Intégrateurs / ESN</strong></td>
+<td>Paramétrage, développements spécifiques, interfaces (API) entre CRM, ERP et e-commerce</td>
+<td>ESN mandatée pour connecter les précommandes au CRM (tâche P1-T06) et à l'ERP (tâches P1-T04, P1-T08)</td>
+</tr>
+<tr>
+<td><strong>Hébergeurs / fournisseurs cloud</strong></td>
+<td>Serveurs, stockage, élasticité, réseau de diffusion (CDN)</td>
+<td>Centres de données d'Apple et cloud public pour absorber le pic du 16/10</td>
+</tr>
+<tr>
+<td><strong>Prestataire de TMA</strong></td>
+<td>Maintenance applicative sous contrat (voir § 2.6)</td>
+<td>Correction et évolution des écrans de pilotage, des interfaces partenaires</td>
+</tr>
+<tr>
+<td><strong>Partenaires « fournisseurs de données »</strong></td>
+<td>Flux entrants du diagramme de contexte</td>
+<td>Cetelem (FE-09), Likewize (FE-10), opérateurs (FE-02), Samsung Display (FE-04), instituts (FE-08)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>À retenir :</strong> l'externalisation n'enlève pas la responsabilité. La DSI reste <strong>pilote</strong> des prestataires, à travers des <strong>contrats</strong> et des <strong>SLA</strong>.</p>
+<h3 id="26-la-maintenance-tma-et-ses-quatre-formes">2.6 La maintenance : TMA et ses quatre formes</h3>
+<p>La <strong>TMA</strong> (tierce maintenance applicative) confie à un prestataire la maintenance d'une application, pour une durée et à un niveau de service définis.</p>
+<table>
+<thead>
+<tr>
+<th>Type de maintenance</th>
+<th>Définition</th>
+<th>Exemple dans notre SI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Corrective</strong></td>
+<td>Corriger une anomalie</td>
+<td>Le délai affiché ne se met pas à jour après un allongement (tâche P1-T07)</td>
+</tr>
+<tr>
+<td><strong>Évolutive</strong></td>
+<td>Ajouter ou modifier une fonctionnalité</td>
+<td>Ouvrir les précommandes en Inde le 6/11 (nouveau pays, nouvelle devise)</td>
+</tr>
+<tr>
+<td><strong>Adaptative</strong></td>
+<td>Adapter le SI à un changement d'environnement</td>
+<td>Nouvelle règle de la CNIL sur les traceurs ; nouvelle version d'iOS ; changement d'API d'un opérateur</td>
+</tr>
+<tr>
+<td><strong>Préventive</strong></td>
+<td>Anticiper les problèmes</td>
+<td>Test de charge avant le 16/10 ; mise à jour des composants vulnérables</td>
+</tr>
+</tbody>
+</table>
+<h3 id="27-les-sla-des-engagements-mesurables">2.7 Les SLA : des engagements mesurables</h3>
+<p>Un <strong>SLA</strong> (<em>Service Level Agreement</em>, accord de niveau de service) fixe des engagements chiffrés, mesurés par des indicateurs, assortis de pénalités. Proposition pour le SI de l'iPhone Duo :</p>
+<table>
+<thead>
+<tr>
+<th>Engagement</th>
+<th>Niveau proposé</th>
+<th>Pourquoi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Disponibilité du configurateur et de la précommande</td>
+<td><strong>99,95 %</strong> sur la semaine du 16/10 (≈ 5 min d'arrêt toléré), 99,9 % le reste de l'année</td>
+<td>Le pic de 14 h représente plus de 6 000 précommandes en une heure dans notre base</td>
+</tr>
+<tr>
+<td>Temps de réponse (prix et délai affichés, P1-T02)</td>
+<td>&lt; <strong>1,5 s</strong> pour 95 % des requêtes</td>
+<td>Un délai lent fait abandonner le panier</td>
+</tr>
+<tr>
+<td>Incident bloquant (priorité 1)</td>
+<td>prise en charge <strong>15 min</strong>, contournement <strong>2 h</strong>, résolution <strong>4 h</strong>, astreinte 24 h/24 pendant le lancement</td>
+<td>Une heure d'arrêt le 16/10 = des milliers de précommandes perdues</td>
+</tr>
+<tr>
+<td>Incident majeur (P2) / mineur (P3)</td>
+<td>résolution <strong>1 jour</strong> ouvré / <strong>5 jours</strong> ouvrés</td>
+<td>Hiérarchiser les efforts</td>
+</tr>
+<tr>
+<td>Fraîcheur du tableau de bord</td>
+<td>données de la veille disponibles chaque jour à <strong>8 h</strong> ; tableau hebdomadaire le lundi à <strong>9 h</strong></td>
+<td>Le marketing décide le lundi (§ 6.3)</td>
+</tr>
+<tr>
+<td>Sauvegarde et reprise</td>
+<td><strong>RPO 5 min</strong> (perte de données maximale), <strong>RTO 1 h</strong> (durée maximale d'interruption)</td>
+<td>Ne perdre aucune précommande payée</td>
+</tr>
+<tr>
+<td>Sécurité</td>
+<td>correctif des failles critiques sous <strong>72 h</strong></td>
+<td>Données de paiement et données personnelles</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Indicateurs de suivi :</strong> taux de disponibilité, MTTR (temps moyen de rétablissement), nombre d'incidents par priorité, respect des délais, satisfaction des utilisateurs. Les SLA se négocient aussi <strong>avec les partenaires</strong> : délai de réponse de l'organisme financier pour une demande de crédit (FE-09R), capacité garantie de Samsung Display (FE-04R).</p>
+<h3 id="28-securite-conformite-et-controle">2.8 Sécurité, conformité et contrôle</h3>
+<table>
+<thead>
+<tr>
+<th>Acteur</th>
+<th>Rôle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>RSSI</strong> (responsable de la sécurité des SI)</td>
+<td>Politique de sécurité, gestion des accès (dans notre prototype : contrôle d'accès par rôle — seule la finance peut franchir la passerelle « Paiement accepté ? »), tests d'intrusion, gestion des incidents.</td>
+</tr>
+<tr>
+<td><strong>DPO</strong> (délégué à la protection des données)</td>
+<td>Registre des traitements, analyses d'impact (AIPD), réponses aux demandes des clients (droit d'accès : bouton « Télécharger mes données » de l'écran E12), relation avec la CNIL.</td>
+</tr>
+<tr>
+<td><strong>Juridique et conformité</strong></td>
+<td>Validation des messages publicitaires et des contrats d'influenceurs (flux FI-16 et FI-17), conformité DMA, mentions légales du crédit.</td>
+</tr>
+<tr>
+<td><strong>Contrôle de gestion / audit interne</strong></td>
+<td>Suivi du budget du projet (build) et du coût de fonctionnement (run).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="29-matrice-raci-des-principales-activites">2.9 Matrice RACI des principales activités</h3>
+<p><strong>R</strong> = réalise · <strong>A</strong> = approuve (rend des comptes) · <strong>C</strong> = consulté · <strong>I</strong> = informé</p>
+<table>
+<thead>
+<tr>
+<th>Activité</th>
+<th>Dir. marketing (MOA)</th>
+<th>Finance</th>
+<th>Production</th>
+<th>DSI (MOE)</th>
+<th>Éditeurs / intégrateurs</th>
+<th>TMA / exploitation</th>
+<th>RSSI / DPO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exprimer le besoin (ex. : tableau de bord hebdomadaire)</td>
+<td><strong>A</strong>, R</td>
+<td>C</td>
+<td>C</td>
+<td>C</td>
+<td>I</td>
+<td>I</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Modéliser les processus (BPMN P1, P2)</td>
+<td>A</td>
+<td>R (couloir finance)</td>
+<td>R (couloir production)</td>
+<td>R</td>
+<td>I</td>
+<td>I</td>
+<td>I</td>
+</tr>
+<tr>
+<td>Choisir les solutions (CRM, ERP)</td>
+<td>C</td>
+<td>C</td>
+<td>C</td>
+<td><strong>A</strong>, R</td>
+<td>C</td>
+<td>I</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Développer et intégrer les interfaces (API)</td>
+<td>I</td>
+<td>I</td>
+<td>I</td>
+<td><strong>A</strong></td>
+<td>R</td>
+<td>C</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Recette fonctionnelle</td>
+<td><strong>A</strong>, R</td>
+<td>R</td>
+<td>R</td>
+<td>C</td>
+<td>C</td>
+<td>I</td>
+<td>I</td>
+</tr>
+<tr>
+<td>Mise en production avant le 16/10</td>
+<td>I</td>
+<td>I</td>
+<td>I</td>
+<td><strong>A</strong>, R</td>
+<td>C</td>
+<td>R</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Maintenance corrective et évolutive</td>
+<td>C</td>
+<td>I</td>
+<td>I</td>
+<td><strong>A</strong></td>
+<td>C</td>
+<td>R</td>
+<td>I</td>
+</tr>
+<tr>
+<td>Gestion des consentements, RGPD</td>
+<td>C</td>
+<td>I</td>
+<td>I</td>
+<td>C</td>
+<td>C</td>
+<td>I</td>
+<td><strong>A</strong>, R</td>
+</tr>
+<tr>
+<td>Respect des SLA</td>
+<td>I</td>
+<td>I</td>
+<td>I</td>
+<td><strong>A</strong></td>
+<td>R</td>
+<td>R</td>
+<td>I</td>
+</tr>
+</tbody>
+</table>
+<h3 id="210-le-cycle-de-vie-du-si-construire-puis-faire-tourner">2.10 Le cycle de vie du SI : construire, puis faire tourner</h3>
+<ol>
+<li><strong>Étude d'opportunité</strong> (Séances 1-2) : pourquoi un SI marketing ? → piloter le lancement avant les ventes.</li>
+<li><strong>Analyse et modélisation</strong> (Séances 4-5) : acteurs, flux, processus BPMN.</li>
+<li><strong>Conception et prototypage</strong> (Séances 6-7) : maquettes interactives, validées avec les utilisateurs.</li>
+<li><strong>Développement</strong> en <strong>méthode agile</strong> (sprints de 2 semaines) pour les écrans marketing, et en <strong>cycle en V</strong> pour le paramétrage de l'ERP (plus contraint).</li>
+<li><strong>Recette</strong> (tests fonctionnels, tests de charge simulant le 16/10 à 14 h, tests de sécurité).</li>
+<li><strong>Mise en production</strong> avec <strong>gel des changements</strong> une semaine avant le 16/10 : plus aucune modification non urgente.</li>
+<li><strong>Exploitation et maintenance</strong> (RUN, TMA), mesure des SLA, <strong>amélioration continue</strong>.</li>
+</ol>
+<p><strong>Budget :</strong> on distingue le <strong>build</strong> (construction : licences, intégration, développements) et le <strong>run</strong> (exploitation, TMA, abonnements cloud). Sur la durée de vie d'un SI, le run représente souvent la majorité du <strong>coût total de possession (TCO)</strong>.</p>
+<h3 id="211-et-notre-prototype">2.11 Et notre prototype ?</h3>
+<p>Notre application est déjà conçue comme un « vrai » SI maintenable :</p>
+<ul>
+<li><strong>un référentiel unique</strong> (<code>app/referentiel.py</code>) qui décrit acteurs, flux et processus : une évolution du BPMN se fait à un seul endroit ;</li>
+<li><strong>66 tests automatisés</strong> (pytest) qui vérifient les processus P1 et P2 de bout en bout, le contrôle des rôles et le calage sur le tableau de bord du 12/10 : c'est le filet de sécurité de la <strong>maintenance corrective</strong> ;</li>
+<li>un <strong>historique Git</strong> (commits) : traçabilité de chaque évolution, retour arrière possible ;</li>
+<li>une <strong>base de démonstration réinitialisable</strong> : utile pour la recette.</li>
+</ul>
+<hr />
+<h2 id="3-perspectives-devolution-numerique-du-si">3. Perspectives d'évolution numérique du SI</h2>
+<p>Notre dossier (§ 7) proposait cinq axes : données en temps réel, IA et prévision, CRM unifié, confidentialité et RGPD, Green IT. Nous les approfondissons ici, technologie par technologie, en partant <strong>des limites observées dans notre prototype</strong>.</p>
+<h3 id="31-ia-predictive-prevoir-la-demande-et-detecter-les-anomalies">3.1 IA prédictive : prévoir la demande et détecter les anomalies</h3>
+<ul>
+<li><strong>Constat dans le prototype :</strong> la projection de la demande (écran E21) est une règle simple (« précommandes observées ÷ part normalement atteinte à cette heure »).</li>
+<li><strong>Évolution :</strong> un modèle de <strong>prévision</strong> (séries temporelles, apprentissage automatique) qui combine les signaux avancés du § 3.6 (visites, « Me prévenir », sentiment, essais en magasin) pour prévoir la demande <strong>par pays, capacité et couleur</strong> — exactement le flux FI-04 vers la production.</li>
+<li><strong>Autres usages :</strong> détection de <strong>fraude au paiement</strong> (aide à la passerelle P1-G01), score d'<strong>intention d'achat</strong> par segment CRM, détection d'anomalies (pic de commandes de robots revendeurs).</li>
+<li><strong>Bénéfices :</strong> moins de ruptures (Titane noir), moins de délais allongés, meilleure allocation entre pays (tâche P1-T11).</li>
+<li><strong>Points de vigilance :</strong> qualité des données, explicabilité de la décision (la passerelle reste une décision <strong>humaine</strong>, comme dans notre maquette), biais.</li>
+</ul>
+<h3 id="32-ia-generative-produire-et-analyser-plus-vite">3.2 IA générative : produire et analyser plus vite</h3>
+<ul>
+<li>Générer des <strong>variantes</strong> de messages et de visuels pour les campagnes (tests A/B), sous validation du juridique.</li>
+<li><strong>Synthétiser l'écoute sociale</strong> (« les commentaires négatifs portent surtout sur le prix ») et rédiger le commentaire du tableau de bord hebdomadaire.</li>
+<li><strong>Assistant</strong> pour le service client AppleCare (pliure de l'écran, eSIM, transfert depuis Android).</li>
+<li><strong>Cohérence avec la marque :</strong> privilégier le traitement <strong>sur l'appareil</strong> et le <strong>Private Cloud Compute</strong>, argument de confidentialité d'Apple (SWOT, opportunités).</li>
+<li><strong>Points de vigilance :</strong> erreurs (« hallucinations »), droits d'auteur, transparence envers le public, conformité au <strong>règlement européen sur l'IA</strong>.</li>
+</ul>
+<h3 id="33-erp-api-et-architecture-orientee-evenements">3.3 ERP, API et architecture orientée événements</h3>
+<ul>
+<li><strong>Constat :</strong> dans le prototype, une précommande payée est visible instantanément par le marketing, la finance et la production grâce à la base partagée et au <strong>bus d'information</strong> (journal des flux).</li>
+<li><strong>Évolution :</strong> des <strong>API</strong> temps réel entre e-commerce, CRM et ERP, et une <strong>architecture orientée événements</strong> (« précommande payée », « délai allongé », « avis publié ») pour que chaque système réagisse sans ressaisie.</li>
+<li><strong>API partenaires</strong> : autorisation de crédit (Cetelem), estimation de reprise (Likewize), activation eSIM (opérateurs), capacités (Samsung Display) — aujourd'hui simulées par nos portails E42 à E51.</li>
+<li><strong>CRM unifié</strong> (dossier § 7) : relier les données en ligne, en magasin et chez les opérateurs autour du compte Apple.</li>
+</ul>
+<h3 id="34-cloud-absorber-le-pic-et-partager-la-donnee">3.4 Cloud : absorber le pic et partager la donnée</h3>
+<ul>
+<li><strong>Élasticité</strong> : multiplier automatiquement les serveurs le 16/10 à 14 h, puis les réduire (on ne paie que ce qu'on consomme).</li>
+<li><strong>SaaS</strong> pour certaines briques (CRM, écoute sociale), <strong>plateforme de données</strong> (lac de données) pour croiser ventes, campagnes et écoute sociale.</li>
+<li><strong>Points de vigilance :</strong> dépendance au fournisseur, localisation des données (transferts hors UE et RGPD), maîtrise des coûts (FinOps), empreinte énergétique (<strong>Green IT</strong>, cohérent avec l'objectif de neutralité carbone 2030 d'Apple).</li>
+</ul>
+<h3 id="35-iot-de-nouvelles-sources-de-donnees">3.5 IoT : de nouvelles sources de données</h3>
+<ul>
+<li><strong>Magasins connectés :</strong> capteurs de fréquentation et appareils de démonstration connectés → mesure plus fine des essais (flux FM-16).</li>
+<li><strong>Supply chain :</strong> traçabilité des lots (RFID, capteurs) → date de disponibilité plus fiable, donc <strong>délai affiché</strong> plus juste (P1-T02).</li>
+<li><strong>Appareils eux-mêmes :</strong> événements d'activation eSIM, statistiques d'usage <strong>anonymisées et soumises au consentement</strong> → mesurer la satisfaction réelle et les usages du pliable.</li>
+</ul>
+<h3 id="36-automatisation-rpa-et-workflows">3.6 Automatisation (RPA et workflows)</h3>
+<ul>
+<li><strong>RPA</strong> (robots logiciels) pour les tâches répétitives sans API : consolider les rapports des agences (FE-07R) et les ventes des revendeurs (FE-03R), rapprocher les paiements.</li>
+<li><strong>Moteur de workflow BPMN</strong> (comme celui de notre prototype) : les tâches automatisées (P1-T02, T04, T05, T06, T09) s'exécutent seules ; les humains se concentrent sur les décisions (passerelles).</li>
+<li><strong>Automatiser le tableau de bord hebdomadaire</strong> (FM-17) chaque lundi à 9 h, avec alertes quand un indicateur passe « en retard ».</li>
+</ul>
+<h3 id="37-cybersecurite-et-rgpd-la-confiance-comme-fondation">3.7 Cybersécurité et RGPD : la confiance comme fondation</h3>
+<ul>
+<li><strong>Sécurité :</strong> authentification forte (MFA), principe du moindre privilège (contrôle par rôle, déjà dans la maquette), chiffrement, approche <strong>zero trust</strong>, protection contre les robots qui accaparent les précommandes, plan de continuité (PCA/PRA) pour le jour J, directive européenne <strong>NIS2</strong>.</li>
+<li><strong>RGPD :</strong> consentement explicite (case « Me prévenir », bandeau cookies de la maquette), <strong>minimisation</strong> et <strong>pseudonymisation</strong> (identifiants masqués dans le CRM du prototype), registre des traitements et analyse d'impact (flux FE-11A), exercice des droits (export des données, écran E12).</li>
+<li><strong>DMA :</strong> conséquences pour l'App Store et l'interopérabilité ; fonctionnalités différées dans l'UE à documenter clairement (limite relevée en Séance 3).</li>
+</ul>
+<h3 id="38-feuille-de-route-proposee">3.8 Feuille de route proposée</h3>
+<table>
+<thead>
+<tr>
+<th>Horizon</th>
+<th>Évolution</th>
+<th>Valeur</th>
+<th>Complexité</th>
+<th>Acteurs principaux</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Court terme</strong> (novembre 2026)</td>
+<td>Ouverture Inde : nouveau pays, nouvelle devise, plan de lancement (FI-02)</td>
+<td>Élevée</td>
+<td>Faible</td>
+<td>MOA marketing, TMA (évolutive)</td>
+</tr>
+<tr>
+<td>Court terme</td>
+<td>Automatisation du tableau de bord hebdomadaire et alertes</td>
+<td>Élevée</td>
+<td>Faible</td>
+<td>Équipe data, DSI</td>
+</tr>
+<tr>
+<td><strong>Moyen terme</strong> (2027)</td>
+<td>API temps réel CRM ↔ ERP ↔ partenaires (crédit, reprise, opérateurs)</td>
+<td>Élevée</td>
+<td>Moyenne</td>
+<td>Architectes, intégrateur</td>
+</tr>
+<tr>
+<td>Moyen terme</td>
+<td>Prévision de la demande par IA (pays × couleur)</td>
+<td>Élevée</td>
+<td>Moyenne</td>
+<td>Data, production, finance</td>
+</tr>
+<tr>
+<td>Moyen terme</td>
+<td>IA générative pour les variantes de campagnes et le SAV</td>
+<td>Moyenne</td>
+<td>Moyenne</td>
+<td>Marketing, juridique, DPO</td>
+</tr>
+<tr>
+<td><strong>Long terme</strong></td>
+<td>CRM unifié en ligne / magasin / opérateurs ; magasins et supply chain connectés (IoT)</td>
+<td>Élevée</td>
+<td>Élevée</td>
+<td>Comité de pilotage, DSI</td>
+</tr>
+<tr>
+<td>En continu</td>
+<td>Cybersécurité, RGPD, Green IT, FinOps</td>
+<td>Indispensable</td>
+<td>Continue</td>
+<td>RSSI, DPO, DSI</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-conclusion-de-la-seance-8">4. Conclusion de la Séance 8</h2>
+<p>Un SI performant n'est pas seulement un ensemble d'outils : c'est une <strong>organisation</strong>. La <strong>MOA</strong> (direction marketing, avec la finance et la production) exprime et valide les besoins ; la <strong>MOE</strong> (DSI, architectes, développeurs, exploitation) construit et fait fonctionner ; les <strong>éditeurs, intégrateurs et prestataires de TMA</strong> apportent leur expertise sous le contrôle de <strong>SLA</strong> mesurables ; le <strong>RSSI</strong> et le <strong>DPO</strong> garantissent la sécurité et la conformité. Les évolutions numériques — <strong>IA prédictive et générative, API et événements, cloud, IoT, automatisation, cybersécurité</strong> — prolongent directement notre problématique : <strong>mieux piloter un lancement avant même la commercialisation</strong>, avec des données plus rapides, plus fiables et mieux protégées.</p>
+</main></body></html>

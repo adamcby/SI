@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block contenu %}
+<div x-data="planProd()" x-init="init()" class="space-y-5">
+  <section class="carte-p" {{ m.insp('P1-T11 FI-04 FI-05 FE-04A', 'P1-T11 — augmenter la production / répartir les stocks entre pays') }}>
+    {{ m.entete_section('Décisions à exécuter : demande supérieure à l’offre (tâche P1-T11)', 'Reçu du marketing (FI-04). Contraintes : stock non réservé du pays d’origine et capacité de Samsung Display (fournisseur unique).', 'P1-T11 FI-04 FE-04A') }}
+    <template x-for="a in t11" :key="a.id">
+      <div class="mb-3 grid grid-cols-[1fr_auto] items-end gap-4 rounded-2xl p-4 ring-1 ring-action/30 bg-action-soft/20">
+        <div>
+          <div class="text-[14px] font-semibold" x-text="'Analyse #' + a.id + ' — ' + a.libelle_pays + ' : projection ' + SI.fmt.n(a.projection) + ' / offre ' + SI.fmt.n(a.offre)"></div>
+          <div class="mt-3 grid grid-cols-4 gap-3">
+            <label class="text-[12px]">Transférer depuis<select x-model="f.de" class="champ mt-1"><template x-for="p in pays.filter(x => x.pays != a.pays)"><option :value="p.pays" x-text="p.libelle + ' (ratio ' + (p.ratio || 0).toFixed(2).replace('.', ',') + ')'"></option></template></select></label>
+            <label class="text-[12px]">Quantité transférée<input x-model.number="f.qte" type="number" class="champ mt-1"></label>
+            <label class="text-[12px]">Hausse / semaine<input x-model.number="f.hausse" type="number" class="champ mt-1"></label>
+            <label class="text-[12px]">Pendant (semaines)<input x-model.number="f.semaines" type="number" class="champ mt-1"></label>
+          </div>
+          <div class="mt-2 text-[11.5px] text-ink-3" x-text="'Capacité Samsung Display disponible : ' + SI.fmt.n(cap.disponible) + ' écrans / semaine (FE-04R)'"></div>
+        </div>
+        <button @click="executer(a)" class="btn">Exécuter (T11)</button>
+      </div>
+    </template>
+    <p x-show="!t11.length" class="py-4 text-center texte-doux">Aucune décision en attente.</p>
+  </section>
+
+  <section class="carte-p" x-show="t09.length" {{ m.insp('P2-T09 FI-04 FM-03', 'P2-T09 — ajuster le plan de production d’après les prévisions de la campagne') }}>
+    {{ m.entete_section('Prévisions reçues d’une campagne (tâche P2-T09)', 'Le rapport de campagne (P2-T08) contient des prévisions par couleur (FI-04).', 'P2-T09 FI-04') }}
+    <template x-for="c in t09" :key="c.id">
+      <div class="flex items-end justify-between gap-3 rounded-xl bg-canvas-2 p-3">
+        <div class="text-[13px]"><b x-text="c.nom"></b><div class="text-[12px] text-ink-3" x-text="'Prévisions : ' + JSON.stringify((c.rapports[0] || {}).previsions || {}).replace(/[{}&quot;]/g, ' ')"></div></div>
+        <div class="flex items-end gap-2"><select x-model="g.coloris" class="champ w-[150px]"><option value="noir">Titane noir</option><option value="naturel">Titane naturel</option><option value="bleu">Titane bleu</option><option value="blanc">Titane blanc</option></select>
+          <input x-model.number="g.quantite" type="number" class="champ w-[110px]"><button @click="ajuster(c)" class="btn btn-petit whitespace-nowrap">Ajuster le plan</button></div>
+      </div>
+    </template>
+  </section>
+
+  <div class="grid grid-cols-[1.3fr_1fr] gap-5">
+    <section class="carte-p" {{ m.insp('FI-05 FM-04', 'Plan de production et origine des lots (ERP)') }}>
+      {{ m.entete_section('Plan de mise à disposition — France', 'Allocation de lancement, production hebdomadaire, transferts et hausses (P1-T11), ajustements (P2-T09).', 'FI-05') }}
+      <div class="h-[240px]"><canvas id="g-plan"></canvas></div>
+      <table class="tableau mt-3"><thead><tr><th>Origine</th><th class="text-right">Quantité</th><th>Décidé le</th></tr></thead>
+        <tbody><template x-for="o in (k.origines || [])"><tr><td x-text="o.origine"></td><td class="tabnum text-right" x-text="SI.fmt.n(o.quantite)"></td><td class="tabnum text-[12px] text-ink-3" x-text="SI.fmt.dh(o.cree_le)"></td></tr></template></tbody></table>
+    </section>
+    <div class="space-y-5">
+      <section class="carte-p" {{ m.insp('FE-04A FE-04R', 'Fournisseurs : commandes (FE-04A) et capacités (FE-04R)') }}>
+        {{ m.entete_section('Capacités fournisseurs (FE-04R)', '', 'FE-04R FE-04A') }}
+        <table class="tableau"><thead><tr><th>Semaine</th><th>Fournisseur</th><th class="text-right">Capacité</th><th class="text-right">Engagée</th></tr></thead>
+          <tbody><template x-for="c in (k.capacites || [])"><tr><td class="tabnum" x-text="SI.fmt.jour(c.semaine)"></td><td x-text="c.fournisseur"></td><td class="tabnum text-right" x-text="SI.fmt.n(c.capacite)"></td><td class="tabnum text-right" x-text="SI.fmt.n(c.engagee)"></td></tr></template></tbody></table>
+      </section>
+      <section class="carte-p" {{ m.insp('FI-08', 'Transmission du coût de revient à la finance (FI-08)') }}>
+        {{ m.entete_section('Transmettre un coût de revient (FI-08)', 'Production → finance.', 'FI-08') }}
+        <div class="grid grid-cols-[1fr_120px] gap-2"><select x-model="cout.composant" class="champ"><template x-for="c in couts"><option :value="c.composant" x-text="c.composant"></option></template></select><input x-model.number="cout.cout" type="number" class="champ"></div>
+        <button @click="transmettre()" class="btn mt-3">Transmettre à la finance</button>
+      </section>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('planProd', () => ({
+    k: {}, t11: [], t09: [], pays: [], cap: {}, couts: [], f: {de: 'DE', qte: 1500, hausse: 2000, semaines: 3}, g: {coloris: 'noir', quantite: 800},
+    cout: {composant: 'Mémoire vive DRAM 12 Go', cout: 61},
+    async init() { await this.charger(); window.addEventListener('si:maj', () => this.charger()); },
+    async charger() {
+      const [k, pil, camps, fin] = await Promise.all([SI.get('/api/kpi/production'), SI.get('/api/pilotage'), SI.get('/api/campagnes'), SI.get('/api/kpi/finance')]);
+      this.k = k; this.pays = pil.tableau; this.cap = pil.capacite; this.couts = fin.couts_revient;
+      this.t11 = pil.analyses.filter(a => a.etat.jetons.includes('T11'));
+      const a = new URLSearchParams(location.search).get('a');
+      if (a) this.t11.sort((x, y) => (y.id == a) - (x.id == a));
+      this.t09 = await Promise.all(camps.filter(c => c.jetons.includes('T09')).map(c => SI.get('/api/campagnes/' + c.id)));
+      SI.graphique('g-plan', 'bar', k.plan.map(p => SI.fmt.jour(p.x)), [{nom: 'Appareils disponibles', valeurs: k.plan.map(p => p.y)}]);
+      window.dispatchEvent(new CustomEvent('si:rendu'));
+    },
+    async executer(a) { await SI.agir('/api/pilotage/analyses/' + a.id + '/production', {transfert_de: this.f.de, transfert_qte: this.f.qte, hausse_hebdo: this.f.hausse, semaines: this.f.semaines}, 'Production ajustée (T11) : volumes disponibles envoyés au marketing (FI-05), commande à Samsung Display (FE-04A).'); },
+    async ajuster(c) { await SI.agir('/api/campagnes/' + c.id + '/plan', this.g, 'Plan de production ajusté (P2-T09).'); },
+    async transmettre() { await SI.agir('/api/production/cout-revient', this.cout, 'Coût de revient transmis à la finance (FI-08).'); },
+  }));
+});
+</script>
+{% endblock %}

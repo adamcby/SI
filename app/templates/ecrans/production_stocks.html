@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block contenu %}
+<div x-data="productionStocks()" x-init="init()" class="space-y-5">
+  <section class="grid grid-cols-5 gap-3" {{ m.insp('FI-11 FM-19', 'Files de la production alimentées par le CRM (FM-19)') }}>
+    <div class="kpi-tuile"><div class="kpi-libelle">Stock à vérifier (G02)</div><div class="kpi-valeur" x-text="k.files ? k.files.payee : '—'"></div></div>
+    <div class="kpi-tuile"><div class="kpi-libelle">Délais à allonger (T07)</div><div class="kpi-valeur" x-text="k.files ? k.files.delai_a_allonger : '—'"></div></div>
+    <div class="kpi-tuile"><div class="kpi-libelle">Appareils à réserver (T08)</div><div class="kpi-valeur" x-text="k.files ? k.files.a_reserver : '—'"></div></div>
+    <div class="kpi-tuile"><div class="kpi-libelle">Stock de lancement (France)</div><div class="kpi-valeur" x-text="SI.fmt.n(totalOffre())"></div><div class="mt-1 text-[11.5px] text-ink-3">livrable le 23/10</div></div>
+    <div class="kpi-tuile"><div class="kpi-libelle">Configurations en délai allongé</div><div class="kpi-valeur" x-text="(k.grille || []).filter(g => !g.en_stock).length + ' / 16'"></div></div>
+  </section>
+
+  <section class="carte-p" {{ m.insp('P1-G02 P1-T07 P1-T08', 'File de travail : stock disponible ? -> allonge le délai -> réserve un appareil') }}>
+    <div class="mb-3 flex items-end justify-between gap-3">
+      {{ m.entete_section('Précommandes à servir', 'Le SI propose la réponse à « Stock disponible ? » à partir des lots ERP ; la production exécute.', '') }}
+      <button @click="toutTraiter()" :disabled="!file.length || encours" class="btn-sec btn-petit">{{ m.icone('eclair', 'w-4 h-4') }} Traiter toute la file</button>
+    </div>
+    <table class="tableau">
+      <thead><tr><th>Reçue</th><th>Précommande</th><th>Configuration</th><th>Tâche en attente</th><th>Prochain lot disponible</th><th class="text-right">Action</th></tr></thead>
+      <tbody>
+        <template x-for="p in file" :key="p.id">
+          <tr>
+            <td class="tabnum text-ink-3" x-text="SI.fmt.dh(p.cree_le)"></td>
+            <td class="font-medium" x-text="p.reference"></td>
+            <td x-text="p.libelle_config"></td>
+            <td><span class="chip-tache" x-text="p.tache"></span> <span class="text-[12px]" x-text="p.statut_libelle"></span></td>
+            <td><template x-if="p.stock"><span class="badge" :class="p.stock.en_stock ? 'badge-ok' : 'badge-warn'" x-text="p.stock.date ? (p.stock.en_stock ? 'En stock — 23/10' : 'Lot du ' + SI.fmt.jour(p.stock.date)) : 'Aucun lot planifié'"></span></template></td>
+            <td class="text-right">
+              <button x-show="p.statut == 'payee'" @click="agir(p, 'stock')" class="btn btn-petit">Vérifier le stock</button>
+              <button x-show="p.statut == 'delai_a_allonger'" @click="agir(p, 'delai')" class="btn btn-petit !bg-warn-ink">Allonger le délai affiché</button>
+              <button x-show="p.statut == 'a_reserver'" @click="agir(p, 'reserver')" class="btn-ok btn-petit">Réserver l'appareil</button>
+            </td>
+          </tr>
+        </template>
+        <tr x-show="!file.length"><td colspan="6" class="py-8 text-center texte-doux">Aucune précommande à servir : la finance n'a pas encore accepté de nouveau paiement.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="grid grid-cols-[1.35fr_1fr] gap-5">
+    <section class="carte-p" {{ m.insp('FI-11 FI-05 P1-T02', 'Stock par configuration : source du délai affiché au client (T02)') }}>
+      {{ m.entete_section('Stock de lancement par configuration (France)', 'Offre livrable le 23/10 vs appareils déjà réservés — source du délai affiché sur apple.com.', 'FI-11 FI-05') }}
+      <table class="tableau">
+        <thead><tr><th>Configuration</th><th class="text-right">Offre 23/10</th><th class="text-right">Demande</th><th class="text-right">Couverture</th><th>Délai affiché</th></tr></thead>
+        <tbody><template x-for="g in (k.grille || [])" :key="g.capacite + g.coloris">
+          <tr><td class="font-medium" x-text="g.libelle"></td><td class="tabnum text-right" x-text="SI.fmt.n(g.offre_lancement)"></td>
+            <td class="tabnum text-right" x-text="SI.fmt.n(g.demande)"></td>
+            <td class="tabnum text-right"><span class="inline-flex items-center gap-2"><span class="h-1.5 w-16 overflow-hidden rounded-full bg-action-soft"><span class="block h-full rounded-full bg-action" :style="'width:' + Math.min(100, g.taux_couverture) + '%'"></span></span><span x-text="SI.fmt.pct(g.taux_couverture, 0)"></span></span></td>
+            <td><span class="badge" :class="g.en_stock ? 'badge-ok' : 'badge-warn'" x-text="(g.en_stock ? '✓ ' : '⏱ ') + g.delai.replace('Livraison ', '').replace('à partir du vendredi', 'dès le')"></span></td></tr>
+        </template></tbody>
+      </table>
+    </section>
+    <section class="carte-p" {{ m.insp('FI-05 FE-04R', 'Plan de livraison des lots (allocation, production hebdomadaire, hausses)') }}>
+      {{ m.entete_section('Lots de production — France', 'Appareils mis à disposition par date (ERP).', 'FI-05') }}
+      <div class="h-[300px]"><canvas id="g-lots"></canvas></div>
+      <a href="/a/production/plan" class="lien mt-2 inline-block text-[12.5px]">Ajuster le plan de production →</a>
+    </section>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('productionStocks', () => ({
+    k: {}, file: [], encours: false,
+    async init() { await this.charger(); window.addEventListener('si:maj', () => this.charger()); },
+    totalOffre() { return (this.k.grille || []).reduce((a, g) => a + g.offre_lancement, 0); },
+    async charger() {
+      const [k, file] = await Promise.all([SI.get('/api/kpi/production'), SI.get('/api/precommandes?statut=payee,delai_a_allonger,a_reserver&limite=50')]);
+      this.k = k; this.file = file;
+      SI.graphique('g-lots', 'bar', k.plan.map(p => SI.fmt.jour(p.x)), [{nom: 'Appareils disponibles', valeurs: k.plan.map(p => p.y)}]);
+      window.dispatchEvent(new CustomEvent('si:rendu'));
+    },
+    async agir(p, action) {
+      const msgs = {stock: 'Stock vérifié (G02).', delai: 'Délai allongé (T07) : l\'e-commerce affiche la nouvelle date (FI-05).', reserver: 'Appareil réservé (T08) : le client reçoit sa confirmation (T09, FE-01A).'};
+      const r = await SI.agir('/api/precommandes/' + p.id + '/' + action, {}, msgs[action]);
+      if (action == 'stock' && r.issue) SI.toast(r.issue == 'oui' ? 'Stock disponible pour le 23/10 : réservation possible.' : 'Stock insuffisant pour le 23/10 : allonger le délai (T07).', r.issue == 'oui' ? 'ok' : 'warn');
+    },
+    async toutTraiter() {
+      this.encours = true;
+      try {
+        for (const p of [...this.file]) {
+          let s = p.statut;
+          if (s == 'payee') { const r = await SI.api('POST', '/api/precommandes/' + p.id + '/stock', {acteur: SI.acteur()}); s = r.statut; }
+          if (s == 'delai_a_allonger') { const r = await SI.api('POST', '/api/precommandes/' + p.id + '/delai', {acteur: SI.acteur()}); s = r.statut; }
+          if (s == 'a_reserver') { await SI.api('POST', '/api/precommandes/' + p.id + '/reserver', {acteur: SI.acteur()}); }
+        }
+        SI.toast('File traitée : toutes les précommandes sont réservées et confirmées.', 'ok');
+        window.dispatchEvent(new CustomEvent('si:maj'));
+      } catch (e) { SI.toast(e.message, 'crit'); } finally { this.encours = false; }
+    },
+  }));
+});
+</script>
+{% endblock %}

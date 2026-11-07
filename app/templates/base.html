@@ -1,0 +1,329 @@
+{% import "macros.html" as m with context %}<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ ecran.titre }} — SI iPhone Duo</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+  <script src="/static/vendor/chart.umd.min.js"></script>
+  <script src="/static/vendor/html2canvas.min.js"></script>
+  <script src="/static/js/app.js"></script>
+  {% block tete %}{% endblock %}
+  <script defer src="/static/vendor/alpine.min.js"></script>
+</head>
+<body data-acteur="{{ acteur }}" data-ecran="{{ ecran.code }}" class="min-h-screen" x-data>
+
+<!-- ======================================================= BARRE SUPÉRIEURE -->
+<header class="verre sticky top-0 z-40 border-b border-black/5" x-data="barre()">
+  <div class="flex h-[54px] items-center gap-3 px-4">
+    <a href="/" class="flex items-center gap-2.5 pr-2">
+      <span class="flex h-8 w-8 items-center justify-center rounded-[10px] bg-ink text-white">{{ m.icone('pliable', 'w-[18px] h-[18px]') }}</span>
+      <span class="leading-tight">
+        <span class="block text-[13px] font-semibold tracking-tight">SI Marketing · iPhone Duo</span>
+        <span class="block text-[11px] text-ink-3">Apple — prototype de TD</span>
+      </span>
+    </a>
+
+    <!-- Vue Acteur -->
+    <div class="relative" @click.outside="menuActeur = false">
+      <button @click="menuActeur = !menuActeur; $nextTick(() => $refs.rech && $refs.rech.focus())"
+              class="flex items-center gap-2 rounded-full bg-white py-1 pl-1 pr-3 ring-1 ring-black/10 shadow-card transition hover:ring-action/40"
+              title="Changer de vue acteur (raccourci : A)" {{ m.insp('FE-01R FI-10', 'Sélecteur « Vue acteur » : chaque acteur des Fig. 1 à 5 a son interface') }}>
+        {{ m.avatar(acteur, 'w-7 h-7', 'w-[15px] h-[15px]') }}
+        <span class="text-left leading-tight">
+          <span class="block text-[10px] font-semibold uppercase tracking-[0.08em] text-ink-3">Vue acteur · {{ 'interne' if acteur_def.type == 'interne' else 'externe' }}</span>
+          <span class="block max-w-[230px] truncate text-[13px] font-semibold">{{ acteur_def.nom }}</span>
+        </span>
+        {{ m.icone('chevron-bas', 'w-4 h-4 text-ink-3') }}
+      </button>
+      <div x-cloak x-show="menuActeur" x-transition.origin.top.left
+           class="absolute left-0 top-[48px] z-50 w-[760px] rounded-2xl bg-white p-4 shadow-pop ring-1 ring-black/10">
+        <div class="mb-3 flex items-center gap-3">
+          <div class="relative flex-1">
+            <span class="absolute left-3 top-2.5 text-ink-4">{{ m.icone('loupe') }}</span>
+            <input x-ref="rech" x-model="recherche" class="champ pl-9" placeholder="Rechercher un acteur (finance, client, Samsung Display, CNIL…)">
+          </div>
+          <span class="texte-doux">25 acteurs issus des Fig. 1 à 5</span>
+        </div>
+        <div class="grid max-h-[62vh] grid-cols-2 gap-x-5 overflow-y-auto barre-defilement pr-1">
+          {% for gcode, glib in GROUPES %}
+          <div class="mb-3 {% if gcode == 'externes' %}col-span-2{% endif %}">
+            <div class="sur-titre mb-1.5 px-2">{{ glib }}</div>
+            <div class="{% if gcode == 'externes' %}grid grid-cols-2 gap-x-5{% endif %}">
+            {% for code, a in ACTEURS.items() if a.groupe == gcode %}
+              <button @click="SI.changerActeur('{{ code }}')"
+                      x-show="!recherche || '{{ (a.nom ~ ' ' ~ a.persona ~ ' ' ~ a.role)|lower|replace("'", " ") }}'.includes(recherche.toLowerCase())"
+                      class="flex w-full items-start gap-2.5 rounded-xl px-2 py-1.5 text-left transition hover:bg-canvas {% if code == acteur %}bg-action-soft{% endif %}">
+                {{ m.avatar(code, 'w-7 h-7 mt-0.5', 'w-[14px] h-[14px]') }}
+                <span class="min-w-0 flex-1">
+                  <span class="flex items-center gap-1.5 text-[13px] font-medium text-ink">{{ a.nom }}
+                    {% if a.indirect %}<span class="badge badge-neutre">flux indirect</span>{% endif %}</span>
+                  <span class="block truncate text-[11.5px] text-ink-3">{{ a.persona }}</span>
+                </span>
+                <span class="mt-1 flex shrink-0 gap-1">{% for f in a.figures[:3] %}<span class="badge badge-neutre !px-1.5 !py-0 text-[10px]">{{ f }}</span>{% endfor %}</span>
+              </button>
+            {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-1"></div>
+
+    <!-- Horloge de simulation -->
+    <div class="relative" @click.outside="menuHorloge = false">
+      <button @click="menuHorloge = !menuHorloge" class="flex items-center gap-2 rounded-full bg-white px-3 py-1.5 ring-1 ring-black/10 transition hover:ring-action/40" title="Horloge du SI (simulation)">
+        {{ m.icone('horloge', 'w-4 h-4 text-ink-3') }}
+        <span class="tabnum text-[13px] font-medium" x-text="affichage || '{{ horloge.libelle }}'">{{ horloge.libelle }}</span>
+        <span class="badge" :class="{'badge-neutre': horloge && horloge.phase=='avant', 'badge-info': horloge && horloge.phase=='precommandes', 'badge-ok': horloge && horloge.phase=='apres'}"
+              x-text="horloge ? horloge.phase_libelle : ''">{{ horloge.phase_libelle }}</span>
+        <span x-show="horloge && horloge.mode=='automatique'" class="badge badge-noir">auto</span>
+      </button>
+      <div x-cloak x-show="menuHorloge" x-transition.origin.top.right class="absolute right-0 top-[44px] z-50 w-[420px] rounded-2xl bg-white p-4 shadow-pop ring-1 ring-black/10">
+        <div class="sur-titre mb-2">Rejouer le lancement</div>
+        <div class="space-y-1">
+          <template x-for="p in (horloge ? horloge.presets : [])" :key="p.id">
+            <button @click="regler({preset: p.id})" class="flex w-full items-start gap-2 rounded-xl px-2.5 py-2 text-left hover:bg-canvas" :class="horloge.preset === p.id && 'bg-action-soft'">
+              <span class="mt-0.5 text-action">{{ m.icone('lecture', 'w-4 h-4') }}</span>
+              <span><span class="block text-[13px] font-medium" x-text="p.libelle"></span><span class="block text-[11.5px] text-ink-3" x-text="p.aide"></span></span>
+            </button>
+          </template>
+        </div>
+        <div class="mt-3 grid grid-cols-2 gap-3 border-t border-line-soft pt-3">
+          <div>
+            <div class="sur-titre mb-1.5">Vitesse</div>
+            <div class="flex flex-wrap gap-1">
+              <template x-for="v in [[0,'Pause'],[1,'× 1'],[60,'× 60'],[600,'× 600']]">
+                <button @click="regler({vitesse: v[0]})" class="rounded-full px-2.5 py-1 text-[12px] ring-1 ring-line" :class="horloge && horloge.vitesse == v[0] ? 'bg-ink text-white ring-ink' : 'bg-white'" x-text="v[1]"></button>
+              </template>
+            </div>
+          </div>
+          <div>
+            <div class="sur-titre mb-1.5">Exécution des tâches</div>
+            <div class="flex flex-wrap gap-1">
+              <button @click="regler({mode: 'pas_a_pas'})" class="rounded-full px-2.5 py-1 text-[12px] ring-1 ring-line" :class="horloge && horloge.mode=='pas_a_pas' ? 'bg-ink text-white ring-ink' : 'bg-white'">Pas à pas</button>
+              <button @click="regler({mode: 'automatique'})" class="rounded-full px-2.5 py-1 text-[12px] ring-1 ring-line" :class="horloge && horloge.mode=='automatique' ? 'bg-ink text-white ring-ink' : 'bg-white'">Automatique</button>
+            </div>
+          </div>
+        </div>
+        <p class="mt-3 text-[11.5px] leading-snug text-ink-3">« Pas à pas » : chaque acteur exécute sa tâche dans sa vue (idéal pour la soutenance). « Automatique » : le SI applique les règles de gestion sans intervention.</p>
+        <button @click="reinitialiser()" class="mt-3 text-[12px] font-medium text-crit-ink hover:underline">Réinitialiser la base de démonstration</button>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="relative" @click.outside="menuNotif = false">
+      <button @click="menuNotif = !menuNotif" class="relative flex h-9 w-9 items-center justify-center rounded-full bg-white ring-1 ring-black/10 hover:ring-action/40" title="Notifications reçues par cet acteur"
+              {{ m.insp('FI-07 FE-09R', 'Notifications : chaque flux reçu par l’acteur arrive ici') }}>
+        {{ m.icone('cloche', 'w-[18px] h-[18px]') }}
+        <span x-cloak x-show="notifs.non_lues > 0" class="absolute -right-1 -top-1 min-w-[18px] rounded-full bg-crit px-1 text-center text-[10.5px] font-bold leading-[18px] text-white" x-text="notifs.non_lues > 99 ? '99+' : notifs.non_lues"></span>
+      </button>
+      <div x-cloak x-show="menuNotif" x-transition.origin.top.right class="absolute right-0 top-[44px] z-50 w-[440px] rounded-2xl bg-white shadow-pop ring-1 ring-black/10">
+        <div class="flex items-center justify-between border-b border-line-soft px-4 py-3">
+          <div><div class="titre-carte">Flux reçus</div><div class="texte-doux">{{ acteur_def.nom }}</div></div>
+          <button @click="toutLu()" class="text-[12px] font-medium text-action-link hover:underline">Tout marquer comme lu</button>
+        </div>
+        <div class="max-h-[60vh] overflow-y-auto barre-defilement">
+          <template x-for="n in notifs.items" :key="n.id">
+            <a :href="n.lien" class="flex gap-3 border-b border-line-soft px-4 py-2.5 hover:bg-canvas-2" :class="!n.lu && 'bg-action-soft/40'">
+              <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full" :class="n.lu ? 'bg-transparent' : 'bg-action'"></span>
+              <span class="min-w-0 flex-1">
+                <span class="flex items-center gap-1.5"><span class="chip-flux" x-text="n.code || 'info'"></span><span class="truncate text-[12.5px] font-medium" x-text="n.titre"></span></span>
+                <span class="mt-0.5 block text-[12px] leading-snug text-ink-2" x-text="n.message"></span>
+                <span class="mt-0.5 block text-[11px] text-ink-4" x-text="SI.fmt.dh(n.horodatage)"></span>
+              </span>
+            </a>
+          </template>
+          <div x-show="!notifs.items.length" class="px-4 py-8 text-center texte-doux">Aucun flux reçu pour le moment.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mode inspection -->
+    <button @click="$store.ui.basculer()" class="flex items-center gap-2 rounded-full px-3 py-1.5 text-[13px] font-medium ring-1 transition"
+            :class="$store.ui.inspection ? 'bg-s7 text-white ring-s7' : 'bg-white text-ink ring-black/10 hover:ring-s7/50'" title="Mode Inspection maquette / soutenance (raccourci : I)">
+      {{ m.icone('oeil', 'w-4 h-4') }}<span>Inspection</span>
+    </button>
+    <button onclick="SI.capturerEcran()" class="pas-capture flex h-9 w-9 items-center justify-center rounded-full bg-white ring-1 ring-black/10 hover:ring-action/40" title="Capture HD de cet écran (PNG 2x)">{{ m.icone('photo', 'w-[18px] h-[18px]') }}</button>
+    <a href="/dossier" class="flex h-9 w-9 items-center justify-center rounded-full bg-white ring-1 ring-black/10 hover:ring-action/40" title="Dossier TD (Séance 8, dossier complet, soutenance)">{{ m.icone('livre', 'w-[18px] h-[18px]') }}</a>
+  </div>
+</header>
+
+<div class="flex">
+  <!-- ======================================================= NAVIGATION -->
+  <nav class="sticky top-[54px] h-[calc(100vh-54px)] w-[252px] shrink-0 overflow-y-auto border-r border-black/5 px-3 py-4 barre-defilement" :class="$store.ui.inspection && 'hidden'">
+    <div class="mb-4 flex items-center gap-2.5 rounded-2xl bg-white p-2.5 ring-1 ring-black/5 shadow-card">
+      {{ m.avatar(acteur, 'w-9 h-9', 'w-[18px] h-[18px]') }}
+      <div class="min-w-0">
+        <div class="truncate text-[13px] font-semibold">{{ acteur_def.court }}</div>
+        <div class="truncate text-[11px] text-ink-3" title="{{ acteur_def.persona }}">{{ acteur_def.persona }}</div>
+      </div>
+    </div>
+    {% if ecrans_acteur %}
+    <div class="sur-titre mb-1.5 px-2.5">Mes écrans</div>
+    <div class="mb-5 space-y-0.5">
+      {% for e in ecrans_acteur %}
+      <a href="{{ e.url }}" class="nav-lien {% if e.code == ecran.code %}nav-actif{% endif %}">
+        <span class="font-mono text-[10.5px] text-ink-4">{{ e.code }}</span>
+        <span class="min-w-0 flex-1 leading-snug">{{ e.nav }}</span>
+      </a>
+      {% endfor %}
+    </div>
+    {% elif acteur_def.indirect %}
+    <p class="mb-5 px-2.5 text-[12px] text-ink-3">Flux indirect : aucune interface d'échange.</p>
+    {% endif %}
+    <div class="sur-titre mb-1.5 px-2.5">Vue d'ensemble du SI</div>
+    <div class="space-y-0.5">
+      {% set icones_t = {'E00': 'maison', 'E01': 'reseau', 'E02': 'processus', 'E03': 'processus', 'E04': 'liste', 'E05': 'base', 'E06': 'livre', 'E07': 'photo'} %}
+      {% for e in transversaux %}
+      <a href="{{ e.url }}" class="nav-lien {% if e.code == ecran.code %}nav-actif{% endif %}">
+        {{ m.icone(icones_t.get(e.code, 'info'), 'w-4 h-4 text-ink-3') }}
+        <span class="min-w-0 flex-1 leading-snug">{{ e.nav }}</span>
+      </a>
+      {% endfor %}
+    </div>
+    <div class="mt-6 rounded-2xl bg-white/60 p-3 text-[11px] leading-snug text-ink-3 ring-1 ring-black/5">
+      <b class="text-ink-2">Raccourcis :</b> <kbd class="rounded bg-white px-1 ring-1 ring-line">A</kbd> changer d'acteur ·
+      <kbd class="rounded bg-white px-1 ring-1 ring-line">I</kbd> inspection
+    </div>
+  </nav>
+
+  <!-- ======================================================= CONTENU -->
+  <main id="contenu" class="min-w-0 flex-1 px-8 pb-24 pt-6 transition-[margin]" :class="$store.ui.inspection && 'mr-[384px]'">
+    <div class="mb-6">
+      <div class="mb-1.5 flex flex-wrap items-center gap-1.5 text-[12px] text-ink-3">
+        <span class="font-mono">{{ ecran.code }}</span><span>·</span>
+        {% if ecran.transversal %}<span>Vue transversale</span>{% else %}<span>{{ acteur_def.nom }}</span>{% endif %}
+        {% for t in ecran.taches[:6] %}{{ m.chip_tache(t) }}{% endfor %}
+      </div>
+      <h1 class="titre-page">{% block titre %}{{ ecran.titre }}{% endblock %}</h1>
+      <p class="mt-1 text-[14px] text-ink-3">{% block sous_titre %}{{ ecran.sous_titre }}{% endblock %}</p>
+    </div>
+    {% block contenu %}{% endblock %}
+    <footer class="mt-14 border-t border-black/5 pt-4 text-[11.5px] leading-relaxed text-ink-4">
+      {{ PROJET.avertissement }} — {{ PROJET.universite }} · {{ PROJET.formation }} · TD « {{ PROJET.td }} » · {{ PROJET.annee }}.
+    </footer>
+  </main>
+
+  <!-- ======================================================= TIROIR D'INSPECTION -->
+  <aside x-data="inspection()" x-cloak x-show="$store.ui.inspection" x-transition:enter="transition duration-200" x-transition:enter-start="translate-x-8 opacity-0"
+         class="fixed bottom-0 right-0 top-[54px] z-30 w-[384px] overflow-y-auto border-l border-black/10 bg-white/95 px-5 py-5 barre-defilement" style="backdrop-filter: blur(16px)">
+    <div class="mb-4 flex items-start justify-between gap-2">
+      <div>
+        <div class="sur-titre !text-s7">Inspection maquette · soutenance</div>
+        <div class="mt-1 text-[17px] font-semibold leading-snug tracking-tight">{{ inspection.code }} — {{ inspection.titre }}</div>
+      </div>
+      <button @click="$store.ui.basculer()" class="rounded-full p-1.5 text-ink-3 hover:bg-canvas">{{ m.icone('croix', 'w-4 h-4') }}</button>
+    </div>
+
+    <div class="mb-4">
+      <div class="sur-titre mb-1.5">Séances mobilisées</div>
+      <div class="space-y-1">
+        {% for s in inspection.seances %}
+        <div class="flex gap-2 text-[12.5px] leading-snug"><span class="chip-seance mt-[1px]">{{ s }}</span><span><b class="font-medium">{{ SEANCES[s].titre }}</b> — <span class="text-ink-3">{{ SEANCES[s].apport }}</span></span></div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <div class="sur-titre mb-1.5">Tâches BPMN illustrées</div>
+      {% if inspection.taches %}
+      <div class="space-y-1.5">
+        {% for t in inspection.taches %}
+        <a href="/processus/{{ t.processus }}?focus={{ t.noeud }}" class="flex items-start gap-2 rounded-xl p-2 ring-1 ring-line-soft hover:bg-canvas-2">
+          <span class="chip-tache mt-[1px]">{{ t.code }}</span>
+          <span class="text-[12.5px] leading-snug"><b class="font-medium">{{ t.libelle|replace('\n', ' ') }}</b>
+            <span class="block text-ink-3">{{ PROCESSUS[t.processus].figure }} · couloir {{ t.couloir }}{% if t.auto %} · tâche automatisée par le SI{% endif %}</span></span>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}<p class="texte-doux">Écran de pilotage ou d'échange (hors couloir BPMN).</p>{% endif %}
+    </div>
+
+    <div class="mb-4">
+      <div class="sur-titre mb-1.5">Flux d'information illustrés</div>
+      <div class="space-y-1.5">
+        {% for f in inspection.flux %}
+        <div class="rounded-xl p-2 ring-1 ring-line-soft">
+          <div class="flex items-center justify-between gap-2">
+            <span class="flex items-center gap-1.5">{{ m.chip_flux(f.code) }}<span class="text-[12.5px] font-medium">{{ f.libelle }}</span></span>
+            <span class="badge badge-neutre">{{ f.figure }}</span>
+          </div>
+          <div class="mt-1 text-[11.5px] text-ink-3"><span x-text="nomActeur('{{ f.de }}')"></span> → <span x-text="nomActeur('{{ f.vers }}')"></span>
+            {% if f.trait == 'pointille' %}· <i>pointillés (indirect)</i>{% endif %}
+            · <span class="tabnum" x-text="compteurs['{{ f.code }}'] ? SI.fmt.n(compteurs['{{ f.code }}'].volume) + ' échange(s)' : ''"></span></div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <div class="sur-titre mb-1.5">Repères sur l'écran</div>
+      <template x-for="r in reperes" :key="r.n">
+        <div class="mb-1.5 flex gap-2 text-[12.5px] leading-snug">
+          <span class="flex h-[22px] min-w-[22px] items-center justify-center rounded-full bg-s7 px-1 text-[11px] font-bold text-white" x-text="r.n"></span>
+          <span><span class="font-medium" x-text="r.titre"></span>
+            <span class="mt-0.5 flex flex-wrap gap-1"><template x-for="x in r.refs"><span :class="x.startsWith('P') ? 'chip-tache' : 'chip-flux'" x-text="x" :title="libelleRef(x)"></span></template></span></span>
+        </div>
+      </template>
+      <p x-show="!reperes.length" class="texte-doux">Les éléments annotés sont encadrés en pointillés violets.</p>
+    </div>
+
+    <div class="mb-4">
+      <div class="sur-titre mb-1.5">Données du SI mobilisées</div>
+      <ul class="list-disc space-y-0.5 pl-5 text-[12.5px] text-ink-2">{% for d in inspection.donnees %}<li>{{ d }}</li>{% endfor %}</ul>
+    </div>
+    <div class="rounded-2xl bg-s7/5 p-3 ring-1 ring-s7/20">
+      <div class="sur-titre mb-1.5 !text-s7">À dire au jury</div>
+      <ul class="space-y-1.5 text-[12.5px] leading-snug text-ink-2">{% for j in inspection.jury %}<li class="flex gap-1.5"><span class="text-s7">▸</span><span>{{ j }}</span></li>{% endfor %}</ul>
+    </div>
+  </aside>
+</div>
+
+<!-- ======================================================= GUIDE « À FAIRE DANS LE SI » -->
+<div x-data="guide()" x-cloak class="pas-capture fixed bottom-4 z-30" :class="$store.ui.inspection ? 'left-4' : 'left-[268px]'" x-show="taches.length">
+  <div x-show="ouvert" x-transition class="mb-2 w-[460px] rounded-2xl bg-white p-3 shadow-pop ring-1 ring-black/10">
+    <div class="mb-2 flex items-center justify-between"><div class="titre-carte">Tâches en attente dans le SI</div>
+      <button @click="ouvert=false" class="rounded-full p-1 text-ink-3 hover:bg-canvas">{{ m.icone('croix', 'w-4 h-4') }}</button></div>
+    <template x-if="mesTaches().length"><div class="sur-titre mb-1">Pour moi ({{ acteur_def.court }})</div></template>
+    <template x-for="t in mesTaches().slice(0, 6)" :key="t.code + t.instance_id + t.objet_id">
+      <a :href="urlEcran(t)" class="mb-1 flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-action-soft">
+        <span :class="t.code.startsWith('P') ? 'chip-tache' : 'chip-flux'" x-text="t.code"></span>
+        <span class="min-w-0 flex-1 truncate text-[12.5px]"><b class="font-medium" x-text="t.tache"></b> — <span class="text-ink-3" x-text="t.libelle"></span></span>
+        <span class="text-action">{{ m.icone('chevron', 'w-4 h-4') }}</span>
+      </a>
+    </template>
+    <div class="sur-titre mb-1 mt-2">Pour les autres acteurs</div>
+    <template x-for="t in autres()" :key="'o' + t.code + t.instance_id + t.objet_id">
+      <button @click="SI.aller(urlEcran(t), t.acteurs[0])" class="mb-1 flex w-full items-center gap-2 rounded-xl px-2 py-1.5 text-left hover:bg-canvas">
+        <span :class="t.code.startsWith('P') ? 'chip-tache' : 'chip-flux'" x-text="t.code"></span>
+        <span class="min-w-0 flex-1 truncate text-[12.5px]"><b class="font-medium" x-text="nomActeur(t.acteurs[0])"></b> : <span x-text="t.tache"></span></span>
+        <span class="text-[11px] text-action-link">changer de vue</span>
+      </button>
+    </template>
+  </div>
+  <button @click="ouvert=!ouvert" class="flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-[13px] font-medium text-white shadow-pop">
+    {{ m.icone('eclair', 'w-4 h-4') }}
+    <span x-text="mesTaches().length ? mesTaches().length + ' tâche(s) pour moi' : taches.length + ' tâche(s) en attente dans le SI'"></span>
+  </button>
+</div>
+
+<!-- ======================================================= TOASTS -->
+<div x-data="toasts()" class="pas-capture fixed bottom-4 right-4 z-50 flex w-[380px] flex-col gap-2" :class="$store.ui.inspection && 'right-[400px]'">
+  <template x-for="t in liste" :key="t.id">
+    <div x-transition class="flex items-start gap-2.5 rounded-2xl bg-white p-3 shadow-pop ring-1 ring-black/10">
+      <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-white"
+            :class="{'bg-ok-ink': t.type=='ok', 'bg-action': t.type=='info', 'bg-crit': t.type=='crit', 'bg-warn-ink': t.type=='warn'}">
+        <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="3"><path :d="t.type=='ok' ? 'M5 12.5l4.5 4.5L19 7' : (t.type=='info' ? 'M12 7v.01M12 11v6' : 'M12 7v6m0 4h.01')"/></svg>
+      </span>
+      <div class="min-w-0 flex-1 text-[13px] leading-snug"><span x-text="t.message"></span>
+        <template x-for="f in t.flux"><span class="chip-flux ml-1" x-text="f"></span></template></div>
+    </div>
+  </template>
+</div>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

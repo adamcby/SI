@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block contenu %}
+{% set mes_flux = (FLUX.values()|selectattr('vers', 'equalto', acteur)|list) + (FLUX.values()|selectattr('de', 'equalto', acteur)|list) %}
+<div x-data="portail('{{ acteur }}')" x-init="init()" class="space-y-5">
+  <section class="carte-p" {{ m.insp(mes_flux|map(attribute='code')|join(' '), 'Identité de l’acteur et flux échangés avec Apple (diagrammes de flux)') }}>
+    <div class="grid grid-cols-[1fr_1.1fr] gap-6">
+      <div class="flex items-start gap-4">
+        {{ m.avatar(acteur, 'w-14 h-14', 'w-7 h-7') }}
+        <div>
+          <div class="sur-titre">{{ 'Acteur externe' if acteur_def.type == 'externe' else 'Acteur interne' }} · {{ acteur_def.figures|join(', ') }}</div>
+          <div class="mt-0.5 text-[20px] font-semibold tracking-tight">{{ acteur_def.nom }}</div>
+          <div class="text-[13px] text-ink-3">{{ acteur_def.persona }}</div>
+          <p class="mt-2 text-[13px] leading-relaxed text-ink-2">{{ acteur_def.role }}</p>
+        </div>
+      </div>
+      <div>
+        <div class="sur-titre mb-2">Flux d'information avec Apple</div>
+        <div class="grid grid-cols-2 gap-2">
+          {% for f in mes_flux %}
+          <div class="rounded-xl p-2.5 ring-1 ring-line-soft {% if f.trait == 'pointille' %}border border-dashed border-ink-4{% endif %}">
+            <div class="flex items-center justify-between gap-2">{{ m.chip_flux(f.code) }}
+              <span class="text-[11px] font-medium {% if f.vers == acteur %}text-ok-ink{% else %}text-action-link{% endif %}">{{ '← reçu' if f.vers == acteur else 'envoyé →' }}</span></div>
+            <div class="mt-1 text-[12.5px] font-medium">{{ f.libelle }}</div>
+            <div class="text-[11px] text-ink-3">{{ f.figure }} · <span class="tabnum" x-text="stats['{{ f.code }}'] ? SI.fmt.n(stats['{{ f.code }}'].volume) + ' échange(s)' : '0 échange'"></span></div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% if acteur_def.indirect %}
+    <div class="mt-4 rounded-2xl border border-dashed border-ink-4 bg-canvas-2 p-4 text-[13px] leading-relaxed text-ink-2">
+      <b>Pourquoi pas de « portail concurrent » ?</b> Dans le diagramme de contexte (Fig. 1), la flèche vers les concurrents est en <b>pointillés</b> : c'est un flux <b>indirect</b>.
+      Apple n'échange aucune information avec Samsung, Google ou Huawei ; elle <b>observe</b> leurs prix et leurs produits (veille). Cet écran est donc celui de l'équipe data d'Apple, qui exploite cette veille.
+    </div>
+    {% endif %}
+  </section>
+
+  <section class="grid gap-3" :class="'grid-cols-' + Math.min(4, Math.max(2, d.kpis.length))" {{ m.insp(mes_flux|map(attribute='code')|first if mes_flux else '', 'Indicateurs de l’acteur calculés à partir du SI') }}>
+    <template x-for="k in d.kpis" :key="k.libelle">
+      <div class="kpi-tuile"><div class="kpi-libelle" x-text="k.libelle"></div><div class="kpi-valeur !text-[22px]" x-text="k.valeur"></div><div class="mt-1 text-[11.5px] leading-snug text-ink-3" x-show="k.aide" x-text="k.aide"></div></div>
+    </template>
+  </section>
+
+  <template x-if="d.actions.length">
+    <section class="grid gap-4" :class="d.actions.length > 1 ? 'grid-cols-2' : 'grid-cols-1'">
+      <template x-for="a in d.actions" :key="a.code">
+        <div class="carte-p" :data-insp="a.flux" :data-insp-titre="'Action : ' + a.libelle">
+          <div class="mb-2 flex items-start justify-between gap-2"><div><div class="titre-carte" x-text="a.libelle"></div><div class="texte-doux mt-0.5" x-text="a.description"></div></div><span class="chip-flux" x-text="a.flux"></span></div>
+          <div class="grid gap-2" :class="a.champs.length > 2 ? 'grid-cols-3' : 'grid-cols-2'">
+            <template x-for="ch in a.champs" :key="ch.nom">
+              <label class="text-[12px]" :class="ch.type == 'textarea' && 'col-span-3'"><span x-text="ch.libelle"></span>
+                <template x-if="ch.type == 'select'"><select class="champ mt-1" x-model="valeurs[a.code][ch.nom]"><template x-for="o in ch.options"><option :value="Array.isArray(o) ? o[0] : o" x-text="Array.isArray(o) ? o[1] : o"></option></template></select></template>
+                <template x-if="ch.type == 'textarea'"><textarea class="champ mt-1" rows="2" x-model="valeurs[a.code][ch.nom]"></textarea></template>
+                <template x-if="ch.type != 'select' && ch.type != 'textarea'"><input class="champ mt-1" :type="ch.type == 'number' ? 'number' : 'text'" step="any" x-model="valeurs[a.code][ch.nom]"></template>
+              </label>
+            </template>
+          </div>
+          <button @click="executer(a.code, valeurs[a.code])" class="btn mt-3">{{ m.icone('envoi', 'w-4 h-4') }} <span x-text="'Envoyer (' + a.flux + ')'"></span></button>
+        </div>
+      </template>
+    </section>
+  </template>
+
+  <template x-for="tb in d.tables" :key="tb.id">
+    <section class="carte-p" :data-insp="tb.flux" :data-insp-titre="tb.titre">
+      <div class="mb-3 flex items-end justify-between gap-3"><div class="titre-carte" x-text="tb.titre"></div><span class="chip-flux" x-text="tb.flux"></span></div>
+      <div class="overflow-x-auto">
+        <table class="tableau">
+          <thead><tr><template x-for="c in tb.colonnes"><th x-text="c.libelle"></th></template><th x-show="tb.action_ligne"></th></tr></thead>
+          <tbody>
+            <template x-for="(l, i) in tb.lignes" :key="tb.id + i">
+              <tr>
+                <template x-for="c in tb.colonnes"><td class="max-w-[360px]" x-text="cellule(l[c.cle], c.cle)"></td></template>
+                <td x-show="tb.action_ligne" class="whitespace-nowrap text-right">
+                  <template x-if="tb.action_ligne && ligneActionnable(tb, l)">
+                    <div class="flex items-center justify-end gap-1.5">
+                      <template x-for="ch in tb.action_ligne.champs" :key="ch.nom">
+                        <span>
+                          <template x-if="ch.type == 'select'"><select class="champ !w-[120px] !py-1 !text-[12px]" x-model="ligne(tb, l)[ch.nom]"><template x-for="o in ch.options"><option :value="Array.isArray(o) ? o[0] : o" x-text="Array.isArray(o) ? o[1] : o"></option></template></select></template>
+                          <template x-if="ch.type != 'select'"><input class="champ !w-[170px] !py-1 !text-[12px]" :type="ch.type == 'number' ? 'number' : 'text'" step="any" x-model="ligne(tb, l)[ch.nom]"></template>
+                        </span>
+                      </template>
+                      <button @click="executer(tb.action_ligne.code, Object.assign({id: l.id}, ligne(tb, l)))" class="btn btn-petit" x-text="tb.action_ligne.libelle"></button>
+                    </div>
+                  </template>
+                </td>
+              </tr>
+            </template>
+            <tr x-show="!tb.lignes.length"><td :colspan="tb.colonnes.length + 1" class="py-6 text-center texte-doux" x-text="tb.vide || 'Aucune donnée à cette date.'"></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </template>
+
+  <section class="carte-p" {{ m.insp(mes_flux|map(attribute='code')|join(' '), 'Journal des derniers flux échangés par cet acteur') }}>
+    {{ m.entete_section('Derniers flux échangés', 'Extrait du journal du bus d’information.') }}
+    <div class="space-y-1">
+      <template x-for="f in journal" :key="f.id">
+        <div class="flex items-center gap-2 rounded-lg px-2 py-1.5 text-[12.5px] hover:bg-canvas-2">
+          <span class="tabnum w-[110px] shrink-0 text-ink-3" x-text="SI.fmt.dh(f.horodatage)"></span><span class="chip-flux" x-text="f.code"></span>
+          <span class="flex-1 truncate" x-text="f.objet"></span><span class="tabnum text-[11px] text-ink-4" x-show="f.volume > 1" x-text="'× ' + SI.fmt.n(f.volume)"></span>
+        </div>
+      </template>
+    </div>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('portail', (acteur) => ({
+    d: {kpis: [], tables: [], actions: []}, valeurs: {}, lignes: {}, stats: {}, journal: [],
+    async init() { await this.charger(); window.addEventListener('si:maj', () => this.charger()); },
+    async charger() {
+      const [d, stats, journal] = await Promise.all([SI.get('/api/portails/' + acteur), SI.get('/api/flux/stats'), SI.get('/api/journal?acteur=' + acteur + '&limite=12')]);
+      d.actions.forEach(a => { if (!this.valeurs[a.code]) { const v = {}; a.champs.forEach(c => v[c.nom] = c.defaut !== null && c.defaut !== undefined ? c.defaut : (c.options.length ? (Array.isArray(c.options[0]) ? c.options[0][0] : c.options[0]) : '')); this.valeurs[a.code] = v; } });
+      this.d = d; this.stats = stats; this.journal = journal;
+      window.dispatchEvent(new CustomEvent('si:rendu'));
+    },
+    ligne(tb, l) {
+      const cle = tb.id + '-' + l.id;
+      if (!this.lignes[cle]) { const v = {}; (tb.action_ligne.champs || []).forEach(c => v[c.nom] = c.defaut !== null && c.defaut !== undefined ? c.defaut : (c.options.length ? (Array.isArray(c.options[0]) ? c.options[0][0] : c.options[0]) : '')); this.lignes[cle] = v; }
+      return this.lignes[cle];
+    },
+    ligneActionnable(tb, l) { const cond = tb.action_ligne.condition || {}; return Object.entries(cond).every(([k, vals]) => vals.includes(l[k])); },
+    cellule(v, cle) {
+      if (v === null || v === undefined || v === '') return '—';
+      if (typeof v === 'number') return SI.fmt.n(v, Number.isInteger(v) ? 0 : 2);
+      if (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(v)) return SI.fmt.dh(v);
+      if (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)) return SI.fmt.jour(v);
+      return v;
+    },
+    async executer(code, donnees) { await SI.agir('/api/portails/' + acteur + '/' + code, {donnees}); },
+  }));
+});
+</script>
+{% endblock %}
