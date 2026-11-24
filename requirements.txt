@@ -1,5 +1,0 @@
-# Dépendances d'exécution — compatibles Python 3.9 (Python fourni avec macOS) à 3.13
-fastapi>=0.110,<1.0
-uvicorn>=0.29
-jinja2>=3.1
-markdown>=3.5
