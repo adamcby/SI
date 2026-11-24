@@ -195,9 +195,19 @@ const BADGE = {
 };
 const badge = (k) => (BADGE[k] ? withRef(BADGE[k][0], BADGE[k][1]) : 0);
 
+/* ---------- session : profil connecté par fonction, parcours suivi ---------- */
+let SESS = {};
+try { SESS = JSON.parse(sessionStorage.getItem("si-sess") || "{}"); } catch (e) { SESS = {}; }
+function saveSess() { try { sessionStorage.setItem("si-sess", JSON.stringify(SESS)); } catch (e) { /* sans effet */ } }
+const FNS = ["marketing", "finance", "production"];
+const profilsDe = (fn) => Object.keys(PROFILS).filter((k) => PROFILS[k].fn === fn);
+const ownerOf = (fn, scr) => profilsDe(fn).find((k) => PROFILS[k].ecrans.includes(scr));
+let CUR = { fn: null, prof: null };
+
 /* ---------- interface ---------- */
 let ui = { cfg: { cap: "512 Go", col: "Ciel nocturne", pay: "Carte bancaire" }, sel: {}, q: null, dossier: false, crOpen: false, cr: "", note: "", erp: false, jf: "tous", actor: null };
 const Q0 = () => ({ note: 4, motif: "Charnière", txt: "Un léger jeu dans la charnière depuis quelques jours.", accord: true });
+const Q_VIDE = () => ({ note: null, motif: null, txt: "", accord: false });
 ui.q = Q0();
 const $app = () => document.getElementById("app");
 let lastRoute = null;
@@ -240,22 +250,60 @@ const SCR = {
 };
 const VUE = { flux: ["Cartographie des flux", "2026-11-09T10:30"], p1: ["Processus P1 (BPMN)", T16], p2: ["Processus P2 (BPMN)", "2026-11-09T10:30"] };
 
+function nextStep() {
+  const P = SESS.parcours; if (!P) return null;
+  const here = location.hash.split("?")[0].replace(/^#\//, "");
+  const end = ["Parcours terminé : retour à l'accueil", ""];
+  if (P === "p1") {
+    const os = Object.values(S.orders).filter((o) => o.u).sort((x, y) => (x.created < y.created ? 1 : -1)); const o = os[0];
+    if (!o) return ["Client : valider une précommande (M1.1)", "client/precommander"];
+    const i = withRef(T16, () => oInfo(o));
+    if (!i) return ["Client : valider une précommande (M1.1)", "client/precommander"];
+    const st = { controle: [`Finance : contrôler le paiement de ${o.id} (M1.3)`, "finance/paiements"], payee: [`Production : réserver un appareil pour ${o.id} (M1.4)`, "production/stock"],
+      reservee: [`Marketing et ventes : confirmer ${o.id} au client (M1.2)`, "marketing/precommandes"], refusee: [`Marketing et ventes : informer le client du refus de ${o.id} (M1.2)`, "marketing/precommandes"] }[i.s];
+    if (st) return st;
+    return here === "client/precommandes" ? end : ["Client : voir le message reçu (M1.5)", "client/precommandes"];
+  }
+  const ref = S.reviewed.W150032; const r = ref && S.reviews[ref] && !S.reviews[ref].script ? S.reviews[ref] : null;
+  if (!r) return ["Client : répondre au questionnaire (M2.1 à M2.3)", "client/avis"];
+  const t = effAt("2026-11-09T09:41"); const i = rInfo(r, t); if (!i) return ["Client : répondre au questionnaire (M2.1 à M2.3)", "client/avis"];
+  const q = S.signals["Q-" + r.ref.slice(2)]; const c = q && S.costs[q.id];
+  if (i.s === "defaut") return [`Marketing et ventes : transmettre ${r.ref} à la production (M2.4)`, "marketing/avis"];
+  if (i.s === "a_recontacter") return [`Marketing et ventes : recontacter le client (M2.4)`, "marketing/avis"];
+  if (i.s === "en_analyse") return c && at(c.hist, effAt("2026-11-09T10:30")).s === "a_enregistrer" ? [`Finance : enregistrer le coût de garantie de ${q.id} (M2.6)`, "finance/garantie"] : [`Production : analyser le signalement ${q ? q.id : ""} (M2.5)`, "production/qualite"];
+  if (i.s === "a_informer") return [`Marketing et ventes : informer le client de la suite (M2.4)`, "marketing/avis"];
+  return here === "marketing/satisfaction" ? end : ["Direction marketing : tableau de bord mis à jour (M2.7)", "marketing/satisfaction"];
+}
 function side(actor, cur, extra) {
-  const A = actor && ACTEURS[actor] ? ACTEURS[actor] : actor && PARTENAIRES[actor] ? { nom: PARTENAIRES[actor].nom, role: PARTENAIRES[actor].role, ecrans: [] } : { nom: "Vue d'ensemble", role: "Tous les acteurs", ecrans: [] };
-  const mine = actor && ACTEURS[actor] ? A.ecrans.map((k) => { const b = badge(actor + "/" + k); return `<li class='${cur === actor + "/" + k ? "on" : ""}'><a href='#/${actor}/${k}'><span>${SCR[actor][k][0]}</span>${b ? `<span class='badge'>${b}</span>` : ""}</a></li>`; }).join("")
-    : actor && PARTENAIRES[actor] ? `<li class='on'><a href='#/partenaire/${actor}'><span>${PARTENAIRES[actor].ecran}</span></a></li>` : "";
-  const vue = [["", "Accueil"], ["vue/flux", "Cartographie des flux"], ["vue/p1", "Processus P1 (BPMN)"], ["vue/p2", "Processus P2 (BPMN)"]]
-    .map(([h, t]) => `<li class='${cur === (h || "home") ? "on" : ""}'><a href='#/${h}'><span>${t}</span></a></li>`).join("");
+  let A, items = "", links = "";
+  if (actor === "client") {
+    A = ACTEURS.client; links = `<br><a href='#/'>Accueil</a>`;
+    items = A.ecrans.map((k) => `<li class='${cur === "client/" + k ? "on" : ""}'><a href='#/client/${k}'><span>${SCR.client[k][0]}</span></a></li>`).join("");
+  } else if (FNS.includes(actor) && CUR.prof) {
+    const P = PROFILS[CUR.prof]; A = { nom: ACTEURS[actor].nom, role: `${P.nom} · ${P.qui}` }; links = `<br><a href='#/connexion/${actor}'>Changer de profil</a> · <a href='#/'>Accueil</a>`;
+    items = P.ecrans.map((k) => { const b = badge(actor + "/" + k); return `<li class='${cur === actor + "/" + k ? "on" : ""}'><a href='#/${actor}/${k}'><span>${SCR[actor][k][0]}</span>${b ? `<span class='badge'>${b}</span>` : ""}</a></li>`; }).join("");
+  } else if (FNS.includes(actor)) {
+    A = { nom: ACTEURS[actor].nom, role: "Connexion" }; links = `<br><a href='#/'>Accueil</a>`;
+  } else if (actor === "distributeur") {
+    A = { nom: PARTENAIRES.distributeur.nom, role: PARTENAIRES.distributeur.role }; links = `<br><a href='#/vue/flux'>Retour</a>`;
+    items = `<li class='on'><a href='#/partenaire/distributeur'><span>${PARTENAIRES.distributeur.ecran}</span></a></li>`;
+  } else {
+    A = { nom: "Vue d'ensemble", role: "Tous les acteurs" };
+  }
+  const vue = actor ? "" : `<li class='sep'>Vue d'ensemble du SI</li>${[["", "Accueil"], ["vue/flux", "Cartographie des flux"], ["vue/p1", "Processus P1 (BPMN)"], ["vue/p2", "Processus P2 (BPMN)"], ["projet", "Le projet"]]
+    .map(([h, t]) => `<li class='${cur === (h || "home") ? "on" : ""}'><a href='#/${h}'><span>${t}</span></a></li>`).join("")}`;
+  const ns = nextStep();
+  const step = ns ? `<div class='nextstep'><div class='lab'>${SESS.parcours === "p1" ? "Parcours 1" : "Parcours 2"} · étape suivante</div><a href='#/${ns[1]}'>${ns[0]} →</a></div>` : "";
   return `<aside class='side'><div class='grow'><a class='brand' href='#/' style='display:block'>SI Marketing · iPhone Duo<small>Prototype · données fictives</small></a>
-  <div class='actor'><span>Vue acteur</span><b>${A.nom}</b><span>${A.role}</span>${actor ? `<br><a href='#/'>Changer de vue</a>` : ""}</div>
-  <ul class='menu'>${mine ? `<li class='sep'>Mes écrans</li>${mine}` : ""}<li class='sep'>Vue d'ensemble du SI</li>${vue}</ul></div>
-  <div class='sidefoot'>${extra || ""}<a href='#/projet'>Le projet</a> · <a data-act='reset'>Recommencer la démonstration</a></div></aside>`;
+  <div class='actor'><span>Vue acteur</span><b>${A.nom}</b><span>${A.role}</span>${links}</div>
+  <ul class='menu'>${items ? `<li class='sep'>Mes écrans</li>${items}` : ""}${vue}</ul>${step}</div>
+  <div class='sidefoot'>${extra || ""}<a data-act='reset'>Recommencer la démonstration</a></div></aside>`;
 }
 function shell(actor, cur, inner, extra) { return `<div class='app'>${side(actor, cur, extra)}<main class='main'>${inner}</main></div>`; }
 
 /* ---------- M0 · accueil ---------- */
 function vHome() {
-  const path = (title, sub, steps, screens, start, bpmn) => `<div class='card'><h2>${title}</h2><div class='sub' style='margin:0 0 10px'>${sub}</div><div class='steps'>${steps.map((x) => `<div class='done'>${x}</div>`).join("")}</div>${screens.map(([a, b, c, h]) => `<a class='scr' href='#/${h}'><b>${a}</b><span>${b}</span><i>${c}</i></a>`).join("")}<div style='margin-top:12px'><a class='btn pri' href='#/${start}'>Suivre ce parcours</a><a class='btn' href='#/${bpmn}'>Voir le processus (BPMN)</a></div></div>`;
+  const path = (title, sub, steps, screens, start, bpmn) => `<div class='card'><h2>${title}</h2><div class='sub' style='margin:0 0 10px'>${sub}</div><div class='steps'>${steps.map((x) => `<div class='done'>${x}</div>`).join("")}</div>${screens.map(([a, b, c, h]) => `<a class='scr' href='#/${h}'><b>${a}</b><span>${b}</span><i>${c}</i></a>`).join("")}<div style='margin-top:12px'><a class='btn pri' href='#/${start}' data-act='parcours' data-v='${bpmn.slice(4)}'>Suivre ce parcours</a><a class='btn' href='#/${bpmn}'>Voir le processus (BPMN)</a></div></div>`;
   const p1 = path("Parcours 1 · De la précommande à sa confirmation", "Le client précommande ; le marketing enregistre, la finance contrôle le paiement, la production réserve un appareil ; le client reçoit sa date de livraison.",
     ["Client", "Marketing et ventes", "Finance", "Production", "Client"],
     [["M1.1", "Configurer et précommander", "Client", "client/precommander"], ["M1.2", "CRM : précommandes reçues", "Marketing et ventes", "marketing/precommandes"], ["M1.3", "Contrôle des paiements", "Finance", "finance/paiements"], ["M1.4", "Stock et réservations", "Production", "production/stock"], ["M1.5", "Confirmation ou refus", "Client", "client/precommandes"]], "client/precommander", "vue/p1");
@@ -263,7 +311,7 @@ function vHome() {
     ["Client", "Marketing et ventes", "Production", "Finance", "Tableau de bord"],
     [["M2.1", "QR code, questionnaire, confirmation (M2.1 à M2.3)", "Client", "client/avis"], ["M2.4", "CRM : avis reçus", "Marketing et ventes", "marketing/avis"], ["M2.5", "Signalements qualité", "Production", "production/qualite"], ["M2.6", "Coûts de garantie", "Finance", "finance/garantie"], ["M2.7", "Tableau de bord de satisfaction", "Direction marketing", "marketing/satisfaction"]], "client/avis", "vue/p2");
   const views = [["client", "Client", "Acteur externe · précommande, questionnaire"], ["marketing", "Marketing et ventes", "Fonction principale · CRM, tableaux de bord"], ["finance", "Finance", "Fonction complémentaire · paiements, coûts"], ["production", "Production", "Fonction complémentaire · stocks, qualité"]]
-    .map(([k, a, b]) => `<a class='view' href='#/${k}/${ACTEURS[k].ecrans[0]}'><b>${a}</b><div>${b}</div></a>`).join("");
+    .map(([k, a, b]) => `<a class='view' href='#/${k === "client" ? "client/precommander" : "connexion/" + k}'><b>${a}</b><div>${b}</div></a>`).join("");
   return shell(null, "home", `<div class='crumb'>M0 · Accueil du prototype</div>
   <h1>SI marketing et ventes : lancement de l'iPhone Duo</h1>
   <div class='sub'>Maquettes du SI. Elles montrent les principaux écrans du SI et le parcours de chaque utilisateur. Données fictives ; projet universitaire non affilié à Apple.</div>
@@ -327,7 +375,7 @@ function vMesPrecommandes() {
   const by = []; all.forEach((o) => { const g = by.find((x) => x[0] === o.cli); if (g) g[1].push(o.id); else by.push([o.cli, [o.id]]); });
   const names = by.map(([c, ids]) => `${CLIENTS[c].nom} (${ids.join(", ")})`);
   const list = names.length > 1 ? names.slice(0, -1).join(", ") + " et " + names[names.length - 1] : names[0];
-  return shell("client", "client/precommandes", `<div class='strip ${all.length >= 3 ? "three" : ""}'>${all.map(phone).join("")}</div><div class='note' style='margin-top:4px'>Messages reçus par ${list}.</div>`);
+  return shell("client", "client/precommandes", `<div class='strip ${all.length >= 3 ? "three" : ""}'>${all.map(phone).join("")}</div><div class='note' style='margin-top:4px'>Les messages que peut recevoir le client : ${list}.</div>`);
 }
 function suiviLab(s) { return { defaut: "Dossier ouvert", a_recontacter: "Dossier ouvert", en_analyse: "Analyse en cours", a_informer: "Solution en préparation", clos: "Solution proposée", recontacte: "Conseiller en contact", remercie: "Aucun", statistique: "Réponse anonyme" }[s]; }
 function clientSuite(r) {
@@ -397,6 +445,19 @@ function vDonnees() {
   <div class='chk' data-act='offres'><div class='box ${offresDe("lea") ? "" : "off"}'>${offresDe("lea") ? "✓" : ""}</div><div>J'accepte de recevoir des offres personnalisées (facultatif).</div></div></div>
   <div class='card'><h2>Mes avis <small>rattachés à mon compte</small></h2>${rs.length ? `<table><tr><th>Réponse</th><th>Note</th><th>Motif</th><th></th></tr>${rs.map((r) => `<tr><td><b>${r.ref}</b></td><td>${r.note}/10</td><td>${esc(r.motif)}</td><td><a class='lnk' data-act='retirer' data-id='${r.ref}'>Retirer l'accord</a> · <a class='lnk' data-act='supprimer' data-id='${r.ref}'>Supprimer</a></td></tr>`).join("")}</table>` : `<div class='empty'>Aucun avis rattaché à votre compte.</div>`}
   <div class='note'>Sans accord, une réponse devient anonyme et ne sert plus qu'aux statistiques.</div></div></div>`);
+}
+
+/* ---------- connexion au SI : profil et authentification à plusieurs facteurs ---------- */
+function vConnexion(fn, vers) {
+  const ps = profilsDe(fn); const pick = ui.pick && PROFILS[ui.pick] && PROFILS[ui.pick].fn === fn ? ui.pick : (vers && ownerOf(fn, vers)) || SESS[fn] || ps[0];
+  ui.pick = pick; const P = PROFILS[pick];
+  const tiles = ps.map((k) => `<div class='tile ${k === pick ? "on" : ""}' data-act='pickprof' data-v='${k}'><b>${PROFILS[k].nom}</b><div>${PROFILS[k].role}</div></div>`).join("");
+  return shell(fn, "", head("", `Connexion au SI · ${ACTEURS[fn].nom}`, [], "Connexion", "Chaque salarié se connecte avec son profil : il ne voit que les écrans et les données dont il a besoin.") +
+    `<div class='cols'><div class='card'><div class='lab2'>Profil</div><div class='tiles'>${tiles}</div>
+    <div class='kv' style='margin-top:8px'><span>Identifiant</span><b>${P.login}</b><span>Mot de passe</span><b>••••••••••••</b><span>Code reçu par SMS</span><b>482 913</b></div>
+    <div style='margin-top:14px'><button class='btn pri' data-act='login' data-v='${pick}' data-id='${vers || ""}'>Se connecter</button></div>
+    <div class='note'>Authentification à plusieurs facteurs : le mot de passe, puis un code reçu sur le téléphone du salarié.</div></div>
+    <div class='card'><h2>Écrans du profil <small>${P.nom}, ${P.qui}</small></h2>${P.ecrans.map((k) => `<div style='padding:7px 0;border-bottom:1px solid #f0f0f3;font-size:12.5px'>${SCR[fn][k][0]}</div>`).join("")}</div></div>`);
 }
 
 /* ---------- M1.2 · CRM, précommandes reçues ---------- */
@@ -585,7 +646,7 @@ function sSatisfaction() {
   const s = sat(); const ins = Object.values(s.motifs).reduce((x, y) => x + y, 0);
   const bars = MOTIFS.map((m) => { const v = Math.round((s.motifs[m] / ins) * 100); return `<div class='barrow'><div>${m}</div><div class='barbg'><div class='bar' style='width:${Math.min(100, v * 3)}%'></div></div><div><b>${v} %</b></div></div>`; }).join("");
   const wk = s.semaines.map(([w, v]) => `<div style='flex:1;text-align:center'><div style='height:${Math.trunc(v * 12)}px;background:#0071e3;border-radius:8px 8px 0 0;margin:0 18px'></div><div style='font-size:12px;margin-top:6px'><b>${dec1(v)}</b><br><span style='color:#86868b'>${w.slice(0, 3)}</span></div></div>`).join("");
-  const actor = ui.actor && ["finance", "production"].includes(ui.actor) ? ui.actor : "marketing";
+  const actor = CUR.fn || "marketing";
   return shell(actor, actor + "/satisfaction", head("M2.7", "Direction marketing, Production, Finance", ["P2 · Mettre à jour le tableau de bord"], "Tableau de bord de satisfaction",
     `France · ${s.extra ? "du 2 au 9 novembre 2026" : "semaine du 2 au 8 novembre 2026"} · mis à jour à chaque réponse enregistrée dans le CRM.`) +
     kpis([["Réponses reçues", nf(s.rep), `taux de réponse ${s.taux} %`], ["Note moyenne", dec1(s.moy), "objectif 8,5"], ["Clients satisfaits (note ≥ 7)", pct(s.satis, s.rep), nf(s.satis) + " réponses"], ["Défauts signalés", nf(s.defauts), `dont ${s.confirmes} confirmés`], ["Délai moyen de recontact", s.recontact + " h", "objectif 48 h"], ["Coûts de garantie", eur(s.couts), "enregistrés par la Finance"]], 6) +
@@ -617,7 +678,7 @@ function sClients() {
   const det = `<div class='card'><h2>${c.nom} <small>${os.length ? `fiche créée le ${dShortY(os.map((o) => o[3]).sort()[0])}` : "aucune commande iPhone Duo"}</small></h2>
   <div class='kv'><span>Courriel</span><b>${c.mail}</b><span>Téléphone</span><b>${c.tel}</b><span>Ville</span><b>${c.ville}</b><span>Offres personnalisées</span><b>${offresDe(selId) ? "Acceptées" : "Refusées"}</b></div>
   <h2 style='margin-top:16px'>Commandes</h2>${os.map(([id, cfg, p]) => line(`<b>${id}</b> · ${cfg} · ${p}`)).join("") || `<div class='empty'>Aucune commande.</div>`}
-  <h2 style='margin-top:16px'>Avis</h2>${rs.map((r) => line(`<b>${r.ref}</b> · ${r.note}/10 · ${esc(r.motif)} · ${rPill(rInfo(r).s)}`)).join("") || `<div class='empty'>Aucun avis rattaché.</div>`}
+  ${CUR.prof === "conseiller" ? `<h2 style='margin-top:16px'>Avis</h2>${rs.map((r) => line(`<b>${r.ref}</b> · ${r.note}/10 · ${esc(r.motif)} · ${rPill(rInfo(r).s)}`)).join("") || `<div class='empty'>Aucun avis rattaché.</div>`}` : ""}
   <h2 style='margin-top:16px'>Notes</h2>${notes.map((n) => line(`<span style='color:#86868b'>${quand(n.t)}</span><br>${esc(n.txt)}`)).join("") || `<div class='empty'>Aucune note.</div>`}
   <textarea class='ta' data-act='notetxt' placeholder='Ajouter une note sur ce client' style='margin-top:10px'>${esc(ui.note)}</textarea><div style='margin-top:8px'><button class='btn' data-act='addnote' data-id='${selId}'>Ajouter la note</button></div></div>`;
   return shell("marketing", "marketing/clients", head("", "Marketing et ventes (CRM)", [], "Fiches clients", "Une fiche par client, créée ou complétée à chaque précommande. Les accords donnés par le client ne se modifient que depuis son compte.") +
@@ -726,12 +787,12 @@ function vFlux() {
   const chip = (k, t) => `<button class='${f === k ? "on" : ""}' data-act='jf' data-id='${k}'>${t}</button>`;
   const rows = L.slice(0, 60).map((x) => `<tr><td>${ddmm(x.t)} · ${hm(x.t)}</td><td>${x.de}</td><td>${x.vers}</td><td>${esc(x.info)}</td><td>${x.outil}</td><td><b>${x.ref}</b></td></tr>`).join("");
   const figs = [["contexte-apple", "Modèle de contexte d'Apple pour le lancement"], ["flux-apple", "Flux entre les acteurs internes d'Apple"], ["contexte-fonction", "Modèle de contexte de la fonction marketing et ventes"], ["flux-fonction", "Flux internes de la fonction marketing et ventes"]];
-  return shell(ui.actor, "vue/flux", head("", "Vue d'ensemble du SI", [], "Cartographie des flux", "Les modèles de notre dossier, puis chaque information réellement échangée dans la démonstration, d'un service à l'autre ou avec un acteur externe.") +
+  return shell(null, "vue/flux", head("", "Vue d'ensemble du SI", [], "Cartographie des flux", "Les modèles de notre dossier, puis chaque information réellement échangée dans la démonstration, d'un service à l'autre ou avec un acteur externe.") +
     `<div class='grid2'>${figs.map(([fn, t]) => `<div class='fig'><a href='img/fig/${fn}.png' target='_blank'><img src='img/fig/${fn}.png' alt='${t}' loading='lazy'></a><p>${t}</p></div>`).join("")}</div>
     <div class='card'><h2>Journal des échanges <small>références des tableaux de flux A1 à A3 du dossier</small></h2><div class='chipsf'>${chip("tous", "Tous")}${chip("P1", "Processus 1")}${chip("P2", "Processus 2")}${chip("ext", "Avec l'extérieur")}</div>
     <div class='tw'><table><tr><th>Date</th><th>Émetteur</th><th>Récepteur</th><th>Information</th><th>Outil</th><th>Flux</th></tr>${rows || `<tr><td colspan='6' class='empty'>Aucun échange.</td></tr>`}</table></div>
     <div class='note'>A1 : flux entre Apple et ses acteurs externes · A2 : flux entre les acteurs internes d'Apple · A3 : flux de la fonction marketing et ventes.</div></div>
-    <div class='card'><h2>Acteurs externes <small>espaces partenaires</small></h2><div class='views'><a class='view' href='#/partenaire/banque'><b>Banque du client</b><div>Demandes d'autorisation envoyées par la finance</div></a><a class='view' href='#/partenaire/distributeur'><b>Néo Télécom</b><div>Distributeur : stock alloué et relevé des ventes (EDI)</div></a></div></div>`);
+    <div class='card'><h2>Entreprise étendue <small>espace partenaire</small></h2><div class='views'><a class='view' href='#/partenaire/distributeur'><b>Néo Télécom</b><div>Extranet distributeur : stock alloué par Apple et relevé des ventes (EDI)</div></a></div></div>`);
 }
 function timeline(steps) {
   let cur = false;
@@ -771,28 +832,20 @@ function vProc(n) {
   if (n === "p1") {
     const os = visOrders(); const o = S.orders[prm.get("o")] && oInfo(S.orders[prm.get("o")]) ? S.orders[prm.get("o")] : os.find((x) => x.u) || S.orders.W150032;
     const sel = `<select class='inp' data-act='trk' data-k='o'>${os.map((x) => `<option value='${x.id}' ${x === o ? "selected" : ""}>${x.id} · ${x.cap}, ${x.col} · ${hm(x.created)}</option>`).join("")}</select>`;
-    return shell(ui.actor, "vue/p1", head("", "Vue d'ensemble du SI", [], "Processus P1 : de la précommande à la confirmation", "Le diagramme BPMN de notre dossier, le travail en attente à chaque étape et le suivi d'une précommande dans le processus.") +
+    return shell(null, "vue/p1", head("", "Vue d'ensemble du SI", [], "Processus P1 : de la précommande à la confirmation", "Le diagramme BPMN de notre dossier, le travail en attente à chaque étape et le suivi d'une précommande dans le processus.") +
       `<div class='cols'><div class='card'><h2>Diagramme BPMN</h2><a href='img/fig/bpmn-precommande.png' target='_blank'><img src='img/fig/bpmn-precommande.png' alt='Diagramme BPMN du processus de précommande' style='width:100%;border:1px solid #f0f0f3;border-radius:8px'></a></div>
       <div class='card'><h2>Travail en attente</h2>${line("Paiements à contrôler (Finance, M1.3)", badge("finance/paiements"), "finance/paiements")}${line("Précommandes payées à servir (Production, M1.4)", badge("production/stock"), "production/stock")}${line("Confirmations et refus à envoyer (Marketing, M1.2)", badge("marketing/precommandes"), "marketing/precommandes")}
       <h2 style='margin-top:18px'>Suivre une précommande</h2>${sel}${o ? tlOrder(o) : ""}</div></div>`);
   }
   const rs = visReviews(); const r = S.reviews[prm.get("r")] && rInfo(S.reviews[prm.get("r")]) ? S.reviews[prm.get("r")] : rs[0];
   const sel = `<select class='inp' data-act='trk' data-k='r'>${rs.map((x) => `<option value='${x.ref}' ${x === r ? "selected" : ""}>${x.ref} · ${x.note}/10 · ${x.motif} · ${ddmm(x.t)}</option>`).join("")}</select>`;
-  return shell(ui.actor, "vue/p2", head("", "Vue d'ensemble du SI", [], "Processus P2 : satisfaction par QR code", "Le diagramme BPMN de notre dossier, le travail en attente à chaque étape et le suivi d'un avis dans le processus.") +
+  return shell(null, "vue/p2", head("", "Vue d'ensemble du SI", [], "Processus P2 : satisfaction par QR code", "Le diagramme BPMN de notre dossier, le travail en attente à chaque étape et le suivi d'un avis dans le processus.") +
     `<div class='cols'><div class='card'><h2>Diagramme BPMN</h2><a href='img/fig/bpmn-satisfaction.png' target='_blank'><img src='img/fig/bpmn-satisfaction.png' alt='Diagramme BPMN du processus de satisfaction' style='width:100%;border:1px solid #f0f0f3;border-radius:8px'></a></div>
     <div class='card'><h2>Travail en attente</h2>${line("Avis à traiter (Marketing, M2.4)", badge("marketing/avis"), "marketing/avis")}${line("Signalements à analyser (Production, M2.5)", badge("production/qualite"), "production/qualite")}${line("Coûts de garantie à enregistrer (Finance, M2.6)", badge("finance/garantie"), "finance/garantie")}
     <h2 style='margin-top:18px'>Suivre un avis</h2>${sel}${r ? tlReview(r) : ""}</div></div>`);
 }
 
 /* ---------- acteurs externes ---------- */
-function vBanque() {
-  const a = p1(); const os = visOrders();
-  const rows = os.map((o) => `<tr><td>${hm(o.created)}</td><td>Apple Distribution International</td><td><b>${o.id}</b></td><td>${eur(o.prix)}</td><td>${o.pay === "Financement" ? "Crédit" : "Carte bancaire"}</td><td>${o.bank === "ok" ? pill("Accordée", "ok") : pill("Refusée", "ko")}</td></tr>`).join("");
-  return shell("banque", "", head("", "Acteur externe", [], "Banque : demandes d'autorisation", "Demandes envoyées par la finance d'Apple pour chaque précommande. La réponse est automatique : solde, plafond de la carte ou étude du crédit.") +
-    kpis([["Demandes reçues d'Apple", nf(a.recues), "depuis 14 h"], ["Accordées", pct(a.recues - a.annulees, a.recues), ""], ["Refusées", nf(a.annulees), "le client est prévenu par Apple"], ["Délai moyen de réponse", "1,2 s", ""]], 4) +
-    `<div class='card'><h2>Dernières demandes</h2><div class='tw'><table><tr><th>Heure</th><th>Commerçant</th><th>Référence</th><th>Montant</th><th>Type</th><th>Réponse</th></tr>${rows}</table></div>
-    <div class='note'>La banque ne voit que les données de paiement : ni le détail du client, ni ses autres commandes.</div></div>`);
-}
 function vDistributeur() {
   const after = now() >= "2026-10-23T09:00"; const extra = S.distSent || 0; const part = DISTRIBS[0][3]; let left = extra;
   const rows = Object.entries(ALLOC_NEO).map(([k, al]) => { let v = Math.round(al * (after ? part : 0)); if (left > 0) { const add = Math.min(left, al - v); v += add; left -= add; } return `<tr><td>${k.replace("|", ", ")}</td><td>${nf(al)}</td><td>${nf(v)}</td><td><b>${nf(al - v)}</b></td></tr>`; }).join("");
@@ -806,7 +859,7 @@ function vDistributeur() {
 function vProjet() {
   const L = [["M0", "Accueil du prototype", ""], ["M1.1", "Précommander l'iPhone Duo", "client/precommander"], ["M1.2", "CRM : précommandes reçues", "marketing/precommandes"], ["M1.3", "Finance : contrôle des paiements", "finance/paiements"], ["M1.4", "Production : stock et réservations", "production/stock"], ["M1.5", "Message au client", "client/precommandes"],
     ["M2.1 à M2.3", "Carte QR code, questionnaire, confirmation", "client/avis"], ["M2.4", "CRM : avis reçus par QR code", "marketing/avis"], ["M2.5", "Production : signalements qualité", "production/qualite"], ["M2.6", "Finance : coûts de garantie", "finance/garantie"], ["M2.7", "Tableau de bord de satisfaction", "marketing/satisfaction"]];
-  return shell(ui.actor, "projet", head("", "Le projet", [], "Prototype du SI marketing et ventes d'Apple", "Projet de TD de Fondamentaux des systèmes d'information · L2 Gestion et Management, IAE Lyon · groupe 12 : Adam, Romy, Anna et Clara.") +
+  return shell(null, "projet", head("", "Le projet", [], "Prototype du SI marketing et ventes d'Apple", "Projet de TD de Fondamentaux des systèmes d'information · L2 Gestion et Management, IAE Lyon · groupe 12 : Adam, Romy, Anna et Clara.") +
     `<div class='cols'><div class='card'><h2>Les maquettes du dossier <small>chaque écran s'ouvre comme dans le dossier, puis reste cliquable</small></h2>${L.map(([c, t, h]) => `<a class='scr' href='#/${h}'><b>${c.length > 4 ? c.slice(0, 4) : c}</b><span>${t}</span><i>${c}</i></a>`).join("")}
     <div class='note'>Toutes les données sont fictives. Les actions faites dans la démonstration sont gardées dans ce navigateur ; « Recommencer la démonstration » remet les écrans dans l'état des maquettes.</div></div>
     <div class='card' style='text-align:center'><h2>Accès direct</h2><img src='img/qr-site.svg' alt='QR code du site' style='width:170px;height:170px;margin:8px auto;display:block'><div style='font-size:12.5px;color:#6e6e73'>${SITE_URL}</div></div></div>`);
@@ -820,13 +873,21 @@ function route() {
   const lg = LEGACY[seg.slice(0, 3).join("/")] || LEGACY[seg[0]] || (seg[0] === "si" ? "" : null);
   if (lg !== null && lg !== undefined) { location.replace("#/" + lg); return null; }
   if (!seg.length) { REF = T16; return [vHome(), "Accueil"]; }
-  if (seg[0] === "avis") { REF = SCR.client.avis[1]; ui.actor = "client"; return [vAvisClient(seg[1]), "Votre avis"]; }
-  if (ACTEURS[seg[0]]) {
-    const a = seg[0]; const k = SCR[a][seg[1]] ? seg[1] : ACTEURS[a].ecrans[0]; const d = SCR[a][k];
-    REF = d[1]; ui.actor = a; return [d[2](), d[0] + " · " + ACTEURS[a].nom];
+  if (seg[0] === "avis") { REF = SCR.client.avis[1]; CUR = { fn: null, prof: null }; if (!ui.qTouched) ui.q = Q_VIDE(); return [vAvisClient(seg[1]), "Votre avis"]; }
+  if (seg[0] === "client") {
+    const k = SCR.client[seg[1]] ? seg[1] : "precommander"; const d = SCR.client[k];
+    if (k === "avis" && !ui.qTouched) ui.q = Q0();
+    REF = d[1]; CUR = { fn: null, prof: null }; return [d[2](), d[0] + " · Client"];
   }
-  if (seg[0] === "vue" && VUE[seg[1]]) { REF = VUE[seg[1]][1]; return [seg[1] === "flux" ? vFlux() : vProc(seg[1]), VUE[seg[1]][0]]; }
-  if (seg[0] === "partenaire") { if (seg[1] === "distributeur") { REF = "2026-11-09T09:41"; return [vDistributeur(), "Néo Télécom · espace partenaire"]; } REF = T16; return [vBanque(), "Banque · autorisations"]; }
+  if (seg[0] === "connexion" && FNS.includes(seg[1])) { REF = T16; CUR = { fn: seg[1], prof: null }; const vers = new URLSearchParams(raw.split("?")[1] || "").get("vers"); return [vConnexion(seg[1], vers), "Connexion · " + ACTEURS[seg[1]].nom]; }
+  if (FNS.includes(seg[0])) {
+    const fn = seg[0]; const scr = SCR[fn][seg[1]] ? seg[1] : null; const p = SESS[fn];
+    if (!p || (scr && !PROFILS[p].ecrans.includes(scr))) { ui.pick = null; location.replace(`#/connexion/${fn}${scr ? "?vers=" + scr : ""}`); return null; }
+    const k = scr || PROFILS[p].ecrans[0]; const d = SCR[fn][k];
+    REF = d[1]; CUR = { fn, prof: p }; return [d[2](), d[0] + " · " + PROFILS[p].nom];
+  }
+  if (seg[0] === "vue" && VUE[seg[1]]) { REF = VUE[seg[1]][1]; CUR = { fn: null, prof: null }; return [seg[1] === "flux" ? vFlux() : vProc(seg[1]), VUE[seg[1]][0]]; }
+  if (seg[0] === "partenaire") { if (seg[1] === "distributeur") { REF = "2026-11-09T09:41"; CUR = { fn: null, prof: null }; return [vDistributeur(), "Néo Télécom · espace partenaire"]; } location.replace("#/vue/flux"); return null; }
   if (seg[0] === "projet") { REF = T16; return [vProjet(), "Le projet"]; }
   REF = T16; return [vHome(), "Accueil"];
 }
@@ -857,8 +918,11 @@ document.addEventListener("click", (e) => {
   if (el.disabled) return;
   const o = S.orders[id], r = S.reviews[id], q = S.signals[id];
   switch (a) {
-    case "reset": if (confirm("Remettre tous les écrans dans l'état des maquettes ?")) { S = seed(); ui.sel = {}; ui.q = Q0(); ui.dossier = false; ui.crOpen = false; ui.erp = false; save(); toast("Démonstration remise à zéro"); render(true); } return;
+    case "reset": if (confirm("Remettre tous les écrans dans l'état des maquettes ?")) { S = seed(); ui.sel = {}; ui.q = Q0(); ui.qTouched = false; ui.dossier = false; ui.crOpen = false; ui.erp = false; SESS = {}; saveSess(); save(); toast("Démonstration remise à zéro"); render(true); } return;
     case "cfg": ui.cfg[el.dataset.k] = el.dataset.v; return render(true);
+    case "pickprof": ui.pick = el.dataset.v; return render(true);
+    case "login": { const k = el.dataset.v; const fn = PROFILS[k].fn; SESS[fn] = k; saveSess(); ui.pick = null; const vers = id && PROFILS[k].ecrans.includes(id) ? id : PROFILS[k].ecrans[0]; toast(`Connecté(e) : ${PROFILS[k].qui}, ${PROFILS[k].nom.toLowerCase()}`); location.hash = `#/${fn}/${vers}`; return; }
+    case "parcours": SESS.parcours = el.dataset.v; saveSess(); return;
     case "offres": S.offres.lea = !offresDe("lea"); toast(S.offres.lea ? "Accord enregistré pour les offres personnalisées" : "Accord retiré pour les offres personnalisées"); return rerender();
     case "order": {
       const c = ui.cfg; const t = stamp(1); const nid = newOrderId(t);
@@ -879,9 +943,9 @@ document.addEventListener("click", (e) => {
     }
     case "confirmer": step(o, "confirmee"); ui.sel.o = id; toast(`Confirmation envoyée au client pour ${id}`); return rerender();
     case "informerrefus": step(o, "annulee"); ui.sel.o = id; toast(`Message de refus envoyé au client pour ${id}`); return rerender();
-    case "qnote": ui.q.note = Number(el.dataset.v); return render(true);
-    case "qmotif": ui.q.motif = el.dataset.v; return render(true);
-    case "qaccord": ui.q.accord = !ui.q.accord; return render(true);
+    case "qnote": ui.q.note = Number(el.dataset.v); ui.qTouched = true; return render(true);
+    case "qmotif": ui.q.motif = el.dataset.v; ui.qTouched = true; return render(true);
+    case "qaccord": ui.q.accord = !ui.q.accord; ui.qTouched = true; return render(true);
     case "sendavis": {
       const qq = ui.q; if (qq.note === null || !qq.motif) return;
       const oid = id; const ord = S.orders[oid];
@@ -892,7 +956,7 @@ document.addEventListener("click", (e) => {
       const st = !accord ? "statistique" : qq.note >= 7 ? "remercie" : DEFAUTS.includes(qq.motif) ? "defaut" : "a_recontacter";
       S.reviews[ref] = { ref, cli: accord ? ord.cli : null, order: accord ? oid : null, canal: "Coffret (après achat)", t, note: qq.note, motif: qq.motif, accord, txt: qq.txt.trim(), hist: [{ t, s: st, x: null }], h0: [], b: false, script: false };
       S.reviewed[oid] = ref;
-      ui.q = Q0(); ui.dossier = false; ui.sel.r = ref; toast(`Réponse ${ref} enregistrée dans le CRM`); return rerender();
+      ui.q = Q0(); ui.qTouched = false; ui.dossier = false; ui.sel.r = ref; toast(`Réponse ${ref} enregistrée dans le CRM`); return rerender();
     }
     case "dossier": ui.dossier = true; return render(true);
     case "retour": ui.dossier = false; return render(true);
@@ -951,7 +1015,7 @@ document.addEventListener("change", (e) => {
 });
 document.addEventListener("input", (e) => {
   const el = e.target.closest("[data-act]"); if (!el) return;
-  if (el.dataset.act === "qtxt") ui.q.txt = el.value;
+  if (el.dataset.act === "qtxt") { ui.q.txt = el.value; ui.qTouched = true; }
   if (el.dataset.act === "crtxt") ui.cr = el.value;
   if (el.dataset.act === "notetxt") ui.note = el.value;
 });

@@ -123,12 +123,20 @@ const CAMPAGNES = [
 ];
 const PLAN = [["S02 (11 → 17 janv.)", 1800], ["S03 (18 → 24 janv.)", 2400], ["S04 (25 → 31 janv.)", 2200], ["S05 (1er → 7 févr.)", 2600]];
 
-/* vues acteur (M0) : chaque acteur ne voit que ses écrans */
+/* vues acteur (M0) et profils d'autorisations (dossier, tableau des profils) : chaque salarié ne voit que les écrans de son profil */
 const ACTEURS = {
-  client: { nom: "Client", role: "Léa M. · cliente (fictive)", ecrans: ["precommander", "precommandes", "avis", "donnees"] },
-  marketing: { nom: "Marketing et ventes", role: "Ventes en ligne, CRM, direction marketing", ecrans: ["precommandes", "avis", "suivi", "clients", "lancement", "satisfaction", "plan", "distributeurs"] },
-  finance: { nom: "Finance", role: "Contrôle de gestion", ecrans: ["paiements", "garantie", "budgets", "satisfaction"] },
-  production: { nom: "Production", role: "Chaîne d'approvisionnement et qualité", ecrans: ["stock", "qualite", "fabrication", "satisfaction"] },
+  client: { nom: "Client", role: "Acteur externe · clients fictifs", ecrans: ["precommander", "precommandes", "avis", "donnees"] },
+  marketing: { nom: "Marketing et ventes" },
+  finance: { nom: "Finance" },
+  production: { nom: "Production" },
+};
+const PROFILS = {
+  vendeur: { fn: "marketing", nom: "Vendeur", role: "Boutique en ligne et magasins", qui: "Hugo R.", login: "h.r••••@apple.com", ecrans: ["precommandes", "clients", "lancement", "distributeurs"] },
+  conseiller: { fn: "marketing", nom: "Conseiller relation client", role: "Équipe CRM", qui: "Mélanie D.", login: "m.d••••@apple.com", ecrans: ["avis", "suivi", "clients"] },
+  responsable: { fn: "marketing", nom: "Responsable marketing produit", role: "Pilotage du lancement", qui: "Claire V.", login: "c.v••••@apple.com", ecrans: ["satisfaction", "lancement", "plan"] },
+  controleur: { fn: "finance", nom: "Contrôleur", role: "Contrôle de gestion", qui: "Sophie L.", login: "s.l••••@apple.com", ecrans: ["paiements", "garantie", "budgets", "satisfaction"] },
+  stock: { fn: "production", nom: "Gestionnaire de stock", role: "Chaîne d'approvisionnement", qui: "Thomas B.", login: "t.b••••@apple.com", ecrans: ["stock", "fabrication"] },
+  qualite: { fn: "production", nom: "Technicien qualité", role: "Qualité", qui: "Lucas F.", login: "l.f••••@apple.com", ecrans: ["qualite", "satisfaction"] },
 };
 
 /* Distributeurs (noms fictifs) : [nom, type, stock alloué pour le 23 octobre, part écoulée au 9 novembre] */
