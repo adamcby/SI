@@ -157,3 +157,31 @@ const ECRANS = {
   ca: { t: "Chiffre d'affaires prévisionnel" },
   processus: { t: "Processus" },
 };
+
+/* Distributeurs (noms fictifs) : [nom, type, stock alloué pour le 23 octobre, part écoulée au 9 novembre] */
+const DISTRIBS = [["Néo Télécom", "Opérateur télécom", 600, 0.83], ["Opéra Mobile", "Opérateur télécom", 450, 0.79], ["Hexa Télécom", "Opérateur télécom", 380, 0.71], ["Pomme & Co", "Revendeur agréé", 220, 0.88]];
+const ALLOC_NEO = { "256 Go|Ciel nocturne": 110, "256 Go|Blanc stellaire": 90, "512 Go|Ciel nocturne": 130, "512 Go|Blanc stellaire": 110, "1 To|Ciel nocturne": 60, "1 To|Blanc stellaire": 50, "2 To|Ciel nocturne": 30, "2 To|Blanc stellaire": 20 };
+
+/* Échanges hors des deux processus : [heure, émetteur, récepteur, information, outil, flux du dossier, processus] */
+const FLUX_SEED = [
+  ["2026-09-09T19:00", "Direction marketing produit", "Communication et réseaux sociaux", "Messages et budget des campagnes de lancement", "Courriel interne", "A3-5", ""],
+  ["2026-10-12T09:00", "Direction marketing produit", "Ventes", "Prix, date d'ouverture des précommandes et offres", "CRM", "A3-4", "P1"],
+  ["2026-10-14T10:00", "Ventes", "Distributeurs", "Stocks alloués pour la mise en vente du 23 octobre", "EDI", "A3-13 · A1-3", ""],
+  ["2026-10-15T18:00", "Communication et réseaux sociaux", "Relation client et données", "Audience des campagnes TikTok et Instagram", "CRM", "A3-7", ""],
+  ["2026-10-16T13:30", "Production", "Ventes", "Stock de lancement disponible : 5 200 appareils", "ERP → CRM", "A3-12 · A2-4", "P1"],
+  ["2026-10-16T14:28", "Production", "Ventes", "Stock de lancement épuisé : nouvelle date de livraison le 25 janvier 2027", "ERP → CRM", "A3-12 · A2-4", "P1"],
+  ["2026-11-02T08:00", "Relation client et données", "Direction marketing produit", "Tableau de bord de satisfaction de la semaine 44", "Tableau de bord", "A3-18", "P2"],
+  ["2026-11-05T08:00", "Distributeurs", "Ventes", "Relevé des ventes de la veille", "EDI", "A3-13 · A1-3", ""],
+  ["2026-11-06T08:00", "Distributeurs", "Ventes", "Relevé des ventes de la veille", "EDI", "A3-13 · A1-3", ""],
+  ["2026-11-06T09:00", "Relation client et données", "Communication et réseaux sociaux", "Segments de clients à cibler (clients satisfaits ayant accepté les offres)", "CRM", "A3-8", ""],
+  ["2026-11-07T08:00", "Distributeurs", "Ventes", "Relevé des ventes de la veille", "EDI", "A3-13 · A1-3", ""],
+  ["2026-11-08T08:00", "Distributeurs", "Ventes", "Relevé des ventes de la veille", "EDI", "A3-13 · A1-3", ""],
+  ["2026-11-09T08:00", "Distributeurs", "Ventes", "Relevé des ventes de la veille", "EDI", "A3-13 · A1-3", ""],
+  ["2026-11-09T08:00", "Relation client et données", "Direction marketing produit", "Tableau de bord de satisfaction de la semaine 45", "Tableau de bord", "A3-18", "P2"],
+];
+PROFILS.vendeur.ecrans.push("distributeurs");
+Object.assign(ECRANS, { distributeurs: { t: "Distributeurs" }, echanges: { t: "Échanges entre services" } });
+const PARTENAIRES = {
+  banque: { nom: "Banque du client", role: "Service d'autorisation des paiements", couleur: "#1d1d1f", ecran: "Demandes d'autorisation" },
+  distributeur: { nom: "Néo Télécom", role: "Distributeur agréé · espace partenaire", couleur: "#0a7f5a", ecran: "Stock alloué et ventes" },
+};

@@ -203,7 +203,7 @@ function vHome() {
   <p class="lead">La boutique en ligne côté client et les outils internes de la vente, de la relation client, du marketing, de la production et de la finance. Les informations passent d'un service à l'autre au fil des deux processus étudiés dans notre dossier.</p>
   <div class="grid2">
    <a class="tile" href="#/boutique"><div class="k">Côté client</div><h2>Boutique en ligne</h2><p>Configurer et précommander l'iPhone Duo, suivre sa commande, répondre au questionnaire de satisfaction.</p><span class="go">Ouvrir la boutique ›</span></a>
-   <a class="tile" href="#/si"><div class="k">Côté entreprise</div><h2>Outils internes</h2><p>Six profils de salariés. Chacun ne voit que les écrans et les données dont il a besoin.</p><span class="go">Se connecter ›</span></a>
+   <a class="tile" href="#/si"><div class="k">Côté entreprise</div><h2>Outils internes</h2><p>Six profils de salariés et deux partenaires externes (banque, distributeur). Chacun ne voit que les écrans et les données dont il a besoin.</p><span class="go">Se connecter ›</span></a>
   </div>
   <div class="grid2" style="margin-top:16px">
    <div class="tile"><div class="k">Processus 1</div><h2>De la précommande à la confirmation</h2><ol class="steps-list">${li(P1)}</ol></div>
@@ -339,7 +339,9 @@ function vAvisMerci(ref) {
 /* ---------- outils internes : connexion ---------- */
 function vLogin() {
   return page("si", `<main class="wrap login"><h1>Outils internes</h1><p class="lead">Connexion avec un compte salarié et une validation en deux étapes. Choisissez un profil : les menus et les données affichées dépendent de ses autorisations.</p>
-  <div class="prof">${Object.entries(PROFILS).map(([k, p]) => `<a href="#/si/connexion/${k}"><div class="av" style="background:${p.couleur}">${p.nom.split(" ").map((x) => x[0]).join("")}</div><b>${p.nom}</b><span>${p.role}</span><div class="small" style="margin-top:8px;color:#424245">${p.ecrans.map((e) => ECRANS[e].t).join(" · ")}</div></a>`).join("")}</div></main>`);
+  <div class="prof">${Object.entries(PROFILS).map(([k, p]) => `<a href="#/si/connexion/${k}"><div class="av" style="background:${p.couleur}">${p.nom.split(" ").map((x) => x[0]).join("")}</div><b>${p.nom}</b><span>${p.role}</span><div class="small" style="margin-top:8px;color:#424245">${p.ecrans.map((e) => ECRANS[e].t).join(" · ")}</div></a>`).join("")}</div>
+  <h2 style="margin:28px 0 4px;font-size:18px">Partenaires externes</h2><p class="muted small" style="margin-bottom:12px">Deux acteurs externes du modèle de contexte, avec leur propre accès.</p>
+  <div class="prof">${Object.entries(PARTENAIRES).map(([k, p]) => `<a href="#/partenaire/${k}"><div class="av" style="background:${p.couleur}">${p.nom.split(" ").map((x) => x[0]).join("").slice(0, 2).toUpperCase()}</div><b>${p.nom}</b><span>${p.role}</span><div class="small" style="margin-top:8px;color:#424245">${p.ecran}</div></a>`).join("")}</div></main>`);
 }
 function vTwoFA(p) {
   const P = PROFILS[p]; if (!P) return vLogin();
@@ -354,7 +356,7 @@ function shell(p, scr, inner) {
   const P = PROFILS[p]; const n = tasks();
   const item = (e) => `<li><a href="#/si/${p}/${e}" class="${e === scr ? "on" : ""}">${ECRANS[e].t}${n[e] ? `<span class="badge">${n[e]}</span>` : ""}</a></li>`;
   return topbar("si") + `<div class="app"><aside class="side"><div class="who"><span>Connecté</span><b>${P.nom}</b><span>${P.role}</span><div style="margin-top:6px"><a href="#/si">Changer de profil</a></div></div>
-  <ul class="nav"><li class="sep">Mes écrans</li>${P.ecrans.map(item).join("")}<li class="sep">Entreprise</li>${item("processus")}</ul></aside>
+  <ul class="nav"><li class="sep">Mes écrans</li>${P.ecrans.map(item).join("")}<li class="sep">Entreprise</li>${item("processus")}${item("echanges")}</ul></aside>
   <main class="main">${inner}<p class="hint" style="margin-top:22px">${ECRANS[scr].code ? "Écran " + ECRANS[scr].code + " · " : ""}${C().titre} · données fictives</p></main></div>`;
 }
 const head = (crumb, title, sub) => `<div class="crumb">${crumb}</div><h1>${title}</h1><div class="sub">${sub}</div>`;
@@ -375,7 +377,7 @@ function sPrecommandes(p) {
     det = `<div class="card"><h2>Précommande ${sel.id} <small>créée le ${dMed(sel.created)} à ${hm(sel.created)}</small></h2>
     <div class="kv"><span>Client</span><b>${cl.nom} · ${cl.mail}</b><span>Configuration</span><b>iPhone Duo ${sel.cap}, ${sel.col}</b><span>Montant TTC</span><b>${eur(sel.prix)} · ${sel.pay}</b><span>Canal</span><b>Boutique en ligne</b><span>Offres personnalisées</span><b>${offresDe(sel.cli) ? "Acceptées" : "Refusées (case non cochée)"}</b></div>
     ${i.s === "annulee" || i.s === "refusee" ? prog(["Enregistrée", "Paiement refusé", "Client informé"], i.s === "annulee" ? 3 : 1, true) : prog(["Enregistrée", "Paiement", "Réservation", "Confirmée", "Livrée"], idx)}
-    <div class="quote" style="font-style:normal">${etat}</div>${act}</div>`;
+    <div class="quote" style="font-style:normal">${etat}</div>${act}<div class="small" style="margin-top:6px"><a href="#/si/${p}/processus?o=${sel.id}">Voir l'avancement dans le processus ›</a></div></div>`;
   }
   return shell(p, "precommandes", head("Ventes · CRM", "Précommandes", `France · ${C().titre}. Chaque précommande crée ou complète une fiche client ; son statut suit le paiement puis la réservation.`) +
     kpis([[S.clock === "t3" ? "Précommandes reçues depuis le 16 octobre" : "Précommandes reçues depuis 14 h", nf(a.recues), "France"], ["En contrôle", nf(a.controle), "à la finance"], ["Confirmées", nf(a.confirmees), a.janvier ? `dont ${nf(a.janvier)} livrées en janvier` : "livrées le 23 octobre"], ["Annulées (paiement refusé)", nf(a.annulees), pct(a.annulees, a.recues)], ["Date de livraison annoncée", dShort(C().stock ? "2026-10-23" : JANV), C().stock ? "stock de lancement" : "depuis 14:28"]]) +
@@ -473,7 +475,7 @@ function sAvis(p) {
     <div class="kv"><span>Client</span><b>${sel.accord ? cliNom(sel.cli) + " · compte vérifié" : "Réponse anonyme"}</b>${sel.accord ? `<span>Commande</span><b>${sel.order}${ord ? " · iPhone Duo " + ord.cap + ", " + ord.col : ""}</b>` : ""}<span>Canal</span><b>${sel.canal}</b><span>Note et motif</span><b>${sel.note} / 10 · ${esc(sel.motif)}</b><span>Accord de recontact</span><b>${sel.accord ? "Oui" : "Non"}</b></div>
     ${sel.txt ? `<div class="quote">« ${esc(sel.txt)} »</div>` : ""}
     ${prog(["Réponse enregistrée", "Score et motif", i.s === "defaut" || i.s === "en_analyse" || i.s === "a_informer" ? "Défaut signalé" : i.s === "statistique" ? "Statistique" : sel.note < 7 ? "À recontacter" : "Remercié", "Suite donnée"], idx)}
-    ${suiteQ}<div style="margin-top:10px">${acts}</div></div>`;
+    ${suiteQ}<div style="margin-top:10px">${acts}</div><div class="small" style="margin-top:6px"><a href="#/si/${p}/processus?r=${sel.ref}">Voir l'avancement dans le processus ›</a></div></div>`;
   }
   return shell(p, "avis", head("Relation client · CRM", "Avis reçus par QR code", "Chaque réponse au questionnaire arrive ici, est rattachée à la fiche du client quand il l'a accepté, puis reçoit un score et un motif.") +
     kpis([["Réponses reçues aujourd'hui", nf(s.jour.rep), `dont ${s.jour.anonymes} anonymes`], ["Note moyenne", dec1(s.jour.moy), "sur 10"], ["Clients insatisfaits (note < 7)", nf(s.jour.insatisfaits), pct(s.jour.insatisfaits, s.jour.rep) + " des réponses"], ["À recontacter sous 48 h", nf(s.jour.recontacter), "accord donné"], ["Défauts transmis à la production", nf(s.jour.transmis), "en analyse"]]) +
@@ -576,14 +578,154 @@ function sCampagnes(p) {
 
 /* Processus (pour tous les profils) */
 function sProcessus(p) {
-  const n = tasks(); const P = PROFILS[p].ecrans;
+  const n = tasks(); const P = PROFILS[p].ecrans; const prm = new URLSearchParams(location.hash.split("?")[1] || "");
   const link = (e, t) => (P.includes(e) ? `<a href="#/si/${p}/${e}">${t}</a>` : t);
   const line = (l, v, e) => `<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f3;font-size:13px"><span>${link(e, l)}</span><b>${v}</b></div>`;
-  return shell(p, "processus", head("Entreprise", "Processus", "Les deux processus outillés par le SI et le travail en attente à chaque étape.") +
+  const os = visOrders(); const o = S.orders[prm.get("o")] && oInfo(S.orders[prm.get("o")]) ? S.orders[prm.get("o")] : (os.find((x) => x.u) || os[0]);
+  const rs = visReviews(); const r = S.reviews[prm.get("r")] && rInfo(S.reviews[prm.get("r")]) ? S.reviews[prm.get("r")] : rs[0];
+  const selO = `<select class="inp" data-act="trk" data-k="o" style="max-width:360px">${os.slice(0, 30).map((x) => `<option value="${x.id}" ${x === o ? "selected" : ""}>${x.id} · ${x.cap}, ${x.col} · ${quand(x.created)}</option>`).join("")}</select>`;
+  const selR = rs.length ? `<select class="inp" data-act="trk" data-k="r" style="max-width:360px">${rs.slice(0, 30).map((x) => `<option value="${x.ref}" ${x === r ? "selected" : ""}>${x.ref} · ${x.note}/10 · ${x.motif} · ${quand(x.t)}</option>`).join("")}</select>` : "";
+  return shell(p, "processus", head("Entreprise", "Processus", "Les deux processus outillés par le SI, le travail en attente à chaque étape et le suivi d'une commande ou d'un avis.") +
     `<div class="grid2"><div class="card"><h2>De la précommande à la confirmation</h2><a href="img/fig/bpmn-precommande.png" target="_blank"><img src="img/fig/bpmn-precommande.png" alt="Diagramme BPMN du processus de précommande" style="width:100%;border:1px solid #f0f0f3;border-radius:8px"></a>
-    ${line("Paiements à contrôler (finance)", n.paiements, "paiements")}${line("Précommandes à servir (production)", n.stock, "stock")}${line("Confirmations et refus à envoyer (ventes)", n.precommandes, "precommandes")}</div>
+    ${line("Paiements à contrôler (finance)", n.paiements, "paiements")}${line("Précommandes à servir (production)", n.stock, "stock")}${line("Confirmations et refus à envoyer (ventes)", n.precommandes, "precommandes")}
+    <h2 style="margin-top:18px">Suivre une précommande</h2>${selO}${o ? tlOrder(o) : ""}</div>
     <div class="card"><h2>Satisfaction par QR code</h2><a href="img/fig/bpmn-satisfaction.png" target="_blank"><img src="img/fig/bpmn-satisfaction.png" alt="Diagramme BPMN du processus de satisfaction" style="width:100%;border:1px solid #f0f0f3;border-radius:8px"></a>
-    ${line("Avis à traiter (relation client)", n.avis, "avis")}${line("Signalements à analyser (production)", n.qualite, "qualite")}${line("Coûts de garantie à enregistrer (finance)", n.garantie, "garantie")}</div></div>`);
+    ${line("Avis à traiter (relation client)", n.avis, "avis")}${line("Signalements à analyser (production)", n.qualite, "qualite")}${line("Coûts de garantie à enregistrer (finance)", n.garantie, "garantie")}
+    <h2 style="margin-top:18px">Suivre un avis</h2>${r ? selR + tlReview(r) : `<div class="small muted">Aucun avis : les premières livraisons ont lieu le 23 octobre 2026.</div>`}</div></div>`);
+}
+
+/* ---------- échanges entre services (flux d'information) ---------- */
+const F = (t, de, vers, info, outil, ref, proc) => ({ t, de, vers, info, outil, ref, proc });
+function fluxAll() {
+  const t = now(); const L = [];
+  FLUX_SEED.forEach((f) => { if (f[0] <= t) L.push(F(...f)); });
+  (S.flog || []).forEach((f) => { if (f.t <= t) L.push(f); });
+  Object.values(S.orders).forEach((o) => {
+    if (o.created > t) return; const c = o.created;
+    L.push(F(c, "Client", "Ventes", `Précommande ${o.id} (${o.cap}, ${o.col}) et données de paiement`, "Site de vente", "A3-9 · A1-1", "P1"));
+    L.push(F(c, "Ventes", "Relation client et données", `Précommande ${o.id} ajoutée à la fiche client`, "CRM", "A3-14", "P1"));
+    L.push(F(c, "Ventes", "Finance", `Commande à encaisser ${o.id} (${eur(o.prix)})`, "CRM → ERP", "A3-11 · A2-5", "P1"));
+    L.push(F(c, "Finance", "Banque", `Demande ${o.pay === "Financement" ? "de crédit" : "d'autorisation"} pour ${o.id}`, "Données de paiement", "A1-7", "P1"));
+    L.push(F(c, "Banque", "Finance", `${o.bank === "ok" ? (o.pay === "Financement" ? "Crédit accordé" : "Autorisation accordée") : (o.pay === "Financement" ? "Crédit refusé" : "Autorisation refusée")} pour ${o.id}`, "Données de paiement", "A1-7", "P1"));
+    o.hist.forEach((h) => {
+      if (h.t > t) return;
+      if (h.s === "payee") { L.push(F(h.t, "Finance", "Ventes", `Paiement accepté pour ${o.id}`, "ERP → CRM", "A3-11 · A2-6", "P1")); L.push(F(h.t, "Ventes", "Production", `Précommande payée ${o.id} à servir`, "CRM → ERP", "A3-12 · A2-3", "P1")); }
+      if (h.s === "refusee") L.push(F(h.t, "Finance", "Ventes", `Paiement refusé pour ${o.id}`, "ERP → CRM", "A3-11 · A2-6", "P1"));
+      if (h.s === "reservee") L.push(F(h.t, "Production", "Ventes", h.x && h.x.date === JANV ? `Stock épuisé : livraison de ${o.id} recalculée au 25 janvier 2027` : `Appareil réservé pour ${o.id} (${h.x ? h.x.lot : ""}) : livraison le 23 octobre`, "ERP → CRM", "A3-12 · A2-4", "P1"));
+      if (h.s === "confirmee") L.push(F(h.t, "Ventes", "Client", `Confirmation de ${o.id} et date de livraison`, "Courriel", "A3-10 · A1-2", "P1"));
+      if (h.s === "annulee") L.push(F(h.t, "Ventes", "Client", `Paiement refusé : précommande ${o.id} annulée`, "Courriel", "A3-10 · A1-2", "P1"));
+    });
+  });
+  Object.values(S.reviews).forEach((r) => {
+    if (!rInfo(r, t)) return; const qui = r.accord ? "Client" : "Client (anonyme)";
+    L.push(F(r.t, qui, "Relation client et données", `Réponse au questionnaire ${r.ref} (${r.note}/10, ${r.motif})`, "Questionnaire → CRM", "A3-15 · A1-1", "P2"));
+    L.push(F(r.t, "Relation client et données", "Direction marketing produit", `Tableau de bord de satisfaction mis à jour (${r.ref})`, "Tableau de bord", "A3-18", "P2"));
+    r.hist.forEach((h) => {
+      if (h.t > t) return;
+      if (h.s === "remercie") L.push(F(h.t, "Relation client et données", "Client", `Remerciement pour l'avis ${r.ref}`, "Courriel", "A3-16 · A1-2", "P2"));
+      if (h.s === "en_analyse") L.push(F(h.t, "Relation client et données", "Production", `Défaut signalé ${r.ref} (${r.motif})`, "CRM → ERP", "A3-17 · A2-3", "P2"));
+      if (h.s === "recontacte") L.push(F(h.t, "Relation client et données", "Client", `Réponse à l'avis ${r.ref}`, "Téléphone", "A3-16 · A1-2", "P2"));
+      if (h.s === "clos") L.push(F(h.t, "Relation client et données", "Client", `Solution proposée pour l'avis ${r.ref}`, "Courriel", "A3-16 · A1-2", "P2"));
+    });
+  });
+  Object.values(S.signals).forEach((q) => {
+    q.hist.forEach((h) => {
+      if (h.t > t) return;
+      if (h.s === "confirme") { L.push(F(h.t, "Production", "Relation client et données", `Résultat d'analyse ${q.id} : défaut confirmé, ${h.x.action.toLowerCase()}`, "ERP → CRM", "A3-17 · A2-4", "P2")); L.push(F(h.t, "Production", "Finance", `Coût de garantie ${q.id} : ${eur(h.x.cout)}`, "ERP", "A2-7", "P2")); }
+      if (h.s === "non_confirme") L.push(F(h.t, "Production", "Relation client et données", `Résultat d'analyse ${q.id} : défaut non confirmé`, "ERP → CRM", "A3-17 · A2-4", "P2"));
+    });
+  });
+  return L.sort((a, b) => (a.t < b.t ? 1 : a.t > b.t ? -1 : 0));
+}
+const EXT = ["Client", "Client (anonyme)", "Banque", "Distributeurs"];
+function sEchanges(p) {
+  const all = fluxAll(); const f = ui.jf || "tous";
+  const keep = (x) => f === "tous" || (f === "ext" ? EXT.includes(x.de) || EXT.includes(x.vers) : x.proc === f);
+  const L = all.filter(keep);
+  const chip = (k, t) => `<button class="${f === k ? "on" : ""}" data-act="jf" data-id="${k}">${t}</button>`;
+  const rows = L.slice(0, 80).map((x) => `<tr><td>${quand(x.t)}</td><td>${x.de}</td><td>${x.vers}</td><td>${esc(x.info)}</td><td>${x.outil}</td><td><b>${x.ref}</b></td></tr>`).join("");
+  const jour = all.filter((x) => x.t.slice(0, 10) === now().slice(0, 10));
+  return shell(p, "echanges", head("Entreprise", "Échanges entre services", "Chaque information qui passe d'un service à un autre, ou entre Apple et un acteur externe. La référence renvoie aux tableaux de flux de notre dossier (annexe, tableaux A1 à A3).") +
+    kpis([["Échanges aujourd'hui", nf(jour.length), dMed(now())], ["Avec un acteur externe", nf(jour.filter((x) => EXT.includes(x.de) || EXT.includes(x.vers)).length), "clients, banque, distributeurs"], ["Processus 1 (précommande)", nf(jour.filter((x) => x.proc === "P1").length), "aujourd'hui"], ["Processus 2 (satisfaction)", nf(jour.filter((x) => x.proc === "P2").length), "aujourd'hui"]]) +
+    `<div class="card"><div class="chips" style="margin:0 0 12px">${chip("tous", "Tous")}${chip("P1", "Processus 1")}${chip("P2", "Processus 2")}${chip("ext", "Avec l'extérieur")}</div>
+    <div class="tw"><table><tr><th>Heure</th><th>Émetteur</th><th>Récepteur</th><th>Information</th><th>Outil</th><th>Flux</th></tr>${rows || `<tr><td colspan="6" class="empty">Aucun échange.</td></tr>`}</table></div>
+    <p class="hint">A1 : flux entre Apple et ses acteurs externes · A2 : flux entre les acteurs internes d'Apple · A3 : flux de la fonction marketing et ventes. ${L.length > 80 ? "80 derniers échanges affichés." : ""}</p></div>`);
+}
+
+/* ---------- distributeurs (ventes) ---------- */
+function ventesDist(part) { return now() >= "2026-10-23T09:00" ? part : 0; }
+function sDistributeurs(p) {
+  const after = now() >= "2026-10-23T09:00"; const extra = S.distSent || 0;
+  const rows = DISTRIBS.map(([n, ty, al, part], k) => { const v = Math.round(al * ventesDist(part)) + (k === 0 ? extra : 0); return `<tr><td><b>${n}</b></td><td>${ty}</td><td>${nf(al)}</td><td>${nf(v)}</td><td>${pct(v, al)}</td><td>${after ? (now() >= "2026-11-09T08:00" ? "09/11 08:00" : dShort(now()) + " 08:00") : "—"}</td></tr>`; }).join("");
+  const tot = DISTRIBS.reduce((a, d) => a + d[2], 0); const vend = DISTRIBS.reduce((a, d) => a + Math.round(d[2] * ventesDist(d[3])), 0) + extra;
+  return shell(p, "distributeurs", head("Ventes · EDI", "Distributeurs", "Opérateurs télécom et revendeurs agréés : Apple leur alloue un stock pour la mise en vente, ils renvoient chaque matin leurs ventes de la veille par échange de données informatisé (EDI).") +
+    kpis([["Stock alloué aux distributeurs", nf(tot), "hors boutique en ligne"], ["Ventes déclarées", nf(vend), after ? "depuis le 23 octobre" : "mise en vente le 23 octobre"], ["Taux d'écoulement", pct(vend, tot), ""], ["Distributeurs reliés", DISTRIBS.length, "relevé quotidien"]]) +
+    `<div class="card"><h2>Distributeurs <small>noms fictifs</small></h2><div class="tw"><table><tr><th>Distributeur</th><th>Type</th><th>Stock alloué</th><th>Ventes déclarées</th><th>Écoulement</th><th>Dernier relevé</th></tr>${rows}</table></div>
+    <p class="hint">Les ventes des distributeurs complètent les précommandes de la boutique en ligne dans le tableau de bord du lancement.</p></div>`);
+}
+
+/* ---------- partenaires externes ---------- */
+function pshell(k, inner) {
+  const P = PARTENAIRES[k];
+  return topbar("si") + `<div class="app"><aside class="side"><div class="who"><span>Espace partenaire</span><b>${P.nom}</b><span>${P.role}</span><div style="margin-top:6px"><a href="#/si">Changer de profil</a></div></div>
+  <ul class="nav"><li class="sep">Mes écrans</li><li><a class="on" href="#/partenaire/${k}">${P.ecran}</a></li></ul></aside><main class="main">${inner}<p class="hint" style="margin-top:22px">${C().titre} · données fictives</p></main></div>`;
+}
+function vBanque() {
+  const a = p1(); const os = visOrders();
+  const rows = os.slice(0, 18).map((o) => `<tr><td>${quand(o.created)}</td><td>Apple Distribution International</td><td><b>${o.id}</b></td><td>${eur(o.prix)}</td><td>${o.pay === "Financement" ? "Crédit" : "Carte bancaire"}</td><td>${o.bank === "ok" ? pill("Accordée", "ok") : pill("Refusée", "ko")}</td><td>${(0.8 + (parseInt(o.id.slice(-2), 10) % 9) / 10).toLocaleString("fr-FR")} s</td></tr>`).join("");
+  return pshell("banque", head("Banque · acteur externe", "Demandes d'autorisation", "Demandes envoyées par la finance d'Apple pour chaque précommande. La réponse est automatique : solde, plafond de la carte ou étude du crédit.") +
+    kpis([["Demandes reçues d'Apple", nf(a.recues), S.clock === "t3" ? "depuis le 16 octobre" : "depuis 14 h"], ["Accordées", pct(a.recues - a.annulees, a.recues), ""], ["Refusées", nf(a.annulees), "le client est prévenu par Apple"], ["Délai moyen de réponse", "1,2 s", ""]]) +
+    `<div class="card"><h2>Dernières demandes</h2><div class="tw"><table><tr><th>Heure</th><th>Commerçant</th><th>Référence</th><th>Montant</th><th>Type</th><th>Réponse</th><th>Délai</th></tr>${rows}</table></div>
+    <p class="hint">La banque ne voit que les données de paiement : ni le détail du client, ni ses autres commandes.</p></div>`);
+}
+function vDistributeur() {
+  const after = now() >= "2026-10-23T09:00"; const extra = S.distSent || 0; const part = DISTRIBS[0][3];
+  let left = extra;
+  const rows = Object.entries(ALLOC_NEO).map(([k, al]) => { let v = Math.round(al * (after ? part : 0)); if (left > 0) { const add = Math.min(left, al - v); v += add; left -= add; } return `<tr><td>${k.replace("|", ", ")}</td><td>${nf(al)}</td><td>${nf(v)}</td><td><b>${nf(al - v)}</b></td></tr>`; }).join("");
+  const vend = Math.round(600 * (after ? part : 0)) + extra;
+  const btn = after ? `<button class="btn pri" data-act="releve">Envoyer le relevé des ventes à Apple (EDI)</button>` : `<div class="box">Livraison du stock alloué dans nos boutiques le 22 octobre. Mise en vente le 23 octobre.</div>`;
+  return pshell("distributeur", head("Distributeur · acteur externe", "Stock alloué et ventes", "Stock d'iPhone Duo alloué par Apple à Néo Télécom pour la mise en vente, et ventes déclarées chaque matin à Apple.") +
+    kpis([["Stock alloué par Apple", "600", "reçu le 22 octobre"], ["Vendus", nf(vend), after ? "depuis le 23 octobre" : "mise en vente le 23 octobre"], ["Restant en boutique", nf(600 - vend), ""], ["Relevés envoyés", after ? nf(17 + (S.distSent ? 1 : 0)) : "0", "un par jour"]]) +
+    `<div class="card"><h2>Par configuration</h2><div class="tw"><table><tr><th>Configuration</th><th>Alloué</th><th>Vendus</th><th>Restant</th></tr>${rows}</table></div><div style="margin-top:12px">${btn}</div></div>`);
+}
+
+/* ---------- suivi d'une commande ou d'un avis dans son processus ---------- */
+function timeline(steps) {
+  let cur = false;
+  return `<div style="margin-top:10px">${steps.map(([lane, task, tt, skip]) => {
+    let st, col;
+    if (skip) { st = "Non concerné"; col = "#c7c7cc"; }
+    else if (tt && tt <= now()) { st = quand(tt); col = "#34c759"; }
+    else if (!cur) { cur = true; st = "En cours"; col = "#0071e3"; }
+    else { st = "À venir"; col = "#d2d2d7"; }
+    return `<div style="display:grid;grid-template-columns:14px 150px 1fr 90px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid #f0f0f3;font-size:13px;${skip ? "color:#aeaeb2" : ""}"><span style="width:10px;height:10px;border-radius:50%;background:${col}"></span><span class="muted">${lane}</span><span>${task}</span><span class="small" style="text-align:right;${st === "En cours" ? "color:#0058b9;font-weight:600" : ""}">${st}</span></div>`;
+  }).join("")}</div>`;
+}
+const tOf = (hist, s) => { const h = hist.find((x) => x.s === s && x.t <= now()); return h ? h.t : null; };
+function tlOrder(o) {
+  const c = o.created; const tP = tOf(o.hist, "payee"), tR = tOf(o.hist, "refusee"), tRes = tOf(o.hist, "reservee"), tC = tOf(o.hist, "confirmee"), tA = tOf(o.hist, "annulee");
+  const i = oInfo(o); const ko = !!tR || o.bank === "ko"; const fab = i.date === JANV || (!tRes && !dispoCfg(o.cap, o.col));
+  return timeline([
+    ["Client", "Précommander (message « précommande validée »)", c], ["Ventes", "Enregistrer la précommande", c], ["Finance", "Contrôler le paiement", c],
+    ["Banque", "Répondre à la demande d'autorisation", c], ["Finance", `Paiement accepté ? ${tP ? "· oui" : tR ? "· non" : ""}`, tP || tR],
+    ["Finance", "Enregistrer le CA prévisionnel", tP, ko], ["Production", `Vérifier le stock · stock disponible ? ${tRes ? (fab ? "· non" : "· oui") : ""}`, tRes, ko],
+    ["Production", "Recalculer la date de livraison", tRes, ko || !fab], ["Production", "Réserver un appareil", tRes, ko],
+    ["Ventes", "Confirmer la commande", tC, ko], ["Ventes", "Informer du refus", tA, !ko], ["Client", ko ? "Recevoir le message de refus" : "Recevoir la confirmation", ko ? tA : tC],
+  ]);
+}
+function tlReview(r) {
+  const h = r.hist; const st = at(h, now()).s; const q = Object.values(S.signals).find((x) => x.rev === r.ref);
+  const tQ = q ? (tOf(q.hist, "confirme") || tOf(q.hist, "non_confirme")) : null; const conf = q && tOf(q.hist, "confirme");
+  const cost = q && S.costs[q.id] ? tOf(S.costs[q.id].hist, "enregistre") : null;
+  const def = r.accord && r.note < 7 && DEFAUTS.includes(r.motif); const rec = r.accord && r.note < 7 && !def;
+  return timeline([
+    [r.accord ? "Client" : "Client (anonyme)", "Répondre au questionnaire", r.t], ["Relation client", "Enregistrer la réponse, calculer le score", r.t],
+    ["Relation client", `Note et motif ? · ${!r.accord ? "sans accord" : r.note >= 7 ? "7 ou plus" : def ? "défaut" : "moins de 7"}`, r.t],
+    ["Relation client", "Remercier le client", r.t, !(r.accord && r.note >= 7)], ["Relation client", "Recontacter le client", tOf(h, "recontacte"), !rec],
+    ["Relation client", "Transmettre le défaut à la production", tOf(h, "en_analyse"), !def], ["Production", `Analyser le signalement · défaut confirmé ? ${tQ ? (conf ? "· oui" : "· non") : ""}`, tQ, !def],
+    ["Production", "Lancer l'action corrective", conf, !def || (tQ && !conf)], ["Finance", "Enregistrer le coût de garantie", cost, !def || (tQ && !conf)],
+    ["Relation client", "Informer le client de la suite", tOf(h, "clos"), !def], ["Direction marketing", "Mettre à jour le tableau de bord", r.t],
+  ]) + (st === "statistique" ? `<p class="hint">Réponse sans accord : elle reste anonyme et sert seulement aux statistiques.</p>` : "");
 }
 
 /* ---------- le projet ---------- */
@@ -592,7 +734,7 @@ function vProjet() {
   const rows = Object.values(PROFILS).map((p) => `<tr><td><b>${p.role}</b></td><td>${p.ecrans.map((e) => ECRANS[e].t).join(", ")}</td></tr>`).join("");
   return page("proj", `<main class="wrap"><h1>Le projet</h1>
   <p class="lead">Ce site accompagne notre dossier de TD de Fondamentaux des systèmes d'information (L2 Gestion et Management, IAE Lyon, groupe 12 : Adam, Romy, Anna et Clara). Nous y avons construit les écrans du SI marketing et ventes d'Apple pour le lancement de l'iPhone Duo, avec la production et la finance comme fonctions complémentaires. Les entreprises citées sont réelles ; les clients, les commandes et les chiffres internes sont inventés.</p>
-  <div class="card"><h2>Profils et écrans</h2><div class="tw"><table><tr><th>Profil</th><th>Écrans</th></tr><tr><td><b>Client (Léa M.)</b></td><td>Boutique, compte, questionnaire de satisfaction</td></tr>${rows}</table></div></div>
+  <div class="card"><h2>Profils et écrans</h2><div class="tw"><table><tr><th>Profil</th><th>Écrans</th></tr><tr><td><b>Client (Léa M.)</b></td><td>Boutique, compte, questionnaire de satisfaction</td></tr>${rows}<tr><td><b>Banque (partenaire)</b></td><td>Demandes d'autorisation</td></tr><tr><td><b>Distributeur (partenaire)</b></td><td>Stock alloué et ventes</td></tr><tr><td><b>Tous les profils internes</b></td><td>Processus (suivi d'une commande ou d'un avis), Échanges entre services</td></tr></table></div></div>
   <div class="grid2" style="margin-top:6px">${figs.map(([f, t]) => `<div class="fig"><a href="img/fig/${f}.png" target="_blank"><img src="img/fig/${f}.png" alt="${t}" loading="lazy"></a><p>${t}</p></div>`).join("")}</div>
   <div class="card center"><h2>Accès direct</h2><img src="img/qr-site.svg" alt="QR code du site" style="width:160px;height:160px;margin:6px auto;display:block"><div class="small muted">${SITE_URL}</div></div></main>`);
 }
@@ -609,12 +751,13 @@ function route() {
   if (seg[0] === "avis") return [vAvis(seg[1]), "Votre avis"];
   if (seg[0] === "avis-merci") return [vAvisMerci(seg[1]), "Merci"];
   if (seg[0] === "projet") return [vProjet(), "Le projet"];
+  if (seg[0] === "partenaire") return seg[1] === "distributeur" ? [vDistributeur(), "Espace partenaire · Néo Télécom"] : [vBanque(), "Banque · autorisations"];
   if (seg[0] === "si") {
     if (!seg[1]) return [vLogin(), "Outils internes"];
     if (seg[1] === "connexion") return [vTwoFA(seg[2]), "Connexion"];
     const p = seg[1]; if (!PROFILS[p]) return [vLogin(), "Outils internes"];
-    const scr = seg[2] && (PROFILS[p].ecrans.includes(seg[2]) || seg[2] === "processus") ? seg[2] : PROFILS[p].ecrans[0];
-    const f = { precommandes: sPrecommandes, clients: sClients, paiements: sPaiements, stock: sStock, plan: sPlan, avis: sAvis, suivi: sSuivi, qualite: sQualite, garantie: sGarantie, ca: sCA, lancement: sLancement, satisfaction: sSatisfaction, campagnes: sCampagnes, processus: sProcessus }[scr];
+    const scr = seg[2] && (PROFILS[p].ecrans.includes(seg[2]) || seg[2] === "processus" || seg[2] === "echanges") ? seg[2] : PROFILS[p].ecrans[0];
+    const f = { precommandes: sPrecommandes, clients: sClients, paiements: sPaiements, stock: sStock, plan: sPlan, avis: sAvis, suivi: sSuivi, qualite: sQualite, garantie: sGarantie, ca: sCA, lancement: sLancement, satisfaction: sSatisfaction, campagnes: sCampagnes, processus: sProcessus, echanges: sEchanges, distributeurs: sDistributeurs }[scr];
     return [f(p), ECRANS[scr].t + " · " + PROFILS[p].nom];
   }
   return [vHome(), "Accueil"];
@@ -633,7 +776,7 @@ document.addEventListener("click", (e) => {
   const el = e.target.closest("[data-act]");
   if (!el) { if (ui.clockOpen && !e.target.closest(".clock")) { ui.clockOpen = false; render(true); } return; }
   const a = el.dataset.act; const id = el.dataset.id;
-  if (["offres", "qaccord", "bank", "qact"].includes(a)) return; // gérés par « change »
+  if (["offres", "qaccord", "bank", "qact", "trk"].includes(a)) return; // gérés par « change »
   const o = S.orders[id]; const r = S.reviews[id]; const q = S.signals[id];
   switch (a) {
     case "clock": ui.clockOpen = !ui.clockOpen; return render(true);
@@ -696,6 +839,8 @@ document.addEventListener("click", (e) => {
     case "nonq": { step(q, "non_confirme"); const rv = S.reviews[q.rev]; if (rv) step(rv, "a_informer"); toast("Défaut non confirmé · la relation client informe le client"); return rerender(); }
     case "enregistrer": { const c = S.costs[id]; step(c, "enregistre"); const sg = S.signals[id]; const rv = sg && S.reviews[sg.rev]; if (rv) step(rv, "a_informer"); toast(`Coût de ${eur(c.cout)} enregistré dans l'ERP`); return rerender(); }
     case "addnote": { const txt = ui.note.trim(); if (!txt) return; const P = PROFILS[location.hash.split("/")[2]]; (S.notes[id] = S.notes[id] || []).push({ t: stamp(), par: P ? P.nom : "", txt }); ui.note = ""; toast("Note ajoutée"); return rerender(); }
+    case "jf": ui.jf = id; return render(true);
+    case "releve": S.distSent = (S.distSent || 0) + 23; (S.flog = S.flog || []).push({ t: stamp(), de: "Distributeurs", vers: "Ventes", info: "Relevé des ventes de Néo Télécom (23 appareils)", outil: "EDI", ref: "A3-13 · A1-3", proc: "" }); toast("Relevé envoyé à Apple par EDI"); return rerender();
     case "login": try { sessionStorage.setItem("si-profil", id); } catch (err) { /* sans effet */ } location.hash = "#/si/" + id + "/" + PROFILS[id].ecrans[0]; return;
     case "retirer": r.accord = false; r.cli = null; toast("Accord retiré · votre réponse devient anonyme"); location.hash = "#/compte/avis"; return rerender();
     case "supprimer": if (confirm("Supprimer définitivement cette réponse ?")) { S.deleted[id] = true; toast("Réponse supprimée"); rerender(); } return;
@@ -708,6 +853,7 @@ document.addEventListener("change", (e) => {
   if (a === "qaccord") { ui.q.accord = el.checked; }
   if (a === "bank") { ui.cfg.bank = el.value; }
   if (a === "qact") { ui.act = Number(el.value); }
+  if (a === "trk") { const pp = location.hash.split("/")[2]; location.hash = `#/si/${pp}/processus?${el.dataset.k}=${el.value}`; }
 });
 document.addEventListener("input", (e) => {
   const el = e.target.closest("[data-act]"); if (!el) return;
